@@ -1,0 +1,17 @@
+h3.title_h4,
+h4.title_h4 {
+	font-size:1.4em;
+	border-bottom: 1px solid #555;
+	color: #555;
+	padding:0 0 10px 15px;
+	background: url(arrow_right.png) no-repeat 0px 3px;
+}
+h3.title_h4:hover,
+h4.title_h4:hover {cursor: pointer;}
+
+h3.title_h4.active,
+h4.title_h4.active {
+	background: url(arrow_down.png) no-repeat 0px 3px;
+}
+h3.title_h4 > .form-table,
+h4.title_h4 > .form-table { height: 0px; overflow: hidden; }
