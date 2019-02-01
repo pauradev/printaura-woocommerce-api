@@ -1,5 +1,4 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 class Printaura_Updater_Config implements ArrayAccess {
 
     /**
@@ -12,15 +11,15 @@ class Printaura_Updater_Config implements ArrayAccess {
     protected $container;
 
     /**
-* Constructor. Sets config args into class Printaura_property.
+* Constructor. Sets config args into class property.
 *
 * @since 1.0.0
 *
 * @param array $args Empty array
 */
-    public function printaura_construct( array $args = array() ) {
+    public function __construct( array $args = array() ) {
 
-        // Set class Printaura_property to config args
+        // Set class property to config args
         $this->container = $args;
         $this->sanitize_args();
     }
@@ -30,7 +29,7 @@ class Printaura_Updater_Config implements ArrayAccess {
 *
 * @since 1.0.0
 */
-    protected function printaura_sanitize_args() {
+    protected function sanitize_args() {
 
         $defaults = array(
             'plugin_name' => false,
@@ -50,7 +49,7 @@ class Printaura_Updater_Config implements ArrayAccess {
 *
 * @since 1.0.0
 */
-    public function printaura_offsetSet( $offset, $value ) {
+    public function offsetSet( $offset, $value ) {
 
         if ( is_null( $offset ) )
             $this->container[] = $value;
@@ -64,7 +63,7 @@ class Printaura_Updater_Config implements ArrayAccess {
 *
 * @since 1.0.0
 */
-    public function printaura_offsetUnset( $offset ) {
+    public function offsetUnset( $offset ) {
 
         unset( $this->container[$offset] );
 
@@ -77,7 +76,7 @@ class Printaura_Updater_Config implements ArrayAccess {
 *
 * @return bool True if it exists, false otherwise
 */
-    public function printaura_offsetExists( $offset ) {
+    public function offsetExists( $offset ) {
 
         return isset( $this->container[$offset] );
 
@@ -90,7 +89,7 @@ class Printaura_Updater_Config implements ArrayAccess {
 *
 * @return string|null Offset value if it exists, null otherwise
 */
-    public function printaura_offsetGet( $offset ) {
+    public function offsetGet( $offset ) {
 
         return isset( $this->container[$offset] ) ? $this->container[$offset] : null;
 

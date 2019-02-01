@@ -89,7 +89,7 @@ function printaura_api_admin_menu() {
     add_menu_page( 'Print Aura Woocommerce API',
           'Print Aura API', 
           'manage_woocommerce', 
-          'printaura_api_settings_page', 'printaura_api_settings_page');
+          'api_settings_page', 'api_settings_page');
     
 }
 
@@ -133,7 +133,7 @@ function printaura_save_new_zone($zones){
     return $shipping_zones;
 }
 
-function printaura_api_settings_page() {
+function api_settings_page() {
 
   $helpers = new JSONAPIHelpers();
   $current_user=wp_get_current_user();
@@ -242,6 +242,6 @@ function printaura_api_parse_headers() {
   return $headers;
 }
  
-function printaura_unhook_those_pesky_emails( $email_class Printaura_) {
+function printaura_unhook_those_pesky_emails( $email_class ) {
     remove_action('woocommerce_order_status_completed_notification', array(&$email_class, 'customer_completed_order'));
 }

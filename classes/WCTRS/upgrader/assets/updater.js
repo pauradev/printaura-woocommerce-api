@@ -176,7 +176,7 @@ jQuery(document).ready(function($) {
         }
     });
 
-    function printaura_becpwc_doBoxSize() {
+    function becpwc_doBoxSize() {
         // set max height for popup box
         var window_height = jQuery( window ).height();
         var box_height = window_height - 180;

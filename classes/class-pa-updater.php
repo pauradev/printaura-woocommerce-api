@@ -1,5 +1,4 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 class Printaura_Updater {
 
     /**
@@ -84,7 +83,7 @@ class Printaura_Updater {
     protected $has_update = false;
 
     /**
-* Namespace for class Printaura_options and transients.
+* Namespace for class options and transients.
 *
 * @since 1.0.0
 *
@@ -100,9 +99,9 @@ class Printaura_Updater {
 *
 * @param Printaura_Updater_Config $config Updater config args
 */
-    public function printaura_construct( Printaura_Updater_Config $config ) {
+    public function __construct( Printaura_Updater_Config $config ) {
 
-        // Set class Printaura_properties
+        // Set class properties
         $accepted_args = array(
             'plugin_name',
             'plugin_slug',
@@ -127,7 +126,7 @@ class Printaura_Updater {
 *
 * @return null Return early if current user does not have sufficient privileges
 */
-    public function printaura_update_plugins() {
+    public function update_plugins() {
 
         if ( ! current_user_can( 'update_plugins' ) )
             return;
@@ -159,7 +158,7 @@ class Printaura_Updater {
 *
 * @since 1.0.0
 */
-    protected function printaura_check_periodic_updates() {
+    protected function check_periodic_updates() {
 
         $last_update = isset( $this->plugins[$this->plugin_slug]->last_update ) ? $this->plugins[$this->plugin_slug]->last_update : false;
 
@@ -181,9 +180,9 @@ class Printaura_Updater {
 * @since 1.0.0
 *
 * @param bool $manual Flag for checking automatically or not
-* @return bool|stdclass Printaura_Return early if plugin is not in an array, else return update object
+* @return bool|stdClass Return early if plugin is not in an array, else return update object
 */
-    protected function printaura_check_for_updates( $manual = false ) {
+    protected function check_for_updates( $manual = false ) {
 
         // If plugin is not in an array, return early
         if ( ! is_array( $this->plugins ) )
@@ -225,7 +224,7 @@ class Printaura_Updater {
 *
 * @since 1.0.0
 */
-    public function printaura_force_update_check() {
+    public function force_update_check() {
 
         $this->check_for_updates( true );
 
@@ -236,10 +235,10 @@ class Printaura_Updater {
 *
 * @since 1.0.0
 *
-* @param stdclass Printaura_$value The WordPress update object
-* @return stdclass Printaura_$value Amended WordPress update object on success, default if checked is empty
+* @param stdClass $value The WordPress update object
+* @return stdClass $value Amended WordPress update object on success, default if checked is empty
 */
-    public function printaura_update_plugins_filter( $value ) {
+    public function update_plugins_filter( $value ) {
 
         if ( empty( $value->checked ) )
             return $value;
@@ -252,7 +251,7 @@ class Printaura_Updater {
     }
 
     /**
-* Filters the plugins_api function printaura_to get our own custom plugin information
+* Filters the plugins_api function to get our own custom plugin information
 * from our private repo.
 *
 * @since 1.0.0
@@ -260,9 +259,9 @@ class Printaura_Updater {
 * @param object $api The original plugins_api object
 * @param string $action The action sent by plugins_api
 * @param array $args Additional args to send to plugins_api
-* @return stdclass Printaura_$api New stdclass Printaura_with plugin information on success, default response on failure
+* @return stdClass $api New stdClass with plugin information on success, default response on failure
 */
-    public function printaura_plugins_api( $api, $action, $args ) {
+    public function plugins_api( $api, $action, $args ) {
 
         $plugin = ( 'plugin_information' == $action ) && isset( $args->slug ) && ( $this->plugin_slug == $args->slug );
 
@@ -285,7 +284,7 @@ class Printaura_Updater {
 * @param string $return_format The format for returning content from the remote URL
 * @return string|bool Json decoded response on success, false on failure
 */
-    protected function printaura_perform_remote_request( $action, array $body = array(), array $headers = array(), $return_format = 'json' ) {
+    protected function perform_remote_request( $action, array $body = array(), array $headers = array(), $return_format = 'json' ) {
 
         // Build body
         $body = wp_parse_args( $body, array(
@@ -337,14 +336,14 @@ class Printaura_Updater {
 *
 * @since 1.0.0
 *
-* @return stdclass Printaura_$api Return custom plugin information to plugins_api
+* @return stdClass $api Return custom plugin information to plugins_api
 */
-    protected function printaura_set_plugins_api() {
+    protected function set_plugins_api() {
 
         // Perform the remote request to retrieve our plugin information
         $plugin_info = $this->perform_remote_request( 'info', array( 'tgm-updater-plugin' => $this->plugin_slug ) );
 
-        // Create a new stdclass Printaura_object and populate it with our plugin information
+        // Create a new stdClass object and populate it with our plugin information
         $api = new stdClass;
         $api->name = isset( $plugin_info->name ) ? $plugin_info->name : '';
         $api->slug = isset( $plugin_info->slug ) ? $plugin_info->slug : '';
@@ -372,7 +371,7 @@ class Printaura_Updater {
 *
 * @return array $options Plugin options
 */
-    protected function printaura_get_plugin_options() {
+    protected function get_plugin_options() {
 
         // MultiSite check
         if ( is_multisite() )
@@ -392,9 +391,9 @@ class Printaura_Updater {
 *
 * @since 1.0.0
 */
-    protected function printaura_set_plugin_options() {
+    protected function set_plugin_options() {
 
-        // Set plugin options by creating a new stdclass Printaura_object
+        // Set plugin options by creating a new stdClass object
         $plugin_options = new stdClass;
         $plugin_options->url = $this->plugin_url;
         $plugin_options->slug = $this->plugin_slug;
@@ -414,7 +413,7 @@ class Printaura_Updater {
 *
 * @since 1.0.0
 */
-    protected function printaura_save_plugin_options() {
+    protected function save_plugin_options() {
 
         // MultiSite check
         if ( is_multisite() )
@@ -425,13 +424,13 @@ class Printaura_Updater {
     }
 
     /**
-* Helper function printaura_to determine if the plugin has an update or not.
+* Helper function to determine if the plugin has an update or not.
 *
 * @since 1.0.0
 *
 * @return bool True if an update exists, false otherwise
 */
-    public function printaura_has_update() {
+    public function has_update() {
 
         return $this->has_update;
 

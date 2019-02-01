@@ -1,14 +1,13 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 namespace WCAPI;
 /**
- * A Customer class Printaura_to insulate the API from the details of the
+ * A Customer class to insulate the API from the details of the
  * database representation
 */
 require_once(dirname(__FILE__) . "/Base.php");
 require_once(dirname(__FILE__) . "/Category.php");
-class Printaura_Customer extends Base {
-  public static function printaura_getModelSettings() {
+class Customer extends Base {
+  public static function getModelSettings() {
     global $wpdb;
     $table = array_merge( static::getDefaultModelSettings(), array(
         'model_table' => $wpdb->users,
@@ -22,7 +21,7 @@ class Printaura_Customer extends Base {
     return $table;
   }
 
-  public static function printaura_getModelAttributes() {
+  public static function getModelAttributes() {
     $table = array(
       'name'            => array('name' => 'display_name',           'type' => 'string'),
       'username'        => array('name' => 'user_login',             'type' => 'string'),
@@ -34,7 +33,7 @@ class Printaura_Customer extends Base {
     $table = apply_filters( 'WCAPI_model_attributes_table', $table );
     return $table;
   }
-  public static function printaura_getMetaAttributes() {
+  public static function getMetaAttributes() {
     $table = array(
       'order_count'               => array('name' => '_order_count',      'type' => 'number'),
       'paying_customer'           => array('name' => 'paying_customer',   'type' => 'number'),
@@ -47,17 +46,17 @@ class Printaura_Customer extends Base {
     $table = apply_filters( 'WCAPI_user_meta_attributes_table', $table );
     return $table;
   }
-  public static function printaura_setupMetaAttributes() {
+  public static function setupMetaAttributes() {
     // We only accept these attributes.
     static::$_meta_attributes_table = self::getMetaAttributes();
   } // end setupMetaAttributes
-  public static function printaura_setupModelAttributes() {
+  public static function setupModelAttributes() {
         
     static::$_model_settings = self::getModelSettings();
 
     static::$_model_attributes_table = self::getModelAttributes();
   }
-  public function printaura_asApiArray($args = array()) {
+  public function asApiArray($args = array()) {
     $attributes = array_merge(static::$_model_attributes_table, static::$_meta_attributes_table);
     $attributes_to_send['id'] = $this->getModelId();
     $attributes_to_send = array();

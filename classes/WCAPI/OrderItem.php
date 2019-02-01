@@ -1,15 +1,14 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 namespace WCAPI;
 /**
- * An OrderItem class Printaura_to insulate the API from the details of the
+ * An OrderItem class to insulate the API from the details of the
  * database representation
 */
 require_once(dirname(__FILE__) . "/Base.php");
 require_once(dirname(__FILE__) . "/Order.php");
 require_once(dirname(__FILE__) . "/Product.php");
-class Printaura_OrderItem extends Base {
-  public static function printaura_getModelSettings() {
+class OrderItem extends Base {
+  public static function getModelSettings() {
     global $wpdb;
     $table = array_merge(Base::getDefaultModelSettings(), array(
         'model_table'                => $wpdb->prefix . 'woocommerce_order_items',
@@ -26,7 +25,7 @@ class Printaura_OrderItem extends Base {
     $table = apply_filters('WCAPI_order_item_model_settings',$table);
     return $table;
   }
-  public static function printaura_getModelAttributes() {
+  public static function getModelAttributes() {
     $table = array(
       'name'            => array('name' => 'order_item_name',  'type' => 'string'),
       'type'            => array('name' => 'order_item_type',  'type' => 'string'),
@@ -37,7 +36,7 @@ class Printaura_OrderItem extends Base {
     return $table;
   }
 
-  public static function printaura_getMetaAttributes() {
+  public static function getMetaAttributes() {
     $table = array(
       'quantity'          => array('name' => '_qty',           'type' => 'number'), 
       'tax_class'         => array('name' => '_tax_class',    'type' => 'number'), 
@@ -54,15 +53,15 @@ class Printaura_OrderItem extends Base {
     $table = apply_filters( 'WCAPI_order_item_meta_attributes_table', $table );
     return $table;
   }
-  public static function printaura_setupMetaAttributes() {
+  public static function setupMetaAttributes() {
     // We only accept these attributes.
     static::$_meta_attributes_table = self::getMetaAttributes();
   } // end setupMetaAttributes
-  public static function printaura_setupModelAttributes() {
+  public static function setupModelAttributes() {
     static::$_model_settings = self::getModelSettings();
     static::$_model_attributes_table = self::getModelAttributes();
   }
-  public function printaura_updateTrackingNumberItem($id,$nb){
+  public function updateTrackingNumberItem($id,$nb){
       woocommerce_update_order_item_meta( $id, 'tracking_number', $nb);
        
   }

@@ -1,12 +1,11 @@
 <?php 
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 namespace WCAPI;
 require_once(dirname(__FILE__) . "/BaseHelpers.php");
 require_once(dirname(__FILE__) . "/Category.php");
-class Printaura_ProductAttribute {
+class ProductAttribute {
 	public $attrs;
 	public $product_id;
-	public function printaura_construct( $attrs = null, $product_id = null ) {
+	public function __construct( $attrs = null, $product_id = null ) {
 		if ( $attrs == null )
 			return;
 		$this->product_id = $product_id;
@@ -29,7 +28,7 @@ class Printaura_ProductAttribute {
 		$this->attrs = $attrs;
 		Helpers::debug( "ProductAttribute::__construct" . var_export($attrs,true));
 	}
-	public function printaura_getForDb() {
+	public function getForDb() {
 		$name = strtolower($this->attrs['name']);
 		$attrs = $this->attrs;
 		$attrs['is_visible'] = $this->toRealBool($attrs['is_visible']);
@@ -42,11 +41,11 @@ class Printaura_ProductAttribute {
 		}
 		return array("$name" => $attrs);
 	}
-	public function printaura_asApiArray() {
+	public function asApiArray() {
 		$name = strtolower($this->attrs['name']);
 		return array("$name" => $this->attrs);
 	}
-	public function printaura_toWPBool($b) {
+	public function toWPBool($b) {
 		if ( $b == 1 || $b === 'yes') {
 			$ret = 'yes';	
 		} else {
@@ -55,10 +54,10 @@ class Printaura_ProductAttribute {
 		Helpers::debug("toWpBool b:$b ret:$ret");
 		return $ret;
 	}
-	public function printaura_toRealBool( $b ) {
+	public function toRealBool( $b ) {
 		return $b == 'yes' ? 1 : 0;
 	}
-	public function printaura_getSupportedAttributes() {
+	public function getSupportedAttributes() {
 		return array(
 	        "name" => array('name' => 'name', 'type' => 'string', 'sizehint' => 5),
 	        "value" => array('name' => 'value', 'type' => 'array', 'sizehint' => 10),
@@ -68,7 +67,7 @@ class Printaura_ProductAttribute {
 	        "is_taxonomy"=> array('name' => 'is_taxonomy', 'type' => 'bool', 'values' => array('yes','no'), 'sizehint' => 1),
         );
 	}
-	public function printaura_createOrUpdateAttribute( $attrs ) {
+	public function createOrUpdateAttribute( $attrs ) {
 		return;
 		$fromto = array(
 			'term_id' => 'term_id',

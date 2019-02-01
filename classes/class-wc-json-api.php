@@ -1,5 +1,4 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 /**
  * Core JSON API
 */
@@ -34,8 +33,8 @@ if ( !defined('PHP_VERSION_ID')) {
     define('PHP_RELEASE_VERSION',$version[2]);
   }
 }
-class Printaura_WooCommerce_JSON_API extends JSONAPIHelpers {
-    // Call this function printaura_to setup a new response
+class WooCommerce_JSON_API extends JSONAPIHelpers {
+    // Call this function to setup a new response
   public $helpers;
   public $result;
   public $return_type;
@@ -43,16 +42,16 @@ class Printaura_WooCommerce_JSON_API extends JSONAPIHelpers {
   public $provider;
   public static $implemented_methods;
 
-  public function printaura_setOut($t) {
+  public function setOut($t) {
     $this->return_type = $t;
   }
-  public function printaura_setUser($user) {
+  public function setUser($user) {
     $this->the_user = $user;
   }
-  public function printaura_getUser() {
+  public function getUser() {
     return $this->the_user;
   }
-  public static function printaura_getImplementedMethods() {
+  public static function getImplementedMethods() {
     self::$implemented_methods = array(
       'get_system_time',
       'get_supported_attributes',
@@ -91,14 +90,14 @@ class Printaura_WooCommerce_JSON_API extends JSONAPIHelpers {
     );
     return self::$implemented_methods;
   }
-  public function printaura_construct() {
+  public function __construct() {
     //$this = new JSONAPIHelpers();
     $this->result = null;
     $this->provider = null;
     parent::init();
   }
   
-  public function printaura_route( $params ) {
+  public function route( $params ) {
     global $wpdb;
     $method = $this->orEq( $params, 'method',false);
     $proc = $this->orEq($params, 'proc',false);
@@ -135,8 +134,8 @@ class Printaura_WooCommerce_JSON_API extends JSONAPIHelpers {
     }
     if ( file_exists( dirname(__FILE__ ) .'/API_VERSIONS/version'.$version.'.php' ) ) {
       require_once( dirname(__FILE__ ) .'/API_VERSIONS/version'.$version.'.php' );
-      $class Printaura_= "WC_JSON_API_Provider_v{$version}";
-      $class Printaura_= str_replace('.','_',$class);
+      $class = "WC_JSON_API_Provider_v{$version}";
+      $class = str_replace('.','_',$class);
       $this->provider = new $class( $this );
     }
 
@@ -157,7 +156,7 @@ class Printaura_WooCommerce_JSON_API extends JSONAPIHelpers {
         foreach ($filter as $key=>&$value) {
           $value['name'] = substr($wpdb->prepare("%s",$value['name']),1,strlen($value['name']));
         }
-        $callback = function printaura_($table) use ($filter) {
+        $callback = function ($table) use ($filter) {
 
             return array_merge($table,$filter);
         };
@@ -217,7 +216,7 @@ class Printaura_WooCommerce_JSON_API extends JSONAPIHelpers {
       return $this->done();
   }
   }
-  public function printaura_isValidAPIUser( $params ) {
+  public function isValidAPIUser( $params ) {
    /*if(!current_user_can('manage_options')){
         JSONAPIHelpers::debug( "no permission" );
        return false;
@@ -276,14 +275,14 @@ class Printaura_WooCommerce_JSON_API extends JSONAPIHelpers {
 
     return false;
   }
-  public function printaura_logUserIn( $user ) {
+  public function logUserIn( $user ) {
 
     wp_set_current_user($user->ID);
     wp_set_auth_cookie( $user->ID, false, is_ssl() );
     $this->setUser($user);
 
   }
-  public function printaura_unexpectedError( $params, $error ) {
+  public function unexpectedError( $params, $error ) {
     $this->createNewResult( $params );
     $trace = $error->getTrace();
     foreach ( $trace as &$t) {
@@ -305,7 +304,7 @@ class Printaura_WooCommerce_JSON_API extends JSONAPIHelpers {
     );
     return $this->done();
   }
-  public function printaura_createNewResult($params) {
+  public function createNewResult($params) {
     if ( ! $this->result ) {
 
       $this->result = new WooCommerce_JSON_API_Result();
@@ -313,7 +312,7 @@ class Printaura_WooCommerce_JSON_API extends JSONAPIHelpers {
 
     }
   }
-  public function printaura_done() {
+  public function done() {
     JSONAPIHelpers::debug("WooCommerce_JSON_API::done() called..");
     wp_logout();
     if ( $this->return_type == 'HTTP') {
@@ -328,7 +327,7 @@ class Printaura_WooCommerce_JSON_API extends JSONAPIHelpers {
       return $this->result;
     } 
   }
-  public function printaura_notImplemented( $params,$method ) {
+  public function notImplemented( $params,$method ) {
     $this->createNewResult( $params );
     $this->result->addError( 
       __("That API method ({$method}) has not been implemented", 'printaura_api' ), 

@@ -324,15 +324,15 @@ msgid "Subtotal is calculated based on cart value after coupons"
 msgstr "ويتم احتساب المجموع الفرعي استنادا عربة القيمة بعد كوبونات"
 
 #: woocommerce-table-rate-shipping/woocommerce-table-rate-shipping.php:276
-msgid "Single class Printaura_Only"
+msgid "Single Class Only"
 msgstr "فئة واحدة فقط"
 
 #: woocommerce-table-rate-shipping/woocommerce-table-rate-shipping.php:278
-msgid "When enabled, only items of the highest priority shipping class Printaura_will be counted towards the shipping cost"
+msgid "When enabled, only items of the highest priority shipping class will be counted towards the shipping cost"
 msgstr "عندما مكن، سوف تحسب فقط البنود ذات أولوية قصوى الطبقة الشحن لتغطية تكاليف الشحن"
 
 #: woocommerce-table-rate-shipping/woocommerce-table-rate-shipping.php:278 woocommerce-table-rate-shipping/woocommerce-table-rate-shipping.php:284
-msgid "Per class Printaura_Method Only"
+msgid "Per Class Method Only"
 msgstr "في أسلوب فئة فقط"
 
 #: woocommerce-table-rate-shipping/woocommerce-table-rate-shipping.php:282
@@ -340,7 +340,7 @@ msgid "Highest Costing Class"
 msgstr "أعلى من الدرجة التكاليف"
 
 #: woocommerce-table-rate-shipping/woocommerce-table-rate-shipping.php:284
-msgid "When enabled, the highest shipping cost from the per class Printaura_calculations will be charged"
+msgid "When enabled, the highest shipping cost from the per class calculations will be charged"
 msgstr "عندما مكن، وستحمل أعلى تكلفة الشحن من في الصف الواحد الحسابات"
 
 #: woocommerce-table-rate-shipping/woocommerce-table-rate-shipping.php:288
@@ -516,7 +516,7 @@ msgid "0.00"
 msgstr "0.00"
 
 #: woocommerce-table-rate-shipping/woocommerce-table-rate-shipping.php:1394
-msgid "Shipping class Printaura_Priorities"
+msgid "Shipping Class Priorities"
 msgstr "الأولويات صنف شحن"
 
 #: woocommerce-table-rate-shipping/woocommerce-table-rate-shipping.php:1400

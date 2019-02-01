@@ -1,17 +1,16 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 namespace WCAPI;
 require_once(dirname(__FILE__) . "/Base.php");
-class Printaura_Category extends Base {
+class Category extends Base {
 
-  public static function printaura_getModelSettings() {
+  public static function getModelSettings() {
     global $wpdb;
     $table = array_merge( static::getDefaultModelSettings(), array(
       'model_table' => $wpdb->terms,
       'model_table_id' => 'term_id',
       'meta_table' => $wpdb->term_taxonomy,
       'meta_table_foreign_key' => 'term_id',
-      'load_meta_function' => function printaura_($model) {
+      'load_meta_function' => function ($model) {
         $s = $model->getModelSettings();
         $adapter = $model->getAdapter();
         $table = $s['meta_table'];
@@ -20,14 +19,14 @@ class Printaura_Category extends Base {
         $record = $adapter->get_row($sql,'ARRAY_A');
         return $record;
       },
-      'save_meta_function' => function printaura_($model) {
+      'save_meta_function' => function ($model) {
         $s = $model->getModelSettings();
         $adapter = $model->getAdapter();
         $table = $s['meta_table'];
         $key = $s['meta_table_foreign_key'];
         $adapter->update($table,$model->remapMetaAttributes(),array($key => $model->_actual_model_id));
       },
-      'create_meta_function' => function printaura_($model) {
+      'create_meta_function' => function ($model) {
         //die("Leaving to create meta function\n");
         $s = $model->getModelSettings();
         $adapter = $model->getAdapter();
@@ -46,7 +45,7 @@ class Printaura_Category extends Base {
     $table = apply_filters('WCAPI_category_model_settings',$table);
     return $table;
   }
-  public static function printaura_getModelAttributes() {
+  public static function getModelAttributes() {
     $table = array(
 //      'id'            => array( 'name' => 'term_id',    'type' => 'number', 'sizehint' => 1),
       'id'            => array( 'name' => 'term_id',    'type' => 'array', 'sizehint' => 1),
@@ -58,7 +57,7 @@ class Printaura_Category extends Base {
     return $table;
   }
 
-  public static function printaura_getMetaAttributes() {
+  public static function getMetaAttributes() {
     $table = array(
       'description'   => array( 'name' => 'description',      'type' => 'text', 'sizehint' => 10),
       'parent_id'     => array( 'name' => 'parent',           'type' => 'number', 'sizehint' => 1),
@@ -70,16 +69,16 @@ class Printaura_Category extends Base {
     return $table;
   }
 
-  public static function printaura_setupModelAttributes() {
+  public static function setupModelAttributes() {
     self::$_model_settings = self::getModelSettings();
     self::$_model_attributes_table = self::getModelAttributes();
   }
 
-  public static function printaura_setupMetaAttributes() {
+  public static function setupMetaAttributes() {
     self::$_meta_attributes_table = self::getMetaAttributes();
   }
 
-  public function printaura_setCategory( $category_object ) {
+  public function setCategory( $category_object ) {
     include WCAPIDIR."/_model_static_attributes.php";
     foreach ($self->attributes_table as $name=>$attrs) {
       if (is_object($category_object)) {
@@ -91,7 +90,7 @@ class Printaura_Category extends Base {
     return $this;
   }
 
-  public static function printaura_find_by_name( $name ) {
+  public static function find_by_name( $name ) {
     global $wpdb;
     include WCAPIDIR."/_model_static_attributes.php";
     $sql = "
@@ -123,10 +122,10 @@ class Printaura_Category extends Base {
   }
 
   /**
-  *  Similar in function printaura_to Model.all in Rails, it's just here for convenience.
+  *  Similar in function to Model.all in Rails, it's just here for convenience.
   */
 
-  public static function printaura_all($fields = 'id', $conditions = null, $override_model_conditions = false) {
+  public static function all($fields = 'id', $conditions = null, $override_model_conditions = false) {
     global $wpdb;
     include WCAPIDIR."/_model_static_attributes.php";
     $sql = "

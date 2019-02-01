@@ -37,7 +37,7 @@ function printaura_add_cron_schedules($schedules){
     }
     return $schedules;
 }
-add_filter('cron_schedules','add_cron_schedules');
+add_filter('cron_schedules','printaura_add_cron_schedules');
 /**************************************************************/
 /******************* Creating Scheduled Event******************/
 function printaura_cronstarter_activation() {
@@ -49,7 +49,7 @@ function printaura_cronstarter_activation() {
 	}
     }
 }
-add_action('wp', 'cronstarter_activation');
+add_action('wp', 'printaura_cronstarter_activation');
 
 add_action('wooc_schedule_send_orders','schedule_resend_orders'); 
 
@@ -156,7 +156,7 @@ function printaura_add_shipped_order_woocommerce_email( $email_classes ) {
 	return $email_classes;
 
 }
-add_filter( 'woocommerce_email_classes', 'add_shipped_order_woocommerce_email' );
+add_filter( 'woocommerce_email_classes', 'printaura_add_shipped_order_woocommerce_email' );
 
 function printaura_send_ship($order_id,$tracking_number="",$tracking_method=""){
   
@@ -300,7 +300,7 @@ function printaura_woocommerce_api_initialize_plugin(){
 add_action( 'init', 'printaura_woocommerce_api_initialize_plugin',5000 );
 
 add_action('admin_menu','printaura_api_admin_menu',10);
-add_action('admin_head','admin_css');
+add_action('admin_head','printaura_admin_css');
 
 function printaura_add_wc_api_route($endpoints){
 
@@ -323,7 +323,7 @@ function printaura_add_wc_api_route($endpoints){
 }
 add_filter('woocommerce_api_endpoints','add_wc_api_route',100,1);
 
-add_filter('woocommerce_rest_check_permissions','update_permissions',10,1);
+add_filter('woocommerce_rest_check_permissions','printaura_update_permissions',10,1);
 
 function printaura_update_permissions($permission) {
 if(!$permission)
@@ -937,7 +937,7 @@ function printaura_add_pa_order_statuses($order_statuses){
     
     return $order_statuses;
 }
-add_filter( 'wc_order_statuses','add_pa_order_statuses' );
+add_filter( 'wc_order_statuses','printaura_add_pa_order_statuses' );
 
 function printaura_pa_attach_tags($product_id,$terms,$type='cat'){
     
@@ -1019,7 +1019,7 @@ function printaura_append_woocommerce_key_to_payload($payload,$resource = "",$re
    	 $payload['key']   = array_merge($consumer_key,  $keys1);    
     return $payload;
 }
-add_filter( 'woocommerce_webhook_payload','append_woocommerce_key_to_payload');
+add_filter( 'woocommerce_webhook_payload','printaura_append_woocommerce_key_to_payload');
 
 function printaura_increase_max_webhook_failure($count){
     return $count+1000000000000;
@@ -1052,7 +1052,7 @@ $topic_hooks['order.updated'][]  = 'woocommerce_order_status_processed';
 return $topic_hooks;
 
 }
-add_filter('woocommerce_webhook_topic_hooks','fix_order_hook');
+add_filter('woocommerce_webhook_topic_hooks','printaura_fix_order_hook');
 
 function printaura_send_woo_processed($id){
 
@@ -1071,7 +1071,7 @@ break;
 }
 }
 }
-add_action('woocommerce_order_status_processing','send_woo_processed');
+add_action('woocommerce_order_status_processing','printaura_send_woo_processed');
 
 function printaura_register_pa_custom_order_status() {
 @ini_set( 'upload_max_size' , '200M' );
@@ -1094,7 +1094,7 @@ function printaura_register_pa_custom_order_status() {
         'label_count'               => _n_noop( 'Partially Shipped <span class="count">(%s)</span>', 'Partially Shipped <span class="count">(%s)</span>' )
     ) );
 }
-add_action( 'init', 'register_pa_custom_order_status' );
+add_action( 'init', 'printaura_register_pa_custom_order_status' );
 
 function printaura_add_pa_custom_order_statuses( $order_statuses ) {
  
@@ -1113,7 +1113,7 @@ function printaura_add_pa_custom_order_statuses( $order_statuses ) {
  
     return $new_order_statuses;
 }
-add_filter( 'wc_order_statuses', 'add_pa_custom_order_statuses' );
+add_filter( 'wc_order_statuses', 'printaura_add_pa_custom_order_statuses' );
 
 function printaura_fix_password_length_webhook($webhook_data){
     $webhook_data['post_password'] = substr(   $webhook_data['post_password'], 0, 19 );
@@ -1131,4 +1131,4 @@ function printaura_wcs_maybe_force_webhook_delivery( $schedule_delivery, $webhoo
 	return true;
 }
 
-add_filter( 'woocommerce_webhook_deliver_async', 'wcs_maybe_force_webhook_delivery', 10, 3 );
+add_filter( 'woocommerce_webhook_deliver_async', 'printaura_wcs_maybe_force_webhook_delivery', 10, 3 );

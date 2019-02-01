@@ -1,15 +1,14 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 namespace WCAPI;
 /**
- * A Customer class Printaura_to insulate the API from the details of the
+ * A Customer class to insulate the API from the details of the
  * database representation
 */
 require_once(dirname(__FILE__) . "/Base.php");
 require_once(dirname(__FILE__) . "/Category.php");
-class Printaura_Review extends Base {
+class Review extends Base {
 
-  public static function printaura_getModelSettings() {
+  public static function getModelSettings() {
     global $wpdb;
     $table = array_merge( Base::getDefaultModelSettings(), array(
         'model_table'                => $wpdb->comments,
@@ -31,7 +30,7 @@ class Printaura_Review extends Base {
     $table = apply_filters('WCAPI_comment_model_settings',$table);
     return $table;
   }
-  public static function printaura_getModelAttributes() {
+  public static function getModelAttributes() {
     $table = array(
       'name'            => array('name' => 'comment_author',        'type' => 'string'),
       'date'            => array('name' => 'comment_date_gmt',      'type' => 'datetime'),
@@ -46,7 +45,7 @@ class Printaura_Review extends Base {
     return $table;
   }
 
-  public static function printaura_getMetaAttributes() {
+  public static function getMetaAttributes() {
     $table = array(
       'rating' => array(
         'name' => 'rating',
@@ -63,11 +62,11 @@ class Printaura_Review extends Base {
     return $table;
   }
 
-   public static function printaura_setupMetaAttributes() {
+   public static function setupMetaAttributes() {
     // We only accept these attributes.
     static::$_meta_attributes_table = self::getMetaAttributes();
   } // end setupMetaAttributes
-  public static function printaura_setupModelAttributes() {
+  public static function setupModelAttributes() {
     self::$_model_settings = self::getModelSettings();
     self::$_model_attributes_table = self::getModelAttributes();
   }

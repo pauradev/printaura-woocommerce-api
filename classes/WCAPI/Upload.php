@@ -1,9 +1,8 @@
-<?php
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly 
+<?php 
 namespace WCAPI;
 require_once dirname( __FILE__ ) . '/BaseHelpers.php';
 require_once ABSPATH . "wp-admin/includes/image.php";
-class Printaura_Upload {
+class Upload {
 	public $tmp_name;
 	public $name;
 	public $error;
@@ -15,7 +14,7 @@ class Printaura_Upload {
 	public $perms;
 	public $stat;
 	public $path;
-	public function printaura_construct($tname,$name,$error,$size,$time=null) {
+	public function __construct($tname,$name,$error,$size,$time=null) {
 		$this->tmp_name = $tname;
 		$this->name = $name;
 		$this->error = $error;
@@ -23,7 +22,7 @@ class Printaura_Upload {
 		$this->time = $time;
 		$this->allowed_mimes = array(); // everything is allowed.
 	}
-	public function printaura_save() {
+	public function save() {
 		Helpers::debug("Upload::save called");
 		if ( ! ( ( $uploads = wp_upload_dir($this->time) ) && false === $uploads['error'] ) ) {
 			throw new \Exception($uploads['error']);
@@ -49,7 +48,7 @@ class Printaura_Upload {
 		}
 		Helpers::debug("Upload::save finished");
 	}
-	public function printaura_saveMediaAttachment() {
+	public function saveMediaAttachment() {
 		Helpers::debug("Upload::saveMediaAttachment called");
 		include WCAPIDIR . "/_mime_types.php";
 		$this->time = current_time('mysql');
@@ -94,7 +93,7 @@ class Printaura_Upload {
 		Helpers::debug("Upload::saveMediaAttachment done");
 		return $id;
 	}
-	public function printaura_getProperName() {
+	public function getProperName() {
 		$wp_filetype = wp_check_filetype_and_ext( $this->tmp_name, $this->name, $this->allowed_mimes );
 
 		extract( $wp_filetype );

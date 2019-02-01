@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 		include(plugin_dir_path(__FILE__).'zone-list-table.php');
 		$SUCCESS = false;
 
-		function printaura_create_new_tab() {
+		function create_new_tab() {
 	    	$current_tab = ( empty( $_GET['tab'] ) ) ? 'general' : sanitize_text_field( urldecode( $_GET['tab'] ) );
 
 		    if( WOOCOMMERCE_VERSION >= 2.1 ) 
@@ -29,13 +29,13 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 		}
 		add_action('woocommerce_settings_tabs','create_new_tab');
 
-		function printaura_jquery_admin_init() {
+		function jquery_admin_init() {
 	        /* Register our script. */
 	        wp_enqueue_script( 'jquery-ui-sortable' );
 	    }
 	    add_action( 'admin_init', 'jquery_admin_init' );
 
-		function printaura_be_table_rate_shipping_zones() {
+		function be_table_rate_shipping_zones() {
 			global $woocommerce;
 
 			if(isset($_GET['upgrade']) && $_GET['upgrade'] == 'zones') :
@@ -61,7 +61,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 		}
 		add_action('woocommerce_settings_tabs_shipping_zones','be_table_rate_shipping_zones');
 
-		function printaura_be_save_new_zone() {
+		function be_save_new_zone() {
 			global $woocommerce, $SUCCESS;
 
 	        $shipping_zones = array_filter( (array) get_option( 'be_woocommerce_shipping_zones' ) );
@@ -177,13 +177,13 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 		}
 		add_action('woocommerce_update_options_shipping_zones','be_save_new_zone');
 
-		function printaura_be_get_zones() {
+		function be_get_zones() {
 			$zoneList = new Zone_List_Table();
 			$zones = $zoneList->shipping_zones;
 			return $zones;
 		}
 
-		function printaura_be_in_zone($zone_id, $country, $state, $zipcode) {
+		function be_in_zone($zone_id, $country, $state, $zipcode) {
 			$zones = get_option( 'be_woocommerce_shipping_zones' );
 			if(isset($zones[$zone_id]) && count($zones[$zone_id]) > 0) :
 				$zone = $zones[$zone_id];

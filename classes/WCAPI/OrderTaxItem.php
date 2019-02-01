@@ -1,13 +1,12 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 namespace WCAPI;
 /**
- * An OrderItem class Printaura_to insulate the API from the details of the
+ * An OrderItem class to insulate the API from the details of the
  * database representation
 */
 require_once(dirname(__FILE__) . "/OrderItem.php");
-class Printaura_OrderTaxItem extends OrderItem {
-  public static function printaura_getModelSettings() {
+class OrderTaxItem extends OrderItem {
+  public static function getModelSettings() {
     global $wpdb;
     $table = array_merge(Base::getDefaultModelSettings(), array(
         'model_table'                => $wpdb->prefix . 'woocommerce_order_items',
@@ -24,7 +23,7 @@ class Printaura_OrderTaxItem extends OrderItem {
     $table = apply_filters('WCAPI_order_item_model_settings',$table);
     return $table;
   }
-  public static function printaura_getModelAttributes() {
+  public static function getModelAttributes() {
     $table = array(
       'name'            => array('name' => 'order_item_name',  'type' => 'string'),
       'type'            => array('name' => 'order_item_type',  'type' => 'string'),
@@ -35,7 +34,7 @@ class Printaura_OrderTaxItem extends OrderItem {
     return $table;
   }
 
-  public static function printaura_getMetaAttributes() {
+  public static function getMetaAttributes() {
     $table = array(
       'rate_id'           => array('name' => 'rate_id',     'type' => 'number'), 
       'label'             => array('name' => 'label',       'type' => 'number'), 
@@ -47,11 +46,11 @@ class Printaura_OrderTaxItem extends OrderItem {
     $table = apply_filters( 'WCAPI_order_item_meta_attributes_table', $table );
     return $table;
   }
-  public static function printaura_setupMetaAttributes() {
+  public static function setupMetaAttributes() {
     // We only accept these attributes.
     static::$_meta_attributes_table = self::getMetaAttributes();
   } // end setupMetaAttributes
-  public static function printaura_setupModelAttributes() {
+  public static function setupModelAttributes() {
     static::$_model_settings = self::getModelSettings();
     static::$_model_attributes_table = self::getModelAttributes();
   }

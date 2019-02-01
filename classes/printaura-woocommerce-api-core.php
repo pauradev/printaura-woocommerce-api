@@ -1,5 +1,4 @@
 <?php 
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 /**
  * Add fields to the user profile that allow the addition 
  * of a "token" that can be used by the API to log that
@@ -195,10 +194,10 @@ function printaura_api_template_redirect() {
     }
   }
 }
-function printaura_woocommerce_meta_boxes_order_tracking(){
+function woocommerce_meta_boxes_order_tracking(){
 add_meta_box('woocommerce-order-tracking',__('Order Traking','order-traking'),'woocommerce_order_tracking','shop_order','side','low');
 }
-function printaura_woocommerce_order_tracking($post){
+function woocommerce_order_tracking($post){
     wp_nonce_field( basename( __FILE__ ),'woocommerce_tracking_nonce');
     $data = get_post_meta($post->ID);
     ?>
@@ -222,7 +221,7 @@ function printaura_woocommerce_order_tracking($post){
 	</div>
 <?php
 }
-function printaura_order_traking_save($post_id) {
+function order_traking_save($post_id) {
 	$is_autosave=wp_is_post_autosave($post_id);
 	$is_revision=wp_is_post_revision($post_id);
 	$is_valid_nonce=(isset($_POST['woocommerce_tracking_nonce']) && wp_verify_nonce($_POST['woocommerce_tracking_nonce'],basename(__FILE__)))?'true':'false';
@@ -243,15 +242,15 @@ function printaura_api_admin_menu() {
                                       __( 'JSON API', 'woocommerce' ),  
                                       __( 'JSON API', 'woocommerce' ) , 
                                       'manage_woocommerce', 
-                                      'printaura_api_settings_page', 
-                                      'printaura_api_settings_page' 
+                                      'api_settings_page', 
+                                      'api_settings_page' 
   );*/
   add_menu_page( __( 'Print Aura Woocommerce API', 'woocommerce' ),
           __( 'Print Aura API', 'woocommerce' ), 
           'manage_woocommerce', 
-          'printaura_api_settings_page', 'printaura_api_settings_page');
+          'api_settings_page', 'api_settings_page');
 }
-function printaura_api_settings_page() {
+function api_settings_page() {
   $helpers = new JSONAPIHelpers();
   $current_user=wp_get_current_user();
   $key5 = $helpers->getPluginPrefix() . '_api_enabled';

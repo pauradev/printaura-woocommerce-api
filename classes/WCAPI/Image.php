@@ -1,15 +1,14 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 namespace WCAPI;
 /**
- * A Customer class Printaura_to insulate the API from the details of the
+ * A Customer class to insulate the API from the details of the
  * database representation
 */
 require_once(dirname(__FILE__) . "/Base.php");
 require_once(dirname(__FILE__) . "/Category.php");
 require_once(dirname(__FILE__) . "/Upload.php");
-class Printaura_Image extends Base {
-  public static function printaura_getModelSettings() {
+class Image extends Base {
+  public static function getModelSettings() {
     global $wpdb;
 
     $table = array_merge( Base::getDefaultModelSettings(), array(
@@ -24,7 +23,7 @@ class Printaura_Image extends Base {
     return $table;
 
   }
-  public static function printaura_getModelAttributes() {
+  public static function getModelAttributes() {
 
       $table = array(
       'filename' => array('name' => 'post_title', 'type' => 'string', 'sizehint' => 10, 'group_name' => 'main' ),
@@ -64,7 +63,7 @@ class Printaura_Image extends Base {
     return $table;
   }
 
-  public static function printaura_getMetaAttributes() {
+  public static function getMetaAttributes() {
 
     $upload_dir = wp_upload_dir();
 
@@ -79,20 +78,20 @@ class Printaura_Image extends Base {
     return $table;
   }
 
-  public static function printaura_setupMetaAttributes() {
+  public static function setupMetaAttributes() {
 
     // We only accept these attributes.
     static::$_meta_attributes_table = self::getMetaAttributes();
 
   } // end setupMetaAttributes
-  public static function printaura_setupModelAttributes() {
+  public static function setupModelAttributes() {
 
     self::$_model_settings = self::getModelSettings();
     self::$_model_attributes_table = self::getModelAttributes();
 
   }
  
-  public function printaura_create($attrs = null) {
+  public function create($attrs = null) {
 
 
     Helpers::debug("Image::create() was called");
@@ -138,7 +137,7 @@ class Printaura_Image extends Base {
       throw new \Exception( sprintf(__('You cannot create a new image unless you upload an image with the same name as %s',$this->td),$name) );
     }
   }
-  public function printaura_asApiArray($args = array()) {
+  public function asApiArray($args = array()) {
     $attributes = parent::asApiArray();
 
     if ( isset($attributes['metadata']) ) {
@@ -156,7 +155,7 @@ class Printaura_Image extends Base {
     }
     return $attributes;
   }
-  public function printaura_fromApiArray($attributes) {
+  public function fromApiArray($attributes) {
 
     if ( isset($attributes['metadata']) ) {
 

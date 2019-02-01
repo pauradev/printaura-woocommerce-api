@@ -16,12 +16,12 @@ if ( ! class_exists( 'Bolder_Elements_Config' ) ) :
 	/**
 	 * Bolder_Elements_Config
 	 */
-	class Printaura_Bolder_Elements_Config {
+	class Bolder_Elements_Config {
 
 		/**
 		 * Constructor.
 		 */
-		public function printaura_construct() {
+		public function __construct() {
 
 			add_filter( 'init', array( &$this, 'init' ) );
 			add_action( 'admin_menu', array( &$this, 'add_option_page' ) );
@@ -41,7 +41,7 @@ if ( ! class_exists( 'Bolder_Elements_Config' ) ) :
 		* @access public
 		* @return void
 		*/
-		function printaura_init() {
+		function init() {
 			$this->admin_page_heading = __( 'Bolder Elements Dashboard', 'be-config' );
 			$this->admin_page_description = __( 'Manage plugins and support status by registering your purchase codes here', 'be-config' );
 		}
@@ -54,7 +54,7 @@ if ( ! class_exists( 'Bolder_Elements_Config' ) ) :
 		* @access public
 		* @return void
 		*/
-		function printaura_add_option_page() {
+		function add_option_page() {
 			add_dashboard_page( "Bolder Elements", "Bolder Elements", "install_plugins", "be-manage-plugins", array( $this, "dashboard_plugins" ) );
 		}
 
@@ -66,7 +66,7 @@ if ( ! class_exists( 'Bolder_Elements_Config' ) ) :
 		 * @access public
 		 * @return void
 		 */
-		public function printaura_dashboard_plugins() {
+		public function dashboard_plugins() {
 			// check if PID is submitted
 			if( isset( $_GET['pid'] ) && is_numeric( $_GET['pid'] ) ) {
 				$this->plugins_activate( (int) $_GET['pid'] );
@@ -83,7 +83,7 @@ if ( ! class_exists( 'Bolder_Elements_Config' ) ) :
 		 * @access public
 		 * @return void
 		 */
-		public function printaura_plugins_listing() {
+		public function plugins_listing() {
 			$activated_plugins = $this->get_activated_plugins();
 			$available_plugins = $this->get_available_plugins();
 ?>
@@ -134,7 +134,7 @@ if ( ! class_exists( 'Bolder_Elements_Config' ) ) :
 		 * @access public
 		 * @return array
 		 */
-		public function printaura_get_activated_plugins() {
+		public function get_activated_plugins() {
 
 			return array();
 		}
@@ -147,7 +147,7 @@ if ( ! class_exists( 'Bolder_Elements_Config' ) ) :
 		 * @access public
 		 * @return array|string
 		 */
-		function printaura_display_plugin_card( $plugin, $registered = false ) {
+		function display_plugin_card( $plugin, $registered = false ) {
 ?>
 				<div id="plugin-card-<?php echo $plugin['id']; ?>" class="plugin-card">
 					<div class="plugin-card-top" plugin-id="<?php echo $plugin['id']; ?>">
@@ -202,7 +202,7 @@ if ( ! class_exists( 'Bolder_Elements_Config' ) ) :
 		 * @access public
 		 * @return array|string
 		 */
-		public function printaura_get_available_plugins() {
+		public function get_available_plugins() {
 			// connect to Envato API
 			$ch = curl_init();
 			curl_setopt($ch, CURLOPT_URL, 'http://marketplace.envato.com/api/v3/new-files-from-user:bolderelements,codecanyon.json');
@@ -229,7 +229,7 @@ if ( ! class_exists( 'Bolder_Elements_Config' ) ) :
 		 * @access public
 		 * @return array|string
 		 */
-		function printaura_verify_plugin_registration_info( $purchase_code ) {
+		function verify_plugin_registration_info( $purchase_code ) {
 			// connect to Envato API
 			$ch = curl_init();
 			curl_setopt($ch, CURLOPT_URL, 'http://marketplace.envato.com/api/v3/bolderelements/ofdzk2su2101c1bq4d5vs1zqwdaj88ms/verify-purchase:' . $purchase_code . '.json');
@@ -260,7 +260,7 @@ if ( ! class_exists( 'Bolder_Elements_Config' ) ) :
 		 * @access public
 		 * @return string
 		 */
-		function printaura_get_plugin_download_file( $username, $api_key, $purchase_code ) {
+		function get_plugin_download_file( $username, $api_key, $purchase_code ) {
 			// connect to Envato API
 			$ch = curl_init();
 			curl_setopt($ch, CURLOPT_URL, 'http://marketplace.envato.com/api/v3/' . $username . '/' . $api_key . '/download-purchase:' . $purchase_code . '.json');
@@ -291,7 +291,7 @@ if ( ! class_exists( 'Bolder_Elements_Config' ) ) :
 		 * @access public
 		 * @return array|string
 		 */
-		public function printaura_register_plugin() {
+		public function register_plugin() {
 			//sanitize input fields
 			$plugin_id = (double) $_POST[ 'pid' ];
 			$username = sanitize_text_field( $_POST[ 'env_username' ] );
@@ -334,7 +334,7 @@ if ( ! class_exists( 'Bolder_Elements_Config' ) ) :
 		 * @access public
 		 * @return array|string
 		 */
-		public function printaura_remove_plugin() {
+		public function remove_plugin() {
 			//sanitize input fields
 			$plugin_id = (double) $_POST[ 'pid' ];
 
@@ -357,7 +357,7 @@ if ( ! class_exists( 'Bolder_Elements_Config' ) ) :
 		 * @access public
 		 * @return void
 		 */
-		public function printaura_register_plugin_styles() {
+		public function register_plugin_styles() {
 			wp_enqueue_script( 'be_config_js', plugins_url( 'upgrader/assets/updater.js', dirname(__FILE__) ), array( 'jquery' ), '1.0', true );
 			wp_enqueue_style( 'be_config_css', plugins_url( 'upgrader/assets/updater.css', dirname(__FILE__) ), '1.0', true );
 		}
@@ -366,7 +366,7 @@ if ( ! class_exists( 'Bolder_Elements_Config' ) ) :
 		/**
 		 * Add Script Directly to Dashboard Foot
 		 */
-		public function printaura_add_script_admin() {
+		public function add_script_admin() {
 
 			// Setup translated strings
 			$text_activate_license  = __( 'Activate Your License', 'be-config' );

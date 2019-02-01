@@ -1,5 +1,4 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 namespace WCAPI;
 require_once dirname( __FILE__ ) . '/BaseHelpers.php';
 if (!defined('WCAPIDIR')) {
@@ -11,7 +10,7 @@ if (!defined('EVERYTHING_IM_SURE')) {
 if (!defined('THIS_IM_SURE')) {
   define('THIS_IM_SURE', true );
 }
-class Printaura_Base extends Helpers {
+class Base extends Helpers {
   // We want to be able to update the product in one go, as quickly
   // as possible because it is not unrealistic for us to want to
   // update hundres of products in one API call. We don't want to
@@ -32,7 +31,7 @@ class Printaura_Base extends Helpers {
   
   // This is actually unecessary and is being 
   // moved to $actuals, eventually this will
-  // be a static function printaura_that returns an array.
+  // be a static function that returns an array.
   public static $_meta_attributes_table; 
   public static $_model_attributes_table;
   
@@ -61,7 +60,7 @@ class Printaura_Base extends Helpers {
   * ( new Object() )->setup()->doCalculation()->update()->done);
   */
   
-  public function printaura_construct($mapper=null) {
+  public function __construct($mapper=null) {
     parent::init();
     static::setupMetaAttributes();
     static::setupModelAttributes();
@@ -71,16 +70,16 @@ class Printaura_Base extends Helpers {
     $this->mapper = $mapper;
     Helpers::debug(get_called_class() ."::__construct");
   }
-  public static function printaura_setAdapter( &$a ) {
+  public static function setAdapter( &$a ) {
     static::$adapter = $a;
   }
-  public static function printaura_setMapper( &$a ) {
+  public static function setMapper( &$a ) {
     static::$mapper = $a;
   }
-  public static function printaura_setBlogId( $id ) {
+  public static function setBlogId( $id ) {
     static::$blog_id = $id;
   }
-  public static function printaura_getModelSettings() {
+  public static function getModelSettings() {
     // This is kind of important, late static binding
     // can be really wonky sometimes. especially
     // with values that exist on the base model.
@@ -89,7 +88,7 @@ class Printaura_Base extends Helpers {
     Helpers::debug(get_called_class() . '::getModelSettings');
     return static::$_model_settings;
   }
-  public static function printaura_getDefaultModelSettings() {
+  public static function getDefaultModelSettings() {
    global $wpdb;
     // Here we have all the default settings
     // for a model.
@@ -107,37 +106,37 @@ class Printaura_Base extends Helpers {
       'trigger_filters'           => true, // i.e should we trigger woocommerce filters when loading/setting values.
       );
   }
-  public function printaura_setNewRecord( $bool ) {
+  public function setNewRecord( $bool ) {
     $this->_new_record = $bool;
   }
-  public function printaura_isNewRecord() {
+  public function isNewRecord() {
     return $this->_new_record;
   }
-  public function printaura_isValid() {
+  public function isValid() {
     return $this->_valid;
   }
-  public function printaura_setValid( $bool ) {
+  public function setValid( $bool ) {
     $this->_valid = $bool;
     return $this;
   }
-  public function printaura_showSQL() {
+  public function showSQL() {
     $sql = "";
     foreach ($this->_queries_to_run as $key => $query) {
       $sql .= "$key => [[[ $query ]]]\n";
     }
     echo $sql; 
   }
-  public function printaura_getModelId() {
+  public function getModelId() {
     return $this->_actual_model_id;
   }
-  public function printaura_setModelId( $id ) {
+  public function setModelId( $id ) {
     $this->_actual_model_id = $id;
   }
 
   /**
   *  You will need to define an all and where method on the child model.
   */
-  public function printaura_done() {
+  public function done() {
    global $wpdb;
     if ( ! is_array($this->_queries_to_run) )
         return $this;
@@ -148,11 +147,11 @@ class Printaura_Base extends Helpers {
     }
   }
 
-  public function printaura_addQuery($sql) {
+  public function addQuery($sql) {
     $this->_queries_to_run[] = $sql;
   }
 
-  public function printaura_page( $num = 0 ) {
+  public function page( $num = 0 ) {
     $num = intval($num);
     $tnum = $num - 1;
     if ( $tnum <= 0 ) {
@@ -164,18 +163,18 @@ class Printaura_Base extends Helpers {
     return $this;
   }
 
-  public function printaura_per( $num = 25 ) {
+  public function per( $num = 25 ) {
     $num = intval($num);
     $this->_per_page = $num;
     return $this;
   }
-  public function printaura_order($o) {
+  public function order($o) {
     $this->__order = $o;
     return $this;
   }
-  public function printaura_getAdapter() { return static::$adapter;}
+  public function getAdapter() { return static::$adapter;}
   // converts the meta attribs the other way around, from friendly name to unfriendly name.l
-  public function printaura_remapMetaAttributes() {
+  public function remapMetaAttributes() {
     Helpers::debug(get_called_class()."::remapMetaAttributes");
     $attrs = array();
     foreach ( static::$_meta_attributes_table as $name => $desc ) {
@@ -188,15 +187,15 @@ class Printaura_Base extends Helpers {
     }
     return $attrs;
   }
-  public function printaura_loadMetaAttributes() {
+  public function loadMetaAttributes() {
     static::setupMetaAttributes();
     static::setupModelAttributes();
     Helpers::debug(get_called_class() ."::loadMetaAttributes called");
     $s = static::getModelSettings();
-    $meta_function printaura_= $s['meta_function'];
-    $load_meta_function printaura_= $s['load_meta_function'];
+    $meta_function = $s['meta_function'];
+    $load_meta_function = $s['load_meta_function'];
     $id = $this->_actual_model_id;
-    if ( $load_meta_function printaura_!== null ) {
+    if ( $load_meta_function !== null ) {
       Helpers::debug("Using load_meta_function!");
       $attrs = call_user_func($load_meta_function, $this);
       foreach ( static::$_meta_attributes_table as $name => $desc ) {
@@ -215,16 +214,16 @@ class Printaura_Base extends Helpers {
     }
     return $this;
   }
-  public function printaura_getIdentString() {
+  public function getIdentString() {
     return get_called_class() . "({$this->_actual_model_id}): ";
   }
-  public function printaura_saveMetaAttributes() {
+  public function saveMetaAttributes() {
     Helpers::debug("Base::saveMetaAttributes " . get_called_class() . "({$this->_actual_model_id}) called");
     global $wpdb;
     include WCAPIDIR."/_model_static_attributes.php";
     $meta_table              = $this->orEq( $self->settings, 'meta_table', $wpdb->postmeta ); 
     $meta_table_foreign_key  = $this->orEq( $self->settings, 'meta_table_foreign_key', 'post_id' );
-    $save_meta_function printaura_= $self->settings['save_meta_function'];
+    $save_meta_function = $self->settings['save_meta_function'];
     Helpers::debug($this->getIdentString() ."meta_table is $meta_table fkey is $meta_table_foreign_key");
     if ( $save_meta_function) {
       Helpers::debug($this->getIdentString() ."calling save_meta_function");
@@ -283,13 +282,13 @@ class Printaura_Base extends Helpers {
       Helpers::debug($this->getIdentString() ."METASQL: was not a string");
     }
   }
-  public function printaura_createMetaAttributes() {
+  public function createMetaAttributes() {
     Helpers::debug("Base::createMetaAttributes Posts " . get_called_class() . "({$this->_actual_model_id}) called");
     global $wpdb;
     include WCAPIDIR."/_model_static_attributes.php";
     $meta_table              = $this->orEq( $self->settings, 'meta_table', $wpdb->postmeta ); 
     $meta_table_foreign_key  = $this->orEq( $self->settings, 'meta_table_foreign_key', 'post_id' );
-    $save_meta_function printaura_= $self->settings['save_meta_function'];
+    $save_meta_function = $self->settings['save_meta_function'];
     Helpers::debug($this->getIdentString() ."meta_table is $meta_table fkey is $meta_table_foreign_key");
     if ( $save_meta_function) {
       Helpers::debug($this->getIdentString() ."calling save_meta_function");
@@ -342,7 +341,7 @@ class Printaura_Base extends Helpers {
     }
   }
   // We need an easier interface to fetching items
-  public function printaura_fetch( $callback = null ) {
+  public function fetch( $callback = null ) {
     Helpers::debug( "Base::fetch called");
    global $wpdb;
     $sql = $this->_queries_to_run[count($this->_queries_to_run) - 1];
@@ -356,7 +355,7 @@ class Printaura_Base extends Helpers {
       }
 
       $results = $wpdb->get_results($sql,'ARRAY_A');
-      Helpers::debug("in function printaura_fetch: WPDB returned " . count($results) . " results using $sql");
+      Helpers::debug("in function fetch: WPDB returned " . count($results) . " results using $sql");
       if ($callback) {
         foreach ( $results as &$result ) {
           if ( $callback ) {
@@ -367,7 +366,7 @@ class Printaura_Base extends Helpers {
         $klass = get_called_class();
         $models = array();
         $s = static::getModelSettings();
-        $meta_function printaura_= $s['meta_function'];
+        $meta_function = $s['meta_function'];
         foreach ( $results as $record ) {
           $model = new $klass();
           if ( isset( $record['id']) ) {
@@ -390,19 +389,19 @@ class Printaura_Base extends Helpers {
         return $models;
       }
       if (count($results) < 1) {
-        Helpers::debug("in function printaura_fetch, empty result set using: $sql");
+        Helpers::debug("in function fetch, empty result set using: $sql");
       } else {
-        Helpers::debug("in function printaura_fetch: " . count($results) . " were returned from: " . $sql);
+        Helpers::debug("in function fetch: " . count($results) . " were returned from: " . $sql);
       }
       return $results;
     } else {
-      Helpers::debug("in function printaura_fetch, sql was empty.");
+      Helpers::debug("in function fetch, sql was empty.");
       return null;
     }
   }
   
 
-  public function printaura_saveAssociations() {
+  public function saveAssociations() {
     Helpers::debug("Base::saveAssociations beginning");
    global $wpdb;
     $meta_table = $this->actual_meta_attributes_table;
@@ -414,8 +413,8 @@ class Printaura_Base extends Helpers {
         if ( is_array($values) ) {
           foreach ( $values as &$value ) {
             if ( is_array( $value ) ) {
-              $class Printaura_= 'WCAPI\\' . $desc['class_name'];  
-              Helpers::debug("is_array and class Printaura_is: $class");           
+              $class = 'WCAPI\\' . $desc['class_name'];  
+              Helpers::debug("is_array and class is: $class");           
               if ( isset( $value['id'] ) ) {
                   if ( is_array( $value['id'] ) ){
                       $tab=$value['id'];
@@ -456,10 +455,10 @@ class Printaura_Base extends Helpers {
                 }
               }//finn else
               } else {
-                Helpers::debug("need to create association of type $class Printaura_and value ".var_export($value,true));
+                Helpers::debug("need to create association of type $class and value ".var_export($value,true));
                 $model = new $class();
                 $model = $model->setResult($this->_result);
-                if($class Printaura_!="WCAPI\Product"){
+                if($class !="WCAPI\Product"){
                 $_model=$class::find_by_name( $value );
                 if(!$_model){
                 $model->create( $value );
@@ -500,7 +499,7 @@ class Printaura_Base extends Helpers {
       }
     }
   }
-  public function printaura_getConditionsString( $conditions ) {
+  public function getConditionsString( $conditions ) {
       $sql = "";
       Helpers::debug("Base::getConditionsString " . var_export($conditions,true));
       if ( is_array( $conditions ) ) {
@@ -514,7 +513,7 @@ class Printaura_Base extends Helpers {
       Helpers::debug("Base::getConditionsString returning $sql");
       return $sql;
   }
-  public function printaura_loadHasManyAssociation( $name ) {
+  public function loadHasManyAssociation( $name ) {
     Helpers::debug("Base::loadHasManyAssociation $name");
    global $wpdb;
     $meta_table = $this->actual_meta_attributes_table;
@@ -558,7 +557,7 @@ class Printaura_Base extends Helpers {
     }
     return $models;
   }
-  public function printaura_saveHasManyAssociation( $name ) {
+  public function saveHasManyAssociation( $name ) {
     throw new \Exception("WTF? I shouldn't be called");
    global $wpdb;
     $meta_table = $this->actual_meta_attributes_table;
@@ -585,7 +584,7 @@ class Printaura_Base extends Helpers {
       }
     }
   }
-  public function printaura_loadBelongsToAssociation( $name ) {
+  public function loadBelongsToAssociation( $name ) {
    global $wpdb;
     $hm =  static::$_model_settings['belongs_to'];
     $model = null;
@@ -604,7 +603,7 @@ class Printaura_Base extends Helpers {
   /**
   *  From here we have a dynamic getter. We return a special REDENOTSET variable.
   */
-  public function printaura_get( $name ) {
+  public function __get( $name ) {
     Helpers::debug(get_called_class() . "::__get $name");
     if ( strpos($name,"__") === 0 ) {
       return $this->{$name};
@@ -637,7 +636,7 @@ class Printaura_Base extends Helpers {
   } // end __get
   
   // Dynamic setter
-  public function printaura_set( $name, $value ) {
+  public function __set( $name, $value ) {
     Helpers::debug(get_called_class() . "::__set $name " . var_export($value,true));
     if ( strpos($name,"__") === 0 ) {
       $this->{$name} = $value;
@@ -657,7 +656,7 @@ class Printaura_Base extends Helpers {
         Helpers::debug("::__set is applying setter for $name");
         apply_setter($value,$desc,'__set');
       } else {
-           Helpers::debug("rkikta2 $name value".$value);
+           Helpers::debug("aladin2 $name value".$value);
         $this->_meta_attributes[$name] = $value;
       }
     } else if (strtolower($name) == 'id') {
@@ -678,7 +677,7 @@ class Printaura_Base extends Helpers {
     }
   }
 
-  public function printaura_apply_getter($desc,$called_from) {
+  public function apply_getter($desc,$called_from) {
     Helpers::debug("Base::apply_getter {$desc['name']} called from $called_from");
     if ( is_string($desc['getter'])) {
       Helpers::debug("is_string");
@@ -691,10 +690,10 @@ class Printaura_Base extends Helpers {
       Helper::debug("is_callable");
       return call_user_func($desc['getter'], $this, $desc);
     } else {
-      throw new \Exception( $desc['getter'] .' getter is not a function printaura_in this scope');
+      throw new \Exception( $desc['getter'] .' getter is not a function in this scope');
     }
   }
-  public function printaura_apply_setter($value, $desc,$called_from) {
+  public function apply_setter($value, $desc,$called_from) {
     Helpers::debug("Base::apply_setter {$desc['name']} called from $called_from");
     if ( is_string($desc['setter'])) {
       Helpers::debug("is_string");
@@ -703,10 +702,10 @@ class Printaura_Base extends Helpers {
       Helpers::debug("is_callable");
       call_user_func($desc['setter'], $this, $value, $desc);
     } else {
-      throw new \Exception( $desc['setter'] .' setter is not a function printaura_in this scope');
+      throw new \Exception( $desc['setter'] .' setter is not a function in this scope');
     }
   }
-  public function printaura_apply_updater($value, $desc,$called_from) {
+  public function apply_updater($value, $desc,$called_from) {
     Helpers::debug("Base::apply_updater {$desc['name']} called from $called_from");
     Helpers::debug("METASQL:Calling updater! for desc {$desc['updater']}");
     if ( is_string($desc['updater'])) {
@@ -716,7 +715,7 @@ class Printaura_Base extends Helpers {
       Helpers::debug("is_callable");
       call_user_func($desc['updater'], $this, $value, $desc);
     } else {
-      throw new \Exception( $desc['updater'] .' updater is not a function printaura_in this scope');
+      throw new \Exception( $desc['updater'] .' updater is not a function in this scope');
     }
   }
 /* if ( isset( $self->attributes_table[$name]) ) {
@@ -728,13 +727,13 @@ class Printaura_Base extends Helpers {
             Helpers::debug("Not self attributes_table".'name: '.$name.'/value: '.$value );
           $this->{ $name } = $value;
         }*/
-  public function printaura_dynamic_set( $name, $desc, $value, $filter_value = null ) {
+  public function dynamic_set( $name, $desc, $value, $filter_value = null ) {
     Helpers::debug(get_called_class(). "::dynamic_set $name and " . var_export($value,true));
     if ( strpos($name,"__") === 0 ) {
       $this->{$name} = $value;
       return;
     }
-    Helpers::debug("rkikta1 type ". $desc['type'] ." value ".$value);
+    Helpers::debug("aladin1 type ". $desc['type'] ." value ".$value);
     if ( $desc['type'] == 'array') {
       $value = maybe_serialize( $value );
     }
@@ -762,7 +761,7 @@ class Printaura_Base extends Helpers {
     }
   }
 
-  public function printaura_dynamic_get( $name, $desc, $filter_value = null ) {
+  public function dynamic_get( $name, $desc, $filter_value = null ) {
     Helpers::debug(get_called_class(). "::dynamic_get $name and");
     if ( strpos($name,"__") === 0 ) {
       return $this->{$name};
@@ -787,12 +786,12 @@ class Printaura_Base extends Helpers {
   * Sometimes we want to act directly on the result to be sent to the user.
   * This allows us to add errors and warnings.
   */
-  public function printaura_setResult ( $result ) {
+  public function setResult ( $result ) {
     $this->_result = $result;
     return $this;
   }
 
-  public static function printaura_find( $id ) {
+  public static function find( $id ) {
    global $wpdb;
    
     include WCAPIDIR."/_model_static_attributes.php";
@@ -804,7 +803,7 @@ class Printaura_Base extends Helpers {
     $meta_table              = $model->orEq( $self->settings, 'meta_table', $wpdb->postmeta );
     $model_table_id          = $model->orEq( $self->settings, 'model_table_id', 'ID' );   
     $meta_table_foreign_key  = $model->orEq( $self->settings, 'meta_table_foreign_key', 'post_id' );
-    $meta_function printaura_          = $model->orEq( $self->settings, 'meta_function', 'get_post_meta' );
+    $meta_function           = $model->orEq( $self->settings, 'meta_function', 'get_post_meta' );
 
     $record = $wpdb->get_row( $wpdb->prepare("SELECT * FROM {$model_table} WHERE {$model_table_id} = %d", (int) $id), 'ARRAY_A' );
     
@@ -825,7 +824,7 @@ class Printaura_Base extends Helpers {
     }
     return $model;
   }
-  public function printaura_fromDatabaseResult( $record ) {
+  public function fromDatabaseResult( $record ) {
     
     //Helpers::debug( $this->getIdentString() . "::fromDatabaseResult " . var_export($record,true));
     global $wpdb;
@@ -854,7 +853,7 @@ class Printaura_Base extends Helpers {
     $model->setValid( true );
     $model->setNewRecord( false );
   }
-  public function printaura_fromApiArray( $attrs ) {
+  public function fromApiArray( $attrs ) {
    // Helpers::debug($this->getIdentString() . "::fromApiArray " . var_export($attrs,true) );
     $meta_table = $this->actual_meta_attributes_table;
     $model_table = $this->actual_model_attributes_table;
@@ -876,7 +875,7 @@ class Printaura_Base extends Helpers {
     }
     return $this;
   }
-  public function printaura_asApiArray($args = array()) {
+  public function asApiArray($args = array()) {
    global $wpdb;
     $meta_table = $this->actual_meta_attributes_table;
     $model_table = $this->actual_model_attributes_table;
@@ -889,7 +888,7 @@ class Printaura_Base extends Helpers {
     }
     return $attributes_to_send;
   }
-  public function printaura_getSupportedAttributes() {
+  public function getSupportedAttributes() {
     $meta_table = $this->actual_meta_attributes_table;
     $model_table = $this->actual_model_attributes_table;
     $s = $this->actual_model_settings;
@@ -898,9 +897,9 @@ class Printaura_Base extends Helpers {
   }
 
     /**
-  *  Similar in function printaura_to Model.all in Rails, it's just here for convenience.
+  *  Similar in function to Model.all in Rails, it's just here for convenience.
   */
-  public static function printaura_all($fields = 'id', $conditions = null, $override_model_conditions = false) {
+  public static function all($fields = 'id', $conditions = null, $override_model_conditions = false) {
   global $wpdb;
    
     // static::setupModelAttributes();
@@ -932,7 +931,7 @@ class Printaura_Base extends Helpers {
     return $model;
   }
 
-  public function printaura_create( $attrs = null ) {
+  public function create( $attrs = null ) {
     Helpers::debug("Base::create() for " . $this->getIdentString() );
     include WCAPIDIR."/_model_static_attributes.php";
     $meta_table = $this->actual_meta_attributes_table;
@@ -958,7 +957,7 @@ class Printaura_Base extends Helpers {
     }
     $post = array();
 
-    $update_meta_function printaura_= $s['update_meta_function'];
+    $update_meta_function = $s['update_meta_function'];
     
     if ( $s['model_table'] == $wpdb->posts)
       $post['post_author'] = $user_ID;
@@ -1005,7 +1004,7 @@ class Printaura_Base extends Helpers {
     }
     return $this;
   }
-  public function printaura_runAfterCreateCallbacks() {
+  public function runAfterCreateCallbacks() {
     if ( isset( $this->after_create) ) {
       if ( is_array( $this->after_create) ) {
         foreach ( $this->after_create as $cb ) {
@@ -1020,7 +1019,7 @@ class Printaura_Base extends Helpers {
       }
     }
   }
-  public function printaura_update( $attrs = null) {
+  public function update( $attrs = null) {
     Helpers::debug(get_called_class() . "({$this->_actual_model_id}) is beginning an update.");
     global $wpdb;
     include WCAPIDIR."/_model_static_attributes.php";
@@ -1044,7 +1043,7 @@ class Printaura_Base extends Helpers {
     $this->saveAssociations();
     return $this;
   }
-  public function printaura_UpdateTaxonomy($table,$key_values,$where=null) {
+  public function UpdateTaxonomy($table,$key_values,$where=null) {
       global $wpdb;
       include WCAPIDIR."/_model_static_attributes.php";
        $keys = array();
@@ -1080,7 +1079,7 @@ class Printaura_Base extends Helpers {
       $ret = $wpdb->query($sql);
       static::maybe_throw_wp_error( $ret );
   }
-  public function printaura_insert($table, $key_values, $where=null) {
+  public function insert($table, $key_values, $where=null) {
     global $wpdb;
     include WCAPIDIR."/_model_static_attributes.php";
     $keys = array();
@@ -1098,12 +1097,12 @@ class Printaura_Base extends Helpers {
       $ret = $wpdb->query($sql);
     }
   }
-  public static function printaura_maybe_throw_wp_error( $val ) {
+  public static function maybe_throw_wp_error( $val ) {
     if ( is_wp_error($val) ) {
       throw new \Exception( get_called_class() . " : " . $val->get_messages() );
     }
   }
-  public function printaura_delete($table, $where = null, $limit = 1) {
+  public function delete($table, $where = null, $limit = 1) {
     global $wpdb;
     include WCAPIDIR."/_model_static_attributes.php";
     $table = "`$table`";
@@ -1135,7 +1134,7 @@ class Printaura_Base extends Helpers {
       static::maybe_throw_wp_error( $ret );
     }
   }
-   public function printaura_delete_Associations($id) {
+   public function delete_Associations($id) {
            global $wpdb;
         if (!$id ) {
           $this->result->addWarning( $id . ': ' . __('Image does not exist','woocommerce_json_api'), JSONAPI_PRODUCT_NOT_EXISTS, array( 'id' => $id) );
@@ -1152,7 +1151,7 @@ class Printaura_Base extends Helpers {
       ) );
         }
   }
-  public function printaura_delete_AllRelatedImage($post_id) {
+  public function delete_AllRelatedImage($post_id) {
           $_thumbnail_id = get_post_meta($post_id,"_thumbnail_id",true);
           $product_gallery = get_post_meta($post_id,"_product_image_gallery",true);
           if(!empty($_thumbnail_id)){
@@ -1165,7 +1164,7 @@ class Printaura_Base extends Helpers {
            }
           }
   }
-  public function printaura_getTerm($name,$type,$default) {
+  public function getTerm($name,$type,$default) {
     Helpers::debug("Base::getTerm $name $type $default");
     global $wpdb;
     if ( $this->{"_$name"} ) {
@@ -1192,11 +1191,11 @@ class Printaura_Base extends Helpers {
     return $this->{"_$name"};
   }
 
-  public function printaura_setTerm($name, $type, $value ) {
+  public function setTerm($name, $type, $value ) {
     Helpers::debug("Base::setTerm $name $type $value");
     $this->{"_$name"} = $value;
   }
-  public function printaura_updateTerm( $name, $type, $value=null) {
+  public function updateTerm( $name, $type, $value=null) {
     Helpers::debug("Base::updateTerm $name $type $value");
     if ( $value == null ) {
       $value = $this->{"_$name"};
@@ -1209,7 +1208,7 @@ class Printaura_Base extends Helpers {
       //throw new \Exception("Wrong term name $ret");
     }
   }
-   public function printaura_updateMeta($name,$meta_key,$value=null) {
+   public function updateMeta($name,$meta_key,$value=null) {
     Helpers::debug("Base::updateMeta $name $meta_key $value");
     if ( $value == null ) {
       $value = $this->{"_$name"};

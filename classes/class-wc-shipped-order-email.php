@@ -1,4 +1,5 @@
 <?php
+
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 /**
@@ -7,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  * @since 0.1
  * @extends \WC_Email
  */
-class Printaura_WC_Shipped_Order_Email extends WC_Email {
+class WC_Shipped_Order_Email extends WC_Email {
 
 
 	/**
@@ -15,7 +16,7 @@ class Printaura_WC_Shipped_Order_Email extends WC_Email {
 	 *
 	 * @since 0.1
 	 */
-	public function printaura_construct() {
+	public function __construct() {
 
 		// set ID, this simply needs to be a unique name
 		$this->id = 'wc_shipped_order';
@@ -49,7 +50,7 @@ class Printaura_WC_Shipped_Order_Email extends WC_Email {
 	 * @since 0.1
 	 * @param int $order_id
 	 */
-	public function printaura_trigger( $order,$tracking_number="",$tracking_method="") {
+	public function trigger( $order,$tracking_number="",$tracking_method="") {
           
 
 		// setup order object
@@ -134,7 +135,7 @@ class Printaura_WC_Shipped_Order_Email extends WC_Email {
 	 * @since 0.1
 	 * @return string
 	 */
-	public function printaura_get_content_html() {
+	public function get_content_html() {
 		ob_start();
 		woocommerce_get_template( $this->template_html, array(
 			'order'         => $this->object,
@@ -150,7 +151,7 @@ class Printaura_WC_Shipped_Order_Email extends WC_Email {
 	 * @since 0.1
 	 * @return string
 	 */
-	public function printaura_get_content_plain() {
+	public function get_content_plain() {
 		ob_start();
 		woocommerce_get_template( $this->template_plain, array(
 			'order'         => $this->object,
@@ -165,7 +166,7 @@ class Printaura_WC_Shipped_Order_Email extends WC_Email {
 	 *
 	 * @since 2.0
 	 */
-	public function printaura_init_form_fields() {
+	public function init_form_fields() {
 
 		$this->form_fields = array(
 			'enabled'    => array(

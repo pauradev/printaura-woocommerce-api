@@ -1,20 +1,19 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 if ( ! defined('EVERYTHING') ) {
   define('EVERYTHING',true);
 }
-class Printaura_Mapper {
+class Mapper {
   public $connection = null;
   public $errors;
   public $details;
   public $table_prfix;
   public $self;
-  public function printaura_construct( $active_connection ) {
+  public function __construct( $active_connection ) {
     $this->connection = $active_connection;
     $this->reset(EVERYTHING);
   }
 
-  public function printaura_reset($kind_of = null) {
+  public function reset($kind_of = null) {
     $this->errors = array();
     $this->details = array();
     if ( $kind_of == EVERYTHING ) {
@@ -22,23 +21,23 @@ class Printaura_Mapper {
       $this->setSelf($this);
     }
   }
-  public function printaura_setSelf(&$s) {
+  public function setSelf(&$s) {
     $this->self = $s;
   }
 
-  public function printaura_create( $resource, $attributes_map ) {
+  public function create( $resource, $attributes_map ) {
 
   }
-  public function printaura_read( $resource, $attributes_map ) {
+  public function read( $resource, $attributes_map ) {
 
   }
-  public function printaura_update( $resource, $attributes_map ) {
+  public function update( $resource, $attributes_map ) {
 
   }
-  public function printaura_delete( $resource, $attributes_map ) {
+  public function delete( $resource, $attributes_map ) {
 
   }
-  public function printaura_join( $resource1, $resource2 ) {
+  public function join( $resource1, $resource2 ) {
 
   }
 }

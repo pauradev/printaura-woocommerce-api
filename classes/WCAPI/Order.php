@@ -1,19 +1,18 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 namespace WCAPI;
 /**
- * An Order class Printaura_to insulate the API from the details of the
+ * An Order class to insulate the API from the details of the
  * database representation
 */
 require_once(dirname(__FILE__) . "/Base.php");
 require_once(dirname(__FILE__) . "/OrderItem.php");
 
-class Printaura_Order extends Base {
+class Order extends Base {
 
   
   public $_status;
   
-  public static function printaura_getModelSettings() {
+  public static function getModelSettings() {
     global $wpdb;
     $table = array_merge( Base::getDefaultModelSettings(), array(
         'model_conditions' => "WHERE post_type IN ('shop_order') AND post_status != 'trash'",
@@ -48,7 +47,7 @@ class Printaura_Order extends Base {
     return $table;
   }
 
-  public static function printaura_getModelAttributes() {
+  public static function getModelAttributes() {
     $table = array(
       'name'            => array('name' => 'post_title',  'type' => 'string'),
       'guid'            => array('name' => 'guid',        'type' => 'string'),
@@ -62,7 +61,7 @@ class Printaura_Order extends Base {
     $table = apply_filters( 'WCAPI_order_model_attributes_table', $table );
     return $table;
   }
-  public static function printaura_getMetaAttributes() {
+  public static function getMetaAttributes() {
     $table = array(
       'order_key' => array(
         'name' => '_order_key',
@@ -252,18 +251,18 @@ class Printaura_Order extends Base {
     $table = apply_filters( 'WCAPI_order_meta_attributes_table', $table );
     return $table;
   }
-  public static function printaura_setupMetaAttributes() {
+  public static function setupMetaAttributes() {
     // We only accept these attributes.
     self::$_meta_attributes_table = self::getMetaAttributes();
   } 
 
-  public static function printaura_setupModelAttributes() {
+  public static function setupModelAttributes() {
     self::$_model_settings = self::getModelSettings();
 
     self::$_model_attributes_table = self::getModelAttributes();
     
   }
-  public function printaura_getStatus() {
+  public function getStatus() {
     $wpdb = self::$adapter;
     // if ( isset($this->_meta_attributes['status']) && !empty($this->_meta_attributes['status']) ) {
     //   return $this->_meta_attributes['status'];
@@ -286,16 +285,16 @@ class Printaura_Order extends Base {
     $this->_meta_attributes['status'] = (isset($terms[0])) ? $terms[0]['slug'] : 'pending';
     return $this->_meta_attributes['status'];
   }
-  public function printaura_setStatus($value,$desc) {
+  public function setStatus($value,$desc) {
     $this->_meta_attributes['status'] = $value;
   }
-  public function printaura_updateStatus( $to, $desc = "" ) {
+  public function updateStatus( $to, $desc = "" ) {
     $this->updateTerm('status','shop_order_status',$to);
   }
-  public function printaura_updateTrakingNumber( $to, $desc = "" ) {
+  public function updateTrakingNumber( $to, $desc = "" ) {
     $this->updateMeta('tracking_number','_tracking_number',$to);
   }
-  public function printaura_SendMailOrder($params){
+  public function SendMailOrder($params){
       if ( !empty($params) &&  is_array($params)) {
       $prefix=parent::getPluginPrefix();
       $current_user=wp_get_current_user();
@@ -326,15 +325,15 @@ $headers = str_replace('{Email}', get_bloginfo('admin_email'), $headers);
 );
  $headers .= "MIME-Version: 1.0 \r\n";
  $headers .= "Content-Type: text/html; charset=ISO-8859-1 \r\n";  
- $headers .= "Bcc: rkikta@printaura.com \r\n";  
- //wp_mail("rkikta@printaura.com",'headers',$headers);
+ $headers .= "Bcc: aladin@printaura.com \r\n";  
+ //wp_mail("aladin@printaura.com",'headers',$headers);
  if(filter_var($params['email'], FILTER_VALIDATE_EMAIL))
   {
   wp_mail($params['email'],$subject,$body,$headers);
   }
   }
   }
-  public function printaura_asApiArray($args = array()) {
+  public function asApiArray($args = array()) {
     $attrs = parent::asApiArray();
     $attrs['order_items'] = $this->order_items;
     $attrs['notes'] = $this->notes;

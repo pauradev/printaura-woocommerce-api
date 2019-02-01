@@ -1,20 +1,19 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 namespace WCAPI;
 /**
- * A Product class Printaura_to insulate the API from the details of the
+ * A Product class to insulate the API from the details of the
  * database representation
 */
 require_once(dirname(__FILE__) . "/Base.php");
 require_once(dirname(__FILE__) . "/Category.php");
 require_once(dirname(__FILE__) . "/OrderItem.php");
-class Printaura_Coupon extends Base{   
+class Coupon extends Base{   
   public $_product_ids;
   public $_exclude_product_ids;
   public $_customer_email;
   public $_product_category_ids;
   public $_exclude_product_category_ids;
-  public static function printaura_getModelSettings() {
+  public static function getModelSettings() {
     global $wpdb;
     $table = array_merge( Base::getDefaultModelSettings(), array(
         'model_table'                => $wpdb->posts,
@@ -37,7 +36,7 @@ class Printaura_Coupon extends Base{
                 tt.taxonomy = 'product_cat' AND
                 t.term_id = tt.term_id
               ",
-              'connect' => function printaura_($product,$category) {
+              'connect' => function ($product,$category) {
                 global $wpdb;
                 $product->insert($wpdb->term_relationships, array(
                     'object_id' => $product->_actual_model_id,
@@ -59,7 +58,7 @@ class Printaura_Coupon extends Base{
                 tt.taxonomy = 'product_tag' AND
                 t.term_id = tt.term_id
               ",
-              'connect' => function printaura_($product,$tag) {
+              'connect' => function ($product,$tag) {
                 global $wpdb;
                 $product->insert($wpdb->term_relationships, array(
                     'object_id' => $product->_actual_model_id,
@@ -87,7 +86,7 @@ class Printaura_Coupon extends Base{
   * idea, because of the way PHP and many languages handle boolean values. It's just
   * so much more clear.
   *
-  * The fundamental idea for this class Printaura_is that there doesn't seem to be a single entry
+  * The fundamental idea for this class is that there doesn't seem to be a single entry
   * point into and out of the database for WooCom which provides a mixture of classes
   * and functions that get, process, display, and save products to the database and that
   * depend on things like $_POST and various Defines. 
@@ -95,7 +94,7 @@ class Printaura_Coupon extends Base{
   * We want to abstract away the naughty bits of the database representation of the product
   * in question.
   */
-  public static function printaura_getMetaAttributes() {
+  public static function getMetaAttributes() {
     $table = array(
       'discount_type' => array(
         'name' => 'discount_type',
@@ -192,7 +191,7 @@ class Printaura_Coupon extends Base{
     $table = apply_filters( 'WCAPI_coupon_meta_attributes_table', $table );
     return $table;
   }
-  public static function printaura_getModelAttributes() {
+  public static function getModelAttributes() {
     $table = array(
       'code' => array(
         'name' => 'post_title', 
@@ -228,18 +227,18 @@ class Printaura_Coupon extends Base{
     $table = apply_filters( 'WCAPI_coupon_model_attributes_table', $table );
     return $table;
   }
-  public static function printaura_setupMetaAttributes() {
+  public static function setupMetaAttributes() {
     // We only accept these attributes.
     self::$_meta_attributes_table = self::getMetaAttributes();
   } // end setupMetaAttributes
   
-  public static function printaura_setupModelAttributes() {
+  public static function setupModelAttributes() {
     self::$_model_settings = self::getModelSettings();
     self::$_model_attributes_table = self::getModelAttributes();
   }
   
 
-  public static function printaura_find_by_sku( $sku ) {
+  public static function find_by_sku( $sku ) {
     global $wpdb;
     $product = new Product();
     $product->setValid( false );
@@ -249,7 +248,7 @@ class Printaura_Coupon extends Base{
     }
     return $product;
   }
-  public function printaura_getProductIds($desc) {
+  public function getProductIds($desc) {
   	if ( isset($this->_meta_attributes['product_ids']) ) {
   		return $this->_product_ids;
   	} else {
@@ -258,7 +257,7 @@ class Printaura_Coupon extends Base{
   	}
   	return $this->_meta_attributes['product_ids'];
   }
-  public function printaura_setProductIds($value, $desc) {
+  public function setProductIds($value, $desc) {
   	if ( is_string( $value ) ) {
   		$value = explode(',',$value);
   	} else if ( ! is_array($value) && !is_null($value) ) {
@@ -266,7 +265,7 @@ class Printaura_Coupon extends Base{
   	}
   	$this->_meta_attributes['product_ids'] = Helpers::noEmptyValues($value);
   }
-  public function printaura_updateProductIds($value, $desc) {
+  public function updateProductIds($value, $desc) {
   	if ( !isset($this->_meta_attributes['product_ids']) || is_null( $this->_meta_attributes['product_ids']) ){
   		$this->_meta_attributes['product_ids'] = Helpers::noEmptyValues(NULL);
     }
@@ -274,7 +273,7 @@ class Printaura_Coupon extends Base{
   	update_post_meta($this->_actual_model_id,"product_ids",join(',',$this->_meta_attributes['product_ids']) );
   }
 
-  public function printaura_getExcludeProductIds($desc) {
+  public function getExcludeProductIds($desc) {
   	if ( $this->_meta_attributes['exclude_product_ids']) {
   		return $this->_meta_attributes['exclude_product_ids'];
   	} else {
@@ -283,7 +282,7 @@ class Printaura_Coupon extends Base{
   	}
   	return $this->_meta_attributes['exclude_product_ids'];
   }
-  public function printaura_setExcludeProductIds($value, $desc) {
+  public function setExcludeProductIds($value, $desc) {
   	if ( is_string( $value ) ) {
   		$value = Helpers::noEmptyValues(explode(',',$value));
   	} else if ( ! is_array($value) && !is_null($value)) {
@@ -291,7 +290,7 @@ class Printaura_Coupon extends Base{
   	}
   	$this->_meta_attributes['exclude_product_ids'] = Helpers::noEmptyValues($value);
   }
-  public function printaura_updateExcludeProductIds($value, $desc) {
+  public function updateExcludeProductIds($value, $desc) {
   	if ( !isset($this->_meta_attributes['explude_product_ids']) || is_null( $this->_meta_attributes['exclude_product_ids'] ) ) {
   		$this->_meta_attributes['exclude_product_ids'] = Helpers::noEmptyValues(NULL);
     }

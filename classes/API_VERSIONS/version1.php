@@ -1,10 +1,9 @@
 <?php 
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 require_once( plugin_dir_path(__FILE__) . '/../class-rede-helpers.php' );
 require_once( dirname(__FILE__) . '/../WCAPI/includes.php' );
 
 use WCAPI as API;
-class Printaura_WC_JSON_API_Provider_v1 extends JSONAPIHelpers {
+class WC_JSON_API_Provider_v1 extends JSONAPIHelpers {
   public $helpers;
   public $result;
   public $the_user;
@@ -12,7 +11,7 @@ class Printaura_WC_JSON_API_Provider_v1 extends JSONAPIHelpers {
   public $parent;
   public static $implemented_methods;
   
-  public static function printaura_getImplementedMethods() {
+  public static function getImplementedMethods() {
     $accepted_resources = array('Product','ProductAttribute','Category','ShippingClass','Comment','Order','OrderItem','OrderTaxItem','OrderCouponItem','Customer','Coupon','Review','Image','Tag');
     self::$implemented_methods = array(
       'get_system_time' => null,
@@ -453,7 +452,7 @@ class Printaura_WC_JSON_API_Provider_v1 extends JSONAPIHelpers {
     );
     return self::$implemented_methods;
   }
-  public function printaura_construct( &$parent ) {
+  public function __construct( &$parent ) {
     //$this = new JSONAPIHelpers();
     $this->result = null;
     // We will use this to set perms
@@ -464,7 +463,7 @@ class Printaura_WC_JSON_API_Provider_v1 extends JSONAPIHelpers {
     parent::init();
   }
    
-  public function printaura_isImplemented( $proc ) {
+  public function isImplemented( $proc ) {
     
     if ( isset($proc) &&  
          $this->inArray( $proc, array_keys(self::$implemented_methods)) 
@@ -478,12 +477,12 @@ class Printaura_WC_JSON_API_Provider_v1 extends JSONAPIHelpers {
     }
   }
   
-  public function printaura_done() {
+  public function done() {
     return $this->parent->done();
   }
   
   
-  public function printaura_translateTaxRateAttributes( $rate ) {
+  public function translateTaxRateAttributes( $rate ) {
     $attrs = array();
     foreach ( $rate as $k=>$v ) {
       $attrs[ str_replace('tax_rate_','',$k) ] = $v;
@@ -499,7 +498,7 @@ class Printaura_WC_JSON_API_Provider_v1 extends JSONAPIHelpers {
   * JSON Object for `proc`.
   ********************************************************************/
   
-  public function printaura_get_system_time( $params ) {
+  public function get_system_time( $params ) {
     
     $data = array(
       'timezone'  => date_default_timezone_get(),
@@ -513,7 +512,7 @@ class Printaura_WC_JSON_API_Provider_v1 extends JSONAPIHelpers {
   * This is the single entry point for fetching products, ordering, paging, as well
   * as "finding" by ID or SKU.
   */
-  public function printaura_get_products( $params ) {
+  public function get_products( $params ) {
     global $wpdb;
     $allowed_order_bys = array('ID','post_title','post_date','post_author','post_modified');
     /**
@@ -546,11 +545,11 @@ class Printaura_WC_JSON_API_Provider_v1 extends JSONAPIHelpers {
     }
     if ( ! $ids && ! $skus ) {
         if ($parent_ids) {
-          $posts = API\Product::all('id', "`post_parent` IN (" . join(",",$parent_ids) . ")")->per($posts_per_page)->page($paged)->order($order_stmt)->fetch(function printaura_( $result) {
+          $posts = API\Product::all('id', "`post_parent` IN (" . join(",",$parent_ids) . ")")->per($posts_per_page)->page($paged)->order($order_stmt)->fetch(function ( $result) {
             return $result['id'];
           });
         } else {
-          $posts = API\Product::all('id',$conditions,true)->per($posts_per_page)->page($paged)->order($order_stmt)->fetch(function printaura_( $result) {
+          $posts = API\Product::all('id',$conditions,true)->per($posts_per_page)->page($paged)->order($order_stmt)->fetch(function ( $result) {
             return $result['id'];
           });
         }
@@ -598,7 +597,7 @@ class Printaura_WC_JSON_API_Provider_v1 extends JSONAPIHelpers {
     return $this->done();
   }
 
-  public function printaura_get_products_from_trash( $params ) {
+  public function get_products_from_trash( $params ) {
     global $wpdb;
     $allowed_order_bys = array('ID','post_title','post_date','post_author','post_modified');
     /**
@@ -630,11 +629,11 @@ class Printaura_WC_JSON_API_Provider_v1 extends JSONAPIHelpers {
            );
            $ids = get_posts($args);
            goto set_ids;
-          // $posts = API\Product::all('id', "`post_parent` IN (" . join(",",$parent_ids) . ") AND post_status='trash'")->per($posts_per_page)->page($paged)->fetch(function printaura_( $result) {
+          // $posts = API\Product::all('id', "`post_parent` IN (" . join(",",$parent_ids) . ") AND post_status='trash'")->per($posts_per_page)->page($paged)->fetch(function ( $result) {
           //   return $result['id'];
           // });
         } else {
-          // $posts = API\Product::all()->per($posts_per_page)->page($paged)->fetch(function printaura_( $result) {
+          // $posts = API\Product::all()->per($posts_per_page)->page($paged)->fetch(function ( $result) {
           //   return $result['id'];
           // });
           $args = array(
@@ -701,7 +700,7 @@ class Printaura_WC_JSON_API_Provider_v1 extends JSONAPIHelpers {
     return $this->done();
   }
 
-  public function printaura_get_supported_attributes( $params ) {
+  public function get_supported_attributes( $params ) {
     $accepted_resources = array('Product','ProductAttribute','Category','Comment','Order','OrderItem','OrderTaxItem','OrderCouponItem','Customer','Coupon','Review','Image','Tag', 'FeaturedImage');
     $models = $this->orEq( $params['arguments'], 'resources', $accepted_resources);
     
@@ -747,7 +746,7 @@ class Printaura_WC_JSON_API_Provider_v1 extends JSONAPIHelpers {
     $this->result->setPayload( array( $results ) );
     return $this->done();
   }
-  public function printaura_get_products_by_tags($params) {
+  public function get_products_by_tags($params) {
     global $wpdb;
     $allowed_order_bys = array('id','name','post_title');
     $terms = $this->orEq( $params['arguments'], 'tags', false);
@@ -804,7 +803,7 @@ class Printaura_WC_JSON_API_Provider_v1 extends JSONAPIHelpers {
     for that call to edit the products thate were returned.
     
     WooCom has as kind of disconnected way of saving a product, coming from Rails,
-    it's a bit jarring. Most of this function printaura_is taken from woocommerce_admin_product_quick_edit_save()
+    it's a bit jarring. Most of this function is taken from woocommerce_admin_product_quick_edit_save()
     
     It seems that Product objects don't know how to save themselves? This may not be the
     case but a cursory search didn't find out exactly how products are really
@@ -814,13 +813,13 @@ class Printaura_WC_JSON_API_Provider_v1 extends JSONAPIHelpers {
     
     There's certainly a more elegant solution to be found, but this has to get
     up and working, and be pretty straightforward/explicit. If I had the time,
-    I'd write a custom Product class Printaura_that knows how to save itself,
+    I'd write a custom Product class that knows how to save itself,
     and then just make setter methods modify internal state and then abstract out.
   */
     // FIXME: We need some way to ensure that adding of products is not
     // exploited. we need to track errors, and temporarily ban users with
     // too many. We need a way to lift the ban in the interface and so on.
-  public function printaura_get_products1( $params ) {
+  public function get_products1( $params ) {
     global $wpdb;
     $allowed_order_bys = array('ID','post_title','post_date','post_author','post_modified');
     
@@ -851,11 +850,11 @@ class Printaura_WC_JSON_API_Provider_v1 extends JSONAPIHelpers {
     }
     if ( ! $ids && ! $skus ) {
         if ($parent_ids) {
-          $posts = API\Product::all('id', "`post_parent` IN (" . join(",",$parent_ids) . ")")->per($posts_per_page)->page($paged)->order($order_stmt)->fetch(function printaura_( $result) {
+          $posts = API\Product::all('id', "`post_parent` IN (" . join(",",$parent_ids) . ")")->per($posts_per_page)->page($paged)->order($order_stmt)->fetch(function ( $result) {
             return $result['id'];
           });
         } else {
-          $posts = API\Product::all('id',$conditions,true)->per($posts_per_page)->page($paged)->order($order_stmt)->fetch(function printaura_( $result) {
+          $posts = API\Product::all('id',$conditions,true)->per($posts_per_page)->page($paged)->order($order_stmt)->fetch(function ( $result) {
             return $result['id'];
           });
         }
@@ -901,7 +900,7 @@ class Printaura_WC_JSON_API_Provider_v1 extends JSONAPIHelpers {
     $this->result->setPayload($products);
     return $this->done();
   }
-  public function printaura_add_product_image($params){
+  public function add_product_image($params){
       
       JSONAPIHelpers::debug("add_product_image beginning");
       $parent_id = $this->orEq( $params['arguments'], 'parent_id', false );
@@ -934,7 +933,7 @@ class Printaura_WC_JSON_API_Provider_v1 extends JSONAPIHelpers {
       $this->result->setPayload($all_images);
       return $this->done();
   }
-  public function printaura_delete_product_images($ids,$parent_id){
+  public function delete_product_images($ids,$parent_id){
       global $wpdb;
       if ( $ids ) {
       foreach ($ids as $id) {
@@ -955,7 +954,7 @@ class Printaura_WC_JSON_API_Provider_v1 extends JSONAPIHelpers {
       delete_post_meta( $parent_id, '_product_image_gallery' );
     }
   }
-  public function printaura_delete_images($params) {
+  public function delete_images($params) {
            global $wpdb;
     $ids= $this->orEq( $params['arguments'], 'ids', false);
     $parent_id= $this->orEq( $params['arguments'], 'parent_id', false);
@@ -981,7 +980,7 @@ if ( $ids ) {
     return $this->done();
   }
   
-  public function printaura_delete_products($params) {
+  public function delete_products($params) {
       global $wpdb;
     $ids            = $this->orEq( $params['arguments'], 'ids', false);
     $skus           = $this->orEq( $params['arguments'], 'skus', false);
@@ -1042,7 +1041,7 @@ if ( $ids ) {
     JSONAPIHelpers::debug("delete_products done.");
     return $this->done();
   }
-  public function printaura_set_products( $params ) {
+  public function set_products( $params ) {
       global $wpdb;
     JSONAPIHelpers::debug("set_products beginning");
     $products = $this->orEq( $params, 'payload', array() );
@@ -1104,7 +1103,7 @@ if ( $ids ) {
   /**
    *  Get product categories
   */
-  public function printaura_get_categories( $params ) {
+  public function get_categories( $params ) {
     $allowed_order_bys = array('id','count','name','slug');
     $order_by       = $this->orEq( $params['arguments'], 'order_by', 'name');
     if ( ! $this->inArray($order_by,$allowed_order_bys) ) {
@@ -1131,7 +1130,7 @@ if ( $ids ) {
     return $this->done();
   }
   
-  public function printaura_set_categories( $params ) {
+  public function set_categories( $params ) {
     $categories = $this->orEq( $params, 'payload', array());
     foreach ( $categories as &$category ) {
       if ( isset($category['id']) ) {
@@ -1160,7 +1159,7 @@ if ( $ids ) {
   /**
    * Get tax rates defined for store
   */
-  public function printaura_get_taxes( $params ) {
+  public function get_taxes( $params ) {
     global $wpdb;
     
     $tax_classes = explode("\n",get_option('woocommerce_tax_classes'));
@@ -1174,7 +1173,7 @@ if ( $ids ) {
         $name = "DefaultRate";
       } 
       // Never have a select * without a limit statement.
-      $found_rates = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}woocommerce_tax_rates where tax_rate_class Printaura_= %s LIMIT %d",$tax,100) );
+      $found_rates = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}woocommerce_tax_rates where tax_rate_class = %s LIMIT %d",$tax,100) );
       $rates = array();
       foreach ( $found_rates as $rate ) {
        
@@ -1190,9 +1189,9 @@ if ( $ids ) {
   }
   /**
   * WooCommerce handles shipping methods on a per class/instance basis. So in order to have a
-  * shipping method, we must have a class Printaura_file that registers itself with 'woocommerce_shipping_methods'.
+  * shipping method, we must have a class file that registers itself with 'woocommerce_shipping_methods'.
   */
-  public function printaura_get_shipping_methods( $params ) {
+  public function get_shipping_methods( $params ) {
     $klass = new WC_Shipping();
     $klass->load_shipping_methods();
     $methods = array();
@@ -1213,7 +1212,7 @@ if ( $ids ) {
   /**
   *  Get info on Payment Gateways
   */
-  public function printaura_get_payment_gateways( $params ) {
+  public function get_payment_gateways( $params ) {
     $klass = new WC_Payment_Gateways();
     foreach ( $klass->payment_gateways as $sm ) {
       $methods[] = array(
@@ -1228,7 +1227,7 @@ if ( $ids ) {
     $this->result->setPayload( $methods );
     return $this->done();
   }
-  public function printaura_get_shipping_class( $params ) {
+  public function get_shipping_class( $params ) {
       
       $allowed_order_bys = array('id','count','name','slug');
     $order_by       = $this->orEq( $params['arguments'], 'order_by', 'name');
@@ -1250,13 +1249,13 @@ if ( $ids ) {
     }
     $shippingclasses = get_terms('product_shipping_class', $args);
     foreach ( $shippingclasses as $id ) {
-      $shippingclass Printaura_= API\ShippingClass::find( $id );
+      $shippingclass = API\ShippingClass::find( $id );
       $this->result->addPayload( $shippingclass->asApiArray() );
     }
     return $this->done();
   }
   
-  public function printaura_get_tags( $params ) {
+  public function get_tags( $params ) {
     $allowed_order_bys = array('name','count','term_id');
     $allowed_orders = array('DESC','ASC');
     $args['order']                = $this->orEq( $params['arguments'], 'order', 'ASC');
@@ -1291,7 +1290,7 @@ if ( $ids ) {
     $this->result->setPayload($tags);
     return $this->done();
   }
-  public function printaura_get_customers( $params ) {
+  public function get_customers( $params ) {
     global $wpdb;
     $posts_per_page = $this->orEq( $params['arguments'], 'per_page', 15 ); 
     $paged          = $this->orEq( $params['arguments'], 'page', 0 );
@@ -1334,7 +1333,7 @@ if ( $ids ) {
     return $this->done();
   }
 
-  public function printaura_get_orders( $params ) {
+  public function get_orders( $params ) {
     $posts_per_page = $this->orEq( $params['arguments'], 'per_page', 15 ); 
     $paged          = $this->orEq( $params['arguments'], 'page', 0 );
     $ids            = $this->orEq( $params['arguments'], 'ids', false);
@@ -1377,7 +1376,7 @@ if ( $ids ) {
     $this->result->setPayload($orders);
     return $this->done();
   }
-  public function printaura_get_orders_from_trash( $params ) {
+  public function get_orders_from_trash( $params ) {
     global $wpdb;
     $posts_per_page = $this->orEq( $params['arguments'], 'per_page', 15 ); 
     $paged          = $this->orEq( $params['arguments'], 'page', 0 );
@@ -1405,7 +1404,7 @@ if ( $ids ) {
           return $this->done();
       }
       //$posts = $ids;
-      $joined_ids = join( ',', array_map( function printaura_($id) { return "'$id'"; } , $ids ) );
+      $joined_ids = join( ',', array_map( function ($id) { return "'$id'"; } , $ids ) );
 
       $sql = "SELECT ID FROM {$wpdb->posts} WHERE `post_type` IN ('shop_order') AND `post_status` = 'trash' AND `ID` IN ($joined_ids)";
       $posts = $wpdb->get_col($sql);
@@ -1434,11 +1433,11 @@ if ( $ids ) {
     $this->result->setPayload($orders);
     return $this->done();
   }
-  public function printaura_updateTrackingOrder($params){
+  public function updateTrackingOrder($params){
       
        $payload = $this->orEq( $params,'payload', false);
        $order_id = $this->orEq( $params['arguments'],'order_id',false);
-        wp_mail('rkikta@printaura.com','tracking',/*var_export($payload,true)*/'dfd');   
+        wp_mail('aladin@printaura.com','tracking',/*var_export($payload,true)*/'dfd');   
     if ( ! $payload || ! is_array($payload)) {
       $this->result->addError( __('Missing payload','printaura_api'), JSONAPI_BAD_ARGUMENT );
       return $this->done();
@@ -1486,11 +1485,11 @@ if ( $ids ) {
             $this->result->setPayload($orders);
     return $this->done();
   }
-  public function printaura_update_orderitem_tracking($params) {
+  public function update_orderitem_tracking($params) {
         global $wpdb;
        $payload = $this->orEq( $params,'payload', false);
        $arguments = $this->orEq( $params,'arguments', false);
-       //wp_mail('rkikta@printaura.com','tracking',var_export($payload,true));    
+       //wp_mail('aladin@printaura.com','tracking',var_export($payload,true));    
     if ( ! $payload || ! is_array($payload)) {
       $this->result->addError( __('Missing payload','printaura_api'), JSONAPI_BAD_ARGUMENT );
       return $this->done();
@@ -1553,7 +1552,7 @@ if ( $ids ) {
     return $this->done();
   }
   
-  public function printaura_set_orders( $params ) {
+  public function set_orders( $params ) {
     $payload = $this->orEq( $params,'payload', false);
     if ( ! $payload || ! is_array($payload)) {
       $this->result->addError( __('Missing payload','printaura_api'), JSONAPI_BAD_ARGUMENT );
@@ -1591,7 +1590,7 @@ if ( $ids ) {
     return $this->done();
   }
 
-  public function printaura_get_store_settings( $params ) {
+  public function get_store_settings( $params ) {
     global $wpdb;
     $filter = $this->orEq( $params['arguments'],'filter', '');
     $filter = $wpdb->prepare("%s",$filter);
@@ -1606,7 +1605,7 @@ if ( $ids ) {
     $this->result->setPayload( $payload );
     return $this->done();
   }
-  public function printaura_set_store_settings( $params ) {
+  public function set_store_settings( $params ) {
     global $wpdb;
     $filter = $this->orEq( $params['arguments'],'filter', '');
     $payload = $this->orEq( $params,'payload', false);
@@ -1639,7 +1638,7 @@ if ( $ids ) {
     return $this->get_store_settings( $params );
   }
 
-  public function printaura_get_site_settings( $params ) {
+  public function get_site_settings( $params ) {
     global $wpdb;
     $filter = $this->orEq( $params['arguments'],'filter', '');
     $filter = $wpdb->prepare("%s",$filter);
@@ -1659,7 +1658,7 @@ if ( $ids ) {
     $this->result->setPayload( $payload );
     return $this->done();
   }
-  public function printaura_set_site_settings( $params ) {
+  public function set_site_settings( $params ) {
     global $wpdb;
     $filter = $this->orEq( $params['arguments'],'filter', '');
     $payload = $this->orEq( $params,'payload', false);
@@ -1695,13 +1694,13 @@ if ( $ids ) {
     $wpdb->query($meta_sql);
     return $this->get_store_settings( $params );
   }
-  public function printaura_get_api_methods( $params ) {
+  public function get_api_methods( $params ) {
     $m = self::getImplementedMethods();
     $this->result->setPayload($m);
     return $this->done();
   }
 
-  public function printaura_get_coupons( $params ) {
+  public function get_coupons( $params ) {
     global $wpdb;
     $allowed_order_bys = array('ID','post_title','post_date','post_author','post_modified');
     /**
@@ -1722,7 +1721,7 @@ if ( $ids ) {
       return;
     }
     if ( ! $ids && ! $skus ) {
-      $products = API\Coupon::all('*')->per($posts_per_page)->page($paged)->fetch(function printaura_( $result) {
+      $products = API\Coupon::all('*')->per($posts_per_page)->page($paged)->fetch(function ( $result) {
         $model = new API\Coupon();
         $model->fromDatabaseResult($result);
         return $model->asApiArray();
@@ -1771,7 +1770,7 @@ if ( $ids ) {
 
     return $this->done();
   }
-  function printaura_set_coupons( $params ) {
+  function set_coupons( $params ) {
     JSONAPIHelpers::debug("set_coupons beginning");
     $coupons = $this->orEq( $params, 'payload', array() );
     foreach ( $coupons as &$attrs) {
@@ -1819,7 +1818,7 @@ if ( $ids ) {
     JSONAPIHelpers::debug("set_coupons done.");
     return $this->done();
   }
-   public function printaura_get_images( $params ) {
+   public function get_images( $params ) {
     $allowed_order_bys = array('ID','post_title','post_date','post_author','post_modified');
     $posts_per_page = $this->orEq( $params['arguments'], 'per_page', 15 ); 
     $paged          = $this->orEq( $params['arguments'], 'page', 0 );
@@ -1836,13 +1835,13 @@ if ( $ids ) {
     }
     if ( ! $ids && ! $skus ) {
         if ($parent_ids) {
-          $images = API\Image::all('*', "`post_parent` IN (" . join(",",$parent_ids) . ")")->per($posts_per_page)->page($paged)->fetch(function printaura_( $result) {
+          $images = API\Image::all('*', "`post_parent` IN (" . join(",",$parent_ids) . ")")->per($posts_per_page)->page($paged)->fetch(function ( $result) {
             $model = new API\Image();
             $model->fromDatabaseResult($result);
             return $model->asApiArray();
           });
         } else {
-          $images = API\Image::all('*')->per($posts_per_page)->page($paged)->fetch(function printaura_( $result) {
+          $images = API\Image::all('*')->per($posts_per_page)->page($paged)->fetch(function ( $result) {
             $model = new API\Image();
             $model->fromDatabaseResult($result);
             return $model->asApiArray();

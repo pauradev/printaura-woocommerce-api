@@ -1,8 +1,7 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 namespace WCAPI;
 if ( ! function_exists('_rede_notset') ) {
-  function printaura_rede_notset( $mixed ) {
+  function _rede_notset( $mixed ) {
     if (defined('REDENOTSET')) {
       if ($mixed == REDENOTSET) {
         return true;
@@ -15,10 +14,10 @@ if ( ! function_exists('_rede_notset') ) {
   }
 }
 /**
-* This class Printaura_needs to be instantiated as helpers, and provides all the helper 
+* This class needs to be instantiated as helpers, and provides all the helper 
 * functionality needed by the PHP side of the API
 */
-class Printaura_Helpers {
+class Helpers {
   public $plugin_name = 'printaura-woocommerce-api';
   private $path;
   private $css;
@@ -30,7 +29,7 @@ class Printaura_Helpers {
 
   // Later on, these will be configurable and can be
   // turned off completely from the controls in the UI.
-  public static function printaura_warn($text) {
+  public static function warn($text) {
     if ( ! defined('WC_JSON_API_DEBUG') ) {
       return;
     }
@@ -43,7 +42,7 @@ class Printaura_Helpers {
     }
     
   }
-  public static function printaura_toWPBool($b) {
+  public static function toWPBool($b) {
     if ( $b == 1 || $b === 'yes') {
       $ret = 'yes'; 
     } else {
@@ -52,10 +51,10 @@ class Printaura_Helpers {
     Helpers::debug("toWpBool b:$b ret:$ret");
     return $ret;
   }
-  public static function printaura_toRealBool( $b ) {
+  public static function toRealBool( $b ) {
     return $b == 'yes' ? 1 : 0;
   }
-  public static function printaura_databaseAttribute( $str ) {
+  public static function databaseAttribute( $str ) {
     preg_match("/[\w\d]+/",$str,$matches);
     if ( is_array($matches) && isset($matches[0]) && strlen($matches[0]) == strlen($str) ) {
       return $matches[0];
@@ -63,7 +62,7 @@ class Printaura_Helpers {
       return null;
     }
   }
-  public static function printaura_noEmptyValues($array) {
+  public static function noEmptyValues($array) {
     if ( is_null($array) ) {
       return array();
     }
@@ -80,7 +79,7 @@ class Printaura_Helpers {
     }
     return $new_array;
   }
-  public static function printaura_mergeUrls($u1,$u2) {
+  public static function mergeUrls($u1,$u2) {
     $u1 = explode("/",$u1);
     $u2 = explode("/",$u2);
     $new_u = array_unique(array_merge($u1,$u2));
@@ -89,7 +88,7 @@ class Printaura_Helpers {
     }
     return join('/',$new_u);
   }
-  public static function printaura_error($text) {
+  public static function error($text) {
     $fp = @fopen(REDE_PLUGIN_BASE_PATH . "errors.log",'a');
     if ($fp) {
       fwrite($fp,$text . "\n");
@@ -98,7 +97,7 @@ class Printaura_Helpers {
     }
     
   }
-  public static function printaura_debug($text) {
+  public static function debug($text) {
     //echo $text;
     if ( ! defined('WC_JSON_API_DEBUG') ) {
       return;
@@ -110,10 +109,10 @@ class Printaura_Helpers {
     }
     
   }
-  public function printaura_construct() {
+  public function __construct() {
     $this->init(); 
   }
-  public function printaura_init() {
+  public function init() {
     
     // All we are doing here is populating some helper variables
     // for use later
@@ -135,10 +134,10 @@ class Printaura_Helpers {
     }
   }
   // README
-  // This function printaura_finds where a template is located in the system
+  // This function finds where a template is located in the system
   // and returns an absolute path, or throws an error when it
   // is not present on the system
-  public function printaura_findTemplate($template_name) {
+  public function findTemplate($template_name) {
     $test_path = $this->wp_theme_root . 'templates/' . $template_name;
     if ( file_exists( $test_path ) ) {
       return $test_path;
@@ -151,7 +150,7 @@ class Printaura_Helpers {
       }
     }
   }
-  public function printaura_findClassFile( $filename, $throw_error = false ) {
+  public function findClassFile( $filename, $throw_error = false ) {
     $test_path = $this->wp_theme_root . 'classes/' . $filename;
     if ( file_exists( $test_path ) ) {
       return $test_path;
@@ -161,7 +160,7 @@ class Printaura_Helpers {
         return $test_path;
       } else {
         if ( $throw_error ) {
-          throw new Exception( __('Core class Printaura_File was not found: ') . ' ' . $filename );
+          throw new Exception( __('Core Class File was not found: ') . ' ' . $filename );
         } else {
           return false;
         }
@@ -176,7 +175,7 @@ class Printaura_Helpers {
   * @param array of key value pairs to put into scope
   * @return the rendered, filtered, executed content of the php template file
   */
-  public function printaura_renderTemplate($template_name, $vars_in_scope = array()) {
+  public function renderTemplate($template_name, $vars_in_scope = array()) {
     global $woocommerce,$wpdb, $user_ID, $available_methods;
     $vars_in_scope['helpers'] = $this;
     $vars_in_scope['__VIEW__'] = $template_name; //could be user-files.php or somedir/user-files.php
@@ -203,23 +202,23 @@ class Printaura_Helpers {
   /**
   *  Return the plugin name.
   */
-  public function printaura_getPluginName() {
+  public function getPluginName() {
     return $this->plugin_name;
   }
   /*
     Get the PluginPrefix, used for meta data keys to help avoid namespace collisions
     with other plugins.
   */
-  public function printaura_getPluginPrefix() {
+  public function getPluginPrefix() {
     return str_replace('-','_',$this->plugin_name);
   }
   /*
     Does this plugin have a special text domain?
   */
-  public function printaura_getPluginTextDomain() {
+  public function getPluginTextDomain() {
     return $this->getPluginName();
   }
-  public static function printaura_a2std($array) {
+  public static function a2std($array) {
     $obj = new stdClass();
     foreach ($array as $key=>$value) {
       if ( is_array($value) ) {
@@ -230,7 +229,7 @@ class Printaura_Helpers {
     }
     return $obj;
   }
-  public static function printaura_std2a($obj) {
+  public static function std2a($obj) {
     $a = array();
     foreach ( $obj as $key=>$value ) {
       if ( is_object($value))
@@ -239,7 +238,7 @@ class Printaura_Helpers {
     }
     return $a;
   }
-  public static function printaura_getOrderStatuses() {
+  public static function getOrderStatuses() {
     $results = array();
     $statuses = (array) get_terms( 'shop_order_status', array( 'hide_empty' => 0, 'orderby' => 'id' ) );
     foreach ( $statuses as $status ) {
@@ -251,7 +250,7 @@ class Printaura_Helpers {
   /***************************************************************************/
   /*                    Checkers, validators                                 */
   /***************************************************************************/
-  public function printaura_isHTTPS() {
+  public function isHTTPS() {
     if (
       (! empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') ||
       $_SERVER['port'] == 443
@@ -271,7 +270,7 @@ class Printaura_Helpers {
   * @param string key
   * @param default value if not found (Default is i18n xlated to UnNamed
   */
-  function printaura_orEq($array,$key,$default = null, $valid_values_list = null) {
+  function orEq($array,$key,$default = null, $valid_values_list = null) {
     if ( $default === null ) {
       $default = __('UnNamed', $this->getPluginName() ) . ' - ' . $key;
     }
@@ -296,7 +295,7 @@ class Printaura_Helpers {
   * PHP's array_search is clumsy and not helpful with simple searching where all we want
   * is a true or false value. It's just easier to do it our own way.
   */
-  public function printaura_inArray($needle, $haystack) {
+  public function inArray($needle, $haystack) {
     foreach ($haystack as $value) {
       if ($needle === $value) {
         return true;
@@ -308,7 +307,7 @@ class Printaura_Helpers {
   * We pass in the params, usually $params['arguments'] by reference, as well as
   * a reference to the result object so that we can invalidate and add errors to it.
   */
-  public function printaura_validateParameters( &$params, &$target ) {
+  public function validateParameters( &$params, &$target ) {
     $params = apply_filters('rede_pre_validate_parameters',$params, $target);
     foreach ( $params as $key=>&$value ) {
       $tmp_key = str_replace('_','-',$key);
@@ -317,7 +316,7 @@ class Printaura_Helpers {
       $tmp_key = ucwords($tmp_key);
       $tmp_key = str_replace(" ",'', $tmp_key);
       $class_name = "{$tmp_key}Validator";
-      JSONAPIHelpers::debug("class Printaura_name to load is {$class_name}");
+      JSONAPIHelpers::debug("class name to load is {$class_name}");
       $path = $this->findClassFile($fname, false);
       if ( $path ) {
         require_once $path;
@@ -333,32 +332,32 @@ class Printaura_Helpers {
   /***************************************************************************/
   /*                         HTML API Helpers                                */
   /***************************************************************************/
-  public function printaura_labelTag($args) {
+  public function labelTag($args) {
     $name = $this->orEq($args,'name');
     $content = $this->orEq($args,'label');
     $classes = $this->orEq($args,'classes','');
     return "<label for='" . esc_attr( $name ) . "'>" . esc_html( $content ) . "</label>";
   }
-  public function printaura_inputTag($args) {
+  public function inputTag($args) {
     $name = $this->orEq($args,'name');
     $value = $this->orEq($args,'value','');
     $id = $this->orEq($args,'id','');
     return "<input type='text' id='" . esc_attr($id) . "' name='" . esc_attr( $name ) . "'  value='" . esc_html( $value ) . "' />";
   }
-  public function printaura_checkboxTag( $args ) {
+  public function checkboxTag( $args ) {
     $name = $this->orEq($args,'name');
     $value = $this->orEq($args,'value','');
     $id = $this->orEq($args,'id','');
     return "<input type='text' id='" . esc_attr($id) . "' name='" . esc_attr( $name ) . "' value='" . esc_html( $value ) . "' />";
   }
-  public function printaura_textAreaTag($args) {
+  public function textAreaTag($args) {
     $name = $this->orEq($args,'name');
     $value = $this->orEq($args,'value','');
     $id = $this->orEq($args,'id','');
     $rows = $this->orEq($args,'rows',3);
     return "<textarea id='" . esc_attr($id) . "' name='" . esc_attr( $name ) . "' rows='" . esc_attr( $rows ) . "'>" . esc_html( $value ) . "</textarea>";
   }
-  public function printaura_selectTag( $args ) {
+  public function selectTag( $args ) {
     $name = $this->orEq($args,'name');
     $value = $this->orEq($args,'value','');
     $id = $this->orEq($args,'id','');
@@ -376,7 +375,7 @@ class Printaura_Helpers {
     $content .= "</select>\n";
     return $content;
   } 
-  public function printaura_hiddenFormFields( $action ) {
+  public function hiddenFormFields( $action ) {
     $output = wp_nonce_field($action,'_wpnonce',true,false);
     return $output;
   }
@@ -388,7 +387,7 @@ class Printaura_Helpers {
   /**
   *  Convert a title into a slug
   */
-  public function printaura_createSlug($text) {
+  public function createSlug($text) {
     $text = sanitize_title($text);
     return $text;
   }
@@ -400,7 +399,7 @@ class Printaura_Helpers {
   *  @param $publish - boolean
   *  @return Array of populated values to send to insert_post
   */
-  public function printaura_newPage($title,$content,$publish = true) {
+  public function newPage($title,$content,$publish = true) {
     $page = array(
 			'post_status' 		=> $publish === true ? 'publish' : 'pending',
 			'post_type' 		=> 'page',
@@ -417,7 +416,7 @@ class Printaura_Helpers {
  /*
   
  */
- public function printaura_getTitleBySlug( $slug, $default = '' ) {
+ public function getTitleBySlug( $slug, $default = '' ) {
    $page = get_page_by_path( $slug );
    $title = get_the_title($page->ID);
    if ( empty( $title ) ) {
@@ -425,11 +424,11 @@ class Printaura_Helpers {
    }
    return $title;
  }
- public function printaura_getPermalinkBySlug( $slug ) {
+ public function getPermalinkBySlug( $slug ) {
   $page = get_page_by_path( $slug );
   return get_permalink( $page );
  }
-      public function printaura_getCountrie($key) {
+      public function getCountrie($key) {
         $arr= array(
 			'AF' => 'Afghanistan',
 			'AX' => '&#197;land Islands',
@@ -680,10 +679,10 @@ class Printaura_Helpers {
     }
 }
 if (! class_exists('CmdColors') ) {
-  class Printaura_CmdColors {
+  class CmdColors {
     private $foreground_colors = array();
     private $background_colors = array();
-    public function printaura_construct() {
+    public function __construct() {
       // Set up shell colors
       $this->foreground_colors['black'] = '0;30';
       $this->foreground_colors['dark_gray'] = '1;30';
@@ -713,7 +712,7 @@ if (! class_exists('CmdColors') ) {
     }
 
     // Returns colored string
-    public function printaura_getColoredString($string, $foreground_color = null, $background_color = null) {
+    public function getColoredString($string, $foreground_color = null, $background_color = null) {
       $colored_string = "";
 
       // Check if given foreground color found
@@ -732,16 +731,16 @@ if (! class_exists('CmdColors') ) {
     }
 
     // Returns all foreground color names
-    public function printaura_getForegroundColors() {
+    public function getForegroundColors() {
       return array_keys($this->foreground_colors);
     }
 
     // Returns all background color names
-    public function printaura_getBackgroundColors() {
+    public function getBackgroundColors() {
       return array_keys($this->background_colors);
     }
 
-    public function printaura_( $str, $color, $bg = null) {
+    public function _( $str, $color, $bg = null) {
       static $last = 'black';
       if ( $bg ) {
         echo($this->getColoredString($str, $color, $bg));

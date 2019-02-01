@@ -1,8 +1,6 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
-
-/*************************** LOAD THE BASE class Printaura_********************************/
+/*************************** LOAD THE BASE CLASS ********************************/
 if(!class_exists('WP_List_Table')){
     require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 }
@@ -10,12 +8,12 @@ if(!class_exists('WP_List_Table')){
             if( WOOCOMMERCE_VERSION >= 2.1 && !isset( $woocommerce ) ) 
                 $woocommerce = WC();
 
-/************************** CREATE A PACKAGE class Printaura_******************************/
-class Printaura_Zone_List_Table extends WP_List_Table {
+/************************** CREATE A PACKAGE CLASS ******************************/
+class Zone_List_Table extends WP_List_Table {
 
     public $shipping_zones;
     
-    function printaura_construct(){
+    function __construct(){
         global $status, $page;
                 
         //Set parent defaults
@@ -32,7 +30,7 @@ class Printaura_Zone_List_Table extends WP_List_Table {
      * Add extra markup in the toolbars before or after the list
      * @param string $which, helps you decide if you add the markup after (bottom) or before (top) the list
      */
-    function printaura_extra_tablenav( $which ) {
+    function extra_tablenav( $which ) {
         if ( $which == "top" ){
             //The code that goes before the table is here
             echo"<span style='line-height:32px;'>To manage the shipping rates for these zones, visit the <a href=\"" . get_bloginfo( 'wpurl' ) . "/wp-admin/admin.php?page=wc-settings&tab=shipping&section=BE_Table_Rate_Shipping\">Table Rate Shipping</a> settings page.</span>";
@@ -42,7 +40,7 @@ class Printaura_Zone_List_Table extends WP_List_Table {
             echo"<span style='line-height:32px;'>Drag and drop the table rows to sort the zones by their priority, lowest - highest. Click the <strong>Save Changes</strong> button when finished.</span>";
         }
     }
-    function printaura_column_default($item, $column_name){
+    function column_default($item, $column_name){
         global $woocommerce;
 
         switch($column_name){
@@ -62,7 +60,7 @@ class Printaura_Zone_List_Table extends WP_List_Table {
         }
     }
     
-    function printaura_column_title($item){
+    function column_title($item){
         
         //Build row actions
         $actions = array(
@@ -79,7 +77,7 @@ class Printaura_Zone_List_Table extends WP_List_Table {
         );
     }
     
-    function printaura_column_locations($item){
+    function column_locations($item){
         global $woocommerce;
 
         $countries = $woocommerce->countries->countries;//get_allowed_countries();
@@ -190,7 +188,7 @@ class Printaura_Zone_List_Table extends WP_List_Table {
      * @param array $item A singular item (one full row's worth of data)
      * @return string Text to be placed inside the column <td> (movie title only)
      **************************************************************************/
-    function printaura_column_cb($item){
+    function column_cb($item){
         return sprintf(
             '<input type="checkbox" name="%1$s[]" value="%2$s" />',
             /*$1%s*/ $this->_args['singular'],  //Let's simply repurpose the table's singular label ("movie")
@@ -198,7 +196,7 @@ class Printaura_Zone_List_Table extends WP_List_Table {
         );
     }
     
-    function printaura_get_columns(){
+    function get_columns(){
         $columns = array(
             'cb'        => '<input type="checkbox" />', //Render a checkbox instead of text
             'title'     => __('Zone Title','be-table-ship'),
@@ -209,14 +207,14 @@ class Printaura_Zone_List_Table extends WP_List_Table {
         return $columns;
     }
 
-    function printaura_get_bulk_actions() {
+    function get_bulk_actions() {
         $actions = array(
             'delete'    => 'Delete'
         );
         return $actions;
     }
     
-    function printaura_process_bulk_action() {
+    function process_bulk_action() {
         global $wpdb;
 
         $shipping_zones = $this->shipping_zones;
@@ -236,7 +234,7 @@ class Printaura_Zone_List_Table extends WP_List_Table {
         }
     }
     
-    function printaura_prepare_items() {
+    function prepare_items() {
     global $wpdb, $_wp_column_headers;
     $screen = get_current_screen();
 
@@ -270,18 +268,18 @@ class Printaura_Zone_List_Table extends WP_List_Table {
 
     }
 
-    function printaura_single_row( $item ) {
-        static $row_class Printaura_= '';
-        $row_class Printaura_= ( $row_class Printaura_== '' ? ' class="alternate"' : '' );
+    function single_row( $item ) {
+        static $row_class = '';
+        $row_class = ( $row_class == '' ? ' class="alternate"' : '' );
 
-        echo '<tr' . $row_class Printaura_. '>';
+        echo '<tr' . $row_class . '>';
         echo '<input type="hidden" name="zone_id[]" value="'.$item['zone_id'].'" />';
         echo $this->single_row_columns( $item );
         echo '</tr>';
     }
 
 
-    static function printaura_tt_render_list_page(){
+    static function tt_render_list_page(){
         global $SUCCESS;
         //Create an instance of our package class...
         $zoneListTable = new Zone_List_Table();
@@ -347,7 +345,7 @@ class Printaura_Zone_List_Table extends WP_List_Table {
     }
 
 
-    static function printaura_tt_render_edit_page($zone_submit_id=''){
+    static function tt_render_edit_page($zone_submit_id=''){
         global $woocommerce, $wpdb;
         $zoneListTable = new Zone_List_Table();
         $shipping_zones = $zoneListTable->shipping_zones;
@@ -549,7 +547,7 @@ class Printaura_Zone_List_Table extends WP_List_Table {
             <script type="text/javascript">
                 jQuery(function() {
                     // Load default frame
-                    jQuery(window).load(function printaura_() {
+                    jQuery(window).load(function () {
 
                     var e = document.getElementById("zone_type");
                     var method_sel = e.options[e.selectedIndex].value;
@@ -582,7 +580,7 @@ class Printaura_Zone_List_Table extends WP_List_Table {
     }
 }
 
-function printaura_enable_zone_link() {
+function enable_zone_link() {
     global $wpdb;
 
     $GLOBALS['hook_suffix'] = 'wp_ajax_woocommerce_';

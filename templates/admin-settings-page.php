@@ -32,7 +32,7 @@ $is_writable = is_writable($upload_dir);
 $permition_message=($is_writable) ? "<font color='green'> Looks good! This folder is writable</font>" : "<font color='red'>is not-writable, Please visit <a href='http://codex.wordpress.org/Changing_File_Permissions'  target='_blank'> this tutorial</a> to change your file permissions</font>";
 
 $url_setting = "https://printaura.com/printaura-woocommerce-api-settings/";
-$content = get_web_page($url_setting);
+$content = printaura_get_web_page($url_setting);
 $content = str_replace(array('[MAX_UPLOAD]','[UPLOAD-DIR]','[FILE-PERMISSIONS-MESSAGE]'),array($max_upload,$upload_dir,$permition_message),$content);
 echo $content;
 ?>

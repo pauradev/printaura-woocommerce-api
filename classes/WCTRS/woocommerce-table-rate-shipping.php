@@ -1,8 +1,7 @@
 <?php
-//Version: 4.0.0
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+//Version: 3.6.4
 add_action('plugins_loaded', 'woocommerce_table_rate_shipping_init_pa', 0);
-function printaura_woocommerce_table_rate_shipping_init_pa() {
+function woocommerce_table_rate_shipping_init_pa() {
 	// Current version
 	if ( ! defined( 'BE_WooTableShipping_VERSION' ) ) define( 'BE_WooTableShipping_VERSION', '3.6.4' );
 	/**
@@ -20,7 +19,7 @@ function printaura_woocommerce_table_rate_shipping_init_pa() {
 
 			require('inc/woocommerce-shipping-zones.php');
 			
-			class Printaura_BE_Table_Rate_Shipping extends WC_Shipping_Method {
+			class BE_Table_Rate_Shipping extends WC_Shipping_Method {
 
 				public static $version = '3.6.4';
 
@@ -30,7 +29,7 @@ function printaura_woocommerce_table_rate_shipping_init_pa() {
 				 * @access public
 				 * @return void
 				 */
-				function printaura_construct() {
+				function __construct() {
 		        	$this->id = 'table_rate_shipping';
 			 		$this->method_title = __( 'Table Rate', 'be-table-ship' );
 					$this->admin_page_heading = __('Table Rates', 'be-table-ship' );
@@ -63,7 +62,7 @@ function printaura_woocommerce_table_rate_shipping_init_pa() {
 				* @access public
 				* @return void
 				*/
-				function printaura_init() {
+				function init() {
 					// Load the form fields.
 					$this->init_form_fields();
 
@@ -82,8 +81,8 @@ function printaura_woocommerce_table_rate_shipping_init_pa() {
 					$this->volumetric_enable = $this->get_option( 'volumetric_enable' );
 					$this->volumetric_divisor = $this->get_option( 'volumetric_divisor' );
 					$this->include_coupons = $this->get_option( 'include_coupons' );
-					$this->highest_class Printaura_= $this->get_option( 'highest_class' );
-					$this->highest_costing_class Printaura_= $this->get_option( 'highest_costing_class' );
+					$this->highest_class = $this->get_option( 'highest_class' );
+					$this->highest_costing_class = $this->get_option( 'highest_costing_class' );
 					$this->no_fee_free_ship = $this->get_option( 'no_fee_free_ship' );
 					$this->round_weight = $this->get_option( 'round_weight' );
 					$this->hide_method = $this->get_option( 'hide_method' );
@@ -115,7 +114,7 @@ function printaura_woocommerce_table_rate_shipping_init_pa() {
 				 * @access public
 				 * @return void
 				 */
-				function printaura_localize_table_rates_shipping_classes(){
+				function localize_table_rates_shipping_classes(){
 			        global $woocommerce;
 			        
 			        if(is_ajax() && isset($_POST['action']) && $_POST['action'] == 'woocommerce_update_order_review'){
@@ -129,7 +128,7 @@ function printaura_woocommerce_table_rate_shipping_init_pa() {
 				 * @access public
 				 * @return array
 				 */
-			    function printaura_translate_shipping_classes_ids($rates){
+			    function translate_shipping_classes_ids($rates){
 			        foreach($rates as $key=>$rate){
 			        	$tr_class_id = $this->translate_shipping_class_id($rate['class']);
 			        	$rates[$key]['class']= $tr_class_id;
@@ -138,12 +137,12 @@ function printaura_woocommerce_table_rate_shipping_init_pa() {
 			    }
 			    
 			    /**
-				 * Get the translated shipping class Printaura_ID if WPML is active. Otherwise return the original ID
+				 * Get the translated shipping class ID if WPML is active. Otherwise return the original ID
 				 *
 				 * @access public
 				 * @return integer
 				 */
-			    function printaura_translate_shipping_class_id($id){
+			    function translate_shipping_class_id($id){
 
 					if(function_exists('icl_object_id'))
 						return icl_object_id($id,'product_shipping_class',true);
@@ -159,7 +158,7 @@ function printaura_woocommerce_table_rate_shipping_init_pa() {
 				 * @access public
 				 * @return void
 				 */
-				function printaura_init_form_fields() {
+				function init_form_fields() {
 					global $woocommerce;
 
 					$this->form_fields = array(
@@ -263,15 +262,15 @@ function printaura_woocommerce_table_rate_shipping_init_pa() {
 							'default' => 'no',
 							),
 						'highest_class' => array(
-							'title' => __( 'Single class Printaura_Only', 'be-table-ship' ),
+							'title' => __( 'Single Class Only', 'be-table-ship' ),
 							'type' => 'checkbox',
-							'label' => __( 'When enabled, only items of the highest priority shipping class Printaura_will be counted towards the shipping cost', 'be-table-ship' ) . ' <b>(' . __( 'Per class Printaura_Method Only', 'be-table-ship' ) . ')</b>',
+							'label' => __( 'When enabled, only items of the highest priority shipping class will be counted towards the shipping cost', 'be-table-ship' ) . ' <b>(' . __( 'Per Class Method Only', 'be-table-ship' ) . ')</b>',
 							'default' => 'no',
 							),
 						'highest_costing_class' => array(
 							'title' => __( 'Highest Costing Class', 'be-table-ship' ),
 							'type' => 'checkbox',
-							'label' => __( 'When enabled, the highest shipping cost from the per class Printaura_calculations will be charged', 'be-table-ship' ) . ' <b>(' . __( 'Per class Printaura_Method Only', 'be-table-ship' ) . ')</b>',
+							'label' => __( 'When enabled, the highest shipping cost from the per class calculations will be charged', 'be-table-ship' ) . ' <b>(' . __( 'Per Class Method Only', 'be-table-ship' ) . ')</b>',
 							'default' => 'no',
 							),
 						'no_fee_free_ship' => array(
@@ -321,12 +320,12 @@ function printaura_woocommerce_table_rate_shipping_init_pa() {
 				 * @param array $package (default: array())
 				 * @return void
 				 */
-				function printaura_calculate_shipping( $package = array() ) {
+				function calculate_shipping( $package = array() ) {
 					global $woocommerce;
 
 					$this->rates = array();
 					$shippingClasses = array();
-					$itemsByclass Printaura_= array();
+					$itemsByClass = array();
 					$fee_handling = $this->handling;
 					$condition = $this->condition;
 					$shipForFreeOption = false;
@@ -352,7 +351,7 @@ function printaura_woocommerce_table_rate_shipping_init_pa() {
 		    		if ( sizeof( $package['contents'] ) > 0 ) {
 						foreach ( $package['contents'] as $item_id => $values ) {
 							if($values['data']->needs_shipping()) {
-								// get class Printaura_information
+								// get class information
 								$item_class_id = $values['data']->get_shipping_class_id();
 								$item_class_name = $values['data']->get_shipping_class();
 								if( $item_class_name == '' ) $item_class_name = '*';
@@ -388,7 +387,7 @@ function printaura_woocommerce_table_rate_shipping_init_pa() {
 									}
 								}
 
-								// group items by class Printaura_for per-class Printaura_method
+								// group items by class for per-class method
 								$new_array = array(
 									'class_name' => $item_class_name,
 									'product_data' => $values,
@@ -640,7 +639,7 @@ function printaura_woocommerce_table_rate_shipping_init_pa() {
 				 * @param array $package (default: array())
 				 * @return array
 				 */
-				function printaura_calculate_shipping_perorder( $data = array() ) {
+				function calculate_shipping_perorder( $data = array() ) {
 					global $woocommerce;
 
 					$shipping_options = $this->table_rates;
@@ -813,7 +812,7 @@ function printaura_woocommerce_table_rate_shipping_init_pa() {
 				 * @param array $package (default: array())
 				 * @return array
 				 */
-				function printaura_calculate_shipping_peritem( $data = array(), $denied_rates = array() ) {
+				function calculate_shipping_peritem( $data = array(), $denied_rates = array() ) {
 					$shipping_options = $this->table_rates;
 					$rate = array('rate' => array(), 'denied_rates' => $denied_rates);
 					$shipping_costs = array();
@@ -983,13 +982,13 @@ function printaura_woocommerce_table_rate_shipping_init_pa() {
 
 
 				/**
-				 * calculate_shipping_perclass Printaura_function.
+				 * calculate_shipping_perclass function.
 				 *
 				 * @access public
 				 * @param array $package (default: array())
 				 * @return array
 				 */
-				function printaura_calculate_shipping_perclass( $data = array() ) {
+				function calculate_shipping_perclass( $data = array() ) {
 					$shipping_options = $this->table_rates;
 					$rate = array();
 					$shipping_costs = array();
@@ -1017,7 +1016,7 @@ function printaura_woocommerce_table_rate_shipping_init_pa() {
 						array_push($shipping_costs, $newAr);
 					} else {
 						// cycle through each shipping class
-						foreach ($data['items'] as $class Printaura_=> $cval) {
+						foreach ($data['items'] as $class => $cval) {
 							// setup new array for price options
 							$shipping_costs[$class] = array();
 
@@ -1229,17 +1228,17 @@ function printaura_woocommerce_table_rate_shipping_init_pa() {
 		    						unset( $shipping_costs[ $classID ][ $key ] );
 		    		}
 
-			    	// adjust array if single class Printaura_only is enabled
-		    		if( $this->highest_class Printaura_== 'yes' ) {
+			    	// adjust array if single class only is enabled
+		    		if( $this->highest_class == 'yes' ) {
 		    			$classesUsed = array_keys( $shipping_costs );
-		    			$highestclass Printaura_= $this->get_highest_priority_class( $classesUsed );
+		    			$highestClass = $this->get_highest_priority_class( $classesUsed );
 		    			$highestClassTerm = get_term_by( 'id', $highestClass, 'product_shipping_class', ARRAY_A );
 
 		    			if( isset( $highestClassTerm['slug'] ) ) {
 		    				$shipping_costs_new[ $highestClassTerm['slug'] ] = $shipping_costs[ $highestClassTerm['slug'] ];
 		    				$shipping_costs = $shipping_costs_new;
 		    			}
-		    		} elseif( $this->highest_costing_class Printaura_== 'yes' ) {
+		    		} elseif( $this->highest_costing_class == 'yes' ) {
 		    			$classesUsed = array_keys( $shipping_costs );
 		    			$highestCosting = $this->get_highest_costing_class( $shipping_costs, $classesUsed );
 		    			$shipping_costs = $highestCosting;
@@ -1248,7 +1247,7 @@ function printaura_woocommerce_table_rate_shipping_init_pa() {
 			    	// structure shipping costs for final output
 		    		$new_rates_array = array();
 		    		if( isset( $shipping_costs ) )
-			    		foreach( $shipping_costs as $class Printaura_=> $val ) {
+			    		foreach( $shipping_costs as $class => $val ) {
 			    			foreach ($val as $key => $val2) {
 			    				if(!isset($new_rates_array[$key]['cost'])) $new_rates_array[$key]['cost'] = 0;
 			    				$new_rates_array[$key]['title'] = $val2['title'];
@@ -1284,7 +1283,7 @@ function printaura_woocommerce_table_rate_shipping_init_pa() {
 				 * @access public
 				 * @return void
 				 */
-				public function printaura_admin_options() {
+				public function admin_options() {
 					global $woocommerce;
 
 					$cur_symbol = get_woocommerce_currency_symbol();
@@ -1376,7 +1375,7 @@ function printaura_woocommerce_table_rate_shipping_init_pa() {
 		                	<?php
 		                	$i = -1;
 		                	if ( $this->table_rates ) {
-		                		foreach ( $this->table_rates as $class Printaura_=> $rate ) {
+		                		foreach ( $this->table_rates as $class => $rate ) {
 			                		$i++;
 									$selType = "<select name=\"". $this->id ."_shiptype[" . $i . "]\" class=\"shiptype\">
 										<option>".$cur_symbol."</option>
@@ -1424,7 +1423,7 @@ function printaura_woocommerce_table_rate_shipping_init_pa() {
 		            </td>
 		        </tr>
 		    	<tr valign="top" id="shipping_class_priorities">
-		            <th scope="row" class="titledesc"><?php _e( 'Shipping class Printaura_Priorities', 'be-table-ship' ); ?>:</th>
+		            <th scope="row" class="titledesc"><?php _e( 'Shipping Class Priorities', 'be-table-ship' ); ?>:</th>
 		            <td class="forminp" id="<?php echo $this->id; ?>_class_priorities">
 		            	<table class="shippingrows widefat" cellspacing="0">
 		            		<thead>
@@ -1667,11 +1666,11 @@ function printaura_woocommerce_table_rate_shipping_init_pa() {
 				 * @access public
 				 * @return void
 				 */
-				function printaura_process_table_rates() {
+				function process_table_rates() {
 					global $wpdb;
 
 					// Initialize blank arrays & save variables
-					$table_rate_title = $table_rate_zone = $table_rate_class Printaura_= $table_rate_cond = $table_rate_min = $table_rate_max = $table_rate_cost = $table_rate_bundle_qty = $table_rate_bundle_cost = $table_rate_default = $table_rates = $table_rate_priority = $class_scpid = $class_scp = $class_sname = $class_priorities = $class_excluded = $handling_country = $handling_fee = $handling_percent = $title_order = array();
+					$table_rate_title = $table_rate_zone = $table_rate_class = $table_rate_cond = $table_rate_min = $table_rate_max = $table_rate_cost = $table_rate_bundle_qty = $table_rate_bundle_cost = $table_rate_default = $table_rates = $table_rate_priority = $class_scpid = $class_scp = $class_sname = $class_priorities = $class_excluded = $handling_country = $handling_fee = $handling_percent = $title_order = array();
 					$saveNames = array('_title', '_identifier', '_zone', '_class', '_cond', '_min', '_max', '_shiptype', '_cost', '_bundle_qty', '_bundle_cost', '_default', '_title_order');
 
 					// Clean table rate data
@@ -1704,7 +1703,7 @@ function printaura_woocommerce_table_rate_shipping_init_pa() {
 						if(isset($class_scp[$i])) {
 							if($class_priority[$i] == '' || !is_numeric($class_priority[$i])) $class_priority[$i] = '10';
 
-							// Add priorities to class Printaura_priorities array
+							// Add priorities to class priorities array
 							$class_priorities[sanitize_title($class_scpid[$i])] = array(
 								"term_id" => $class_scpid[$i],
 								"name" => $class_sname[$i],
@@ -1738,7 +1737,7 @@ function printaura_woocommerce_table_rate_shipping_init_pa() {
 							//$handling_fee[$i] = number_format($handling_fee[$i], 2,  '.', '');
 							//$handling_percent[$i] = number_format($handling_percent[$i], 2,  '.', '');
 
-							// Add priorities to class Printaura_priorities array
+							// Add priorities to class priorities array
 							$handling_rates[sanitize_title($handling_country[$i])] = array(
 								"zone" => $handling_country[$i],
 								'zone_order' => $zone_orders[ $handling_country[$i] ],
@@ -1829,7 +1828,7 @@ function printaura_woocommerce_table_rate_shipping_init_pa() {
 				 * @access public
 				 * @return string
 				 */
-				static function printaura_sort_table_rates( $table_rates = array() ) {
+				static function sort_table_rates( $table_rates = array() ) {
 					// Obtain a list of columns
 					$zone_order = $class_priority = $min = $title = $cost = array();
 					if( count( $table_rates ) ) {
@@ -1853,13 +1852,13 @@ function printaura_woocommerce_table_rate_shipping_init_pa() {
 
 
 				/**
-				 * get_highest_priority_class Printaura_function.
+				 * get_highest_priority_class function.
 				 * sorts a multi-dimensional array by secondary value
 				 *
 				 * @access public
 				 * @return string
 				 */
-				function printaura_get_highest_priority_class( $classes = array() ) {
+				function get_highest_priority_class( $classes = array() ) {
 					$classTerm = $classHigh = 0;
 					$class_priorities = $this->class_priorities;
 
@@ -1884,13 +1883,13 @@ function printaura_woocommerce_table_rate_shipping_init_pa() {
 
 
 				/**
-				 * get_highest_priority_class Printaura_function.
+				 * get_highest_priority_class function.
 				 * sorts a multi-dimensional array by secondary value
 				 *
 				 * @access public
 				 * @return string
 				 */
-				function printaura_get_highest_costing_class( $shipping_rates, $classes = array() ) {
+				function get_highest_costing_class( $shipping_rates, $classes = array() ) {
 					$classTerm = $costHigh = 0;
 					$temp = $return = array();
 					$class_priorities = $this->class_priorities;
@@ -1934,7 +1933,7 @@ function printaura_woocommerce_table_rate_shipping_init_pa() {
 				 * @access public
 				 * @return void
 				 */
-				function printaura_get_table_rates() {
+				function get_table_rates() {
 					$this->table_rates = array_filter( (array) get_option( $this->table_rate_options ) );
 				}
 
@@ -1946,7 +1945,7 @@ function printaura_woocommerce_table_rate_shipping_init_pa() {
 				 * @access public
 				 * @return void
 				 */
-				function printaura_get_class_priorities() {
+				function get_class_priorities() {
 					$this->class_priorities = array_filter( (array) get_option( $this->class_priorities_options ) );
 				}
 
@@ -1957,7 +1956,7 @@ function printaura_woocommerce_table_rate_shipping_init_pa() {
 				 * @access public
 				 * @return void
 				 */
-				function printaura_get_handling_rates() {
+				function get_handling_rates() {
 					$this->handling_rates = array_filter( (array) get_option( $this->handling_rates_options ) );
 				}
 
@@ -1968,7 +1967,7 @@ function printaura_woocommerce_table_rate_shipping_init_pa() {
 				 * @access public
 				 * @return void
 				 */
-				function printaura_get_title_order() {
+				function get_title_order() {
 					$this->title_order = array_filter( (array) get_option( $this->title_order_options ) );
 				}
 
@@ -1980,7 +1979,7 @@ function printaura_woocommerce_table_rate_shipping_init_pa() {
 			     * @param mixed $package
 			     * @return bool
 			     */
-			    function printaura_select_default_rate( $chosen_method, $_available_methods ) {
+			    function select_default_rate( $chosen_method, $_available_methods ) {
 			    	//Select available shipping methods
 					foreach( $_available_methods as $key => $value )
 						$shipping_methods[] = $value->method_id;
@@ -2006,7 +2005,7 @@ function printaura_woocommerce_table_rate_shipping_init_pa() {
 				 * @param array $package The package array/object being shipped
 				 * @return float
 				 */
-				function printaura_calculate_subtotal( $items ) {
+				function calculate_subtotal( $items ) {
 					$subtotal = 0;
 
 					foreach( $items as $item )
@@ -2023,7 +2022,7 @@ function printaura_woocommerce_table_rate_shipping_init_pa() {
 			     * @param mixed $package
 			     * @return bool
 			     */
-			    function printaura_is_available( $package ) {
+			    function is_available( $package ) {
 			    	global $woocommerce;
 
 			    	if ($this->enabled=="no") return false;
@@ -2039,7 +2038,7 @@ function printaura_woocommerce_table_rate_shipping_init_pa() {
 				 * @param array $methods
 				 * @return array
 				 */
-				static function printaura_be_zone_update_notice() {
+				static function be_zone_update_notice() {
 					global $wpdb;
 
 					$current_zones = get_option( 'be_woocommerce_shipping_zones' );
@@ -2066,7 +2065,7 @@ function printaura_woocommerce_table_rate_shipping_init_pa() {
 				 * @param array $methods
 				 * @return array
 				 */
-				function printaura_install_plugin_button() {
+				function install_plugin_button() {
 					global $wpdb;
 
 					// upgrade original pre-zone versions
@@ -2150,7 +2149,7 @@ function printaura_woocommerce_table_rate_shipping_init_pa() {
 				/**
 				 * Initialize CSS stylesheet for use with plugin
 				 */
-				public function printaura_register_plugin_styles() {
+				public function register_plugin_styles() {
 					wp_register_style( 'be-table-rate-shipping', plugins_url( 'assets/plugin.css', __FILE__ ) );
 					wp_enqueue_style( 'be-table-rate-shipping' );
 					wp_enqueue_script( 'jquery-ui-core' );
@@ -2164,7 +2163,7 @@ function printaura_woocommerce_table_rate_shipping_init_pa() {
 				 * @param array $package The package array/object being shipped
 				 * @return array of modified rates
 				 */
-				function printaura_wpml_translate_titles( $rates, $package ) {
+				function wpml_translate_titles( $rates, $package ) {
 					if( !function_exists( 'icl_t' ) ) return $rates;
 
 					foreach( $rates as $key => $rate )
@@ -2181,7 +2180,7 @@ function printaura_woocommerce_table_rate_shipping_init_pa() {
 				 * @param array $package The package array/object being shipped
 				 * @return array of modified rates
 				 */
-				function printaura_hide_shipping_when_free_is_available( $rates, $package ) {
+				function hide_shipping_when_free_is_available( $rates, $package ) {
 					global $woocommerce;
 				 	
 					if( $this->hide_method == 'yes' ) {
@@ -2209,7 +2208,7 @@ function printaura_woocommerce_table_rate_shipping_init_pa() {
 			 * @param array $methods
 			 * @return array
 			 */
-			function printaura_add_table_rate_method( $methods ) {
+			function add_table_rate_method( $methods ) {
 				$methods[] = 'BE_Table_Rate_Shipping';
 				return $methods;
 			}
@@ -2232,7 +2231,7 @@ function printaura_woocommerce_table_rate_shipping_init_pa() {
  * @access public
  * @return void
  */
-function printaura_be_table_shipping_wc_action_links_pa( $links ) {
+function be_table_shipping_wc_action_links_pa( $links ) {
 	return array_merge(
 		array(
 			'settings' => '<a href="' . get_admin_url() . 'admin.php?page=wc-settings&tab=shipping&section=BE_Table_Rate_Shipping">' . __( 'Settings', 'be-table-ship' ) . '</a>',
@@ -2243,7 +2242,7 @@ function printaura_be_table_shipping_wc_action_links_pa( $links ) {
 }
 add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'be_table_shipping_wc_action_links_pa ');
 
-function printaura_be_table_shipping_wc_network_action_links_pa( $links ) {
+function be_table_shipping_wc_network_action_links_pa( $links ) {
 	return array_merge(
 		array(
 			'register' => '<a href="' . get_admin_url() . 'admin.php?page=be-manage-plugins">' . __( 'Registration', 'be-table-ship' ) . '</a>',
@@ -2260,7 +2259,7 @@ add_filter( 'network_admin_plugin_action_links_' . plugin_basename( __FILE__ ), 
  * @access public
  * @return array
  */
-function printaura_be_table_shipping_wc_plugin_meta_pa( $links, $file ) {
+function be_table_shipping_wc_plugin_meta_pa( $links, $file ) {
 
 	if ( $file == plugin_basename( __FILE__ ) ) {
 
@@ -2289,7 +2288,7 @@ add_filter( 'plugin_row_meta', 'be_table_shipping_wc_plugin_meta_pa', 10, 2 );
  * @return void
  */
 add_action( 'init', 'Updater_WooTableRateShipping_pa' );
-function printaura_Updater_WooTableRateShipping_pa() {
+function Updater_WooTableRateShipping_pa() {
 	include_once( 'upgrader/class-be-config.php' );
 
 	if( class_exists( 'BolderElements_Plugin_Updater' ) )

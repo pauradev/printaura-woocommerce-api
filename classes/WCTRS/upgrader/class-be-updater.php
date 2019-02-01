@@ -5,8 +5,7 @@
  * Based On Framework Provided By omarabid
  * https://github.com/omarabid/Self-Hosted-WordPress-Plugin-repository
  */
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
-class Printaura_BolderElements_Plugin_Updater {
+class BolderElements_Plugin_Updater {
     /**
      * Author name
      *
@@ -75,8 +74,8 @@ class Printaura_BolderElements_Plugin_Updater {
      * @param string $plugin_file
      * @param string $current_version
      */
-    function printaura_construct( $plugin_file, $current_version, $plugin_id, $plugin_slug, $plugin_name ) {
-        // Set the class Printaura_public variables
+    function __construct( $plugin_file, $current_version, $plugin_id, $plugin_slug, $plugin_name ) {
+        // Set the class public variables
         $this->plugin_id = $plugin_id;
         $this->plugin_slug = $plugin_slug;
         $this->plugin_name = $plugin_name;
@@ -104,7 +103,7 @@ class Printaura_BolderElements_Plugin_Updater {
      * @param $transient
      * @return object $ transient
      */
-    function printaura_initPluginData () {
+    function initPluginData () {
         $this->pluginData = get_plugin_data( $this->plugin_file );
     }
 
@@ -115,7 +114,7 @@ class Printaura_BolderElements_Plugin_Updater {
      * @param $transient
      * @return object $ transient
      */
-    function printaura_update_message( $plugin_data, $r ) {
+    function update_message( $plugin_data, $r ) {
         // Retrieve update message
         $information = $this->getRemote_information();
 
@@ -134,7 +133,7 @@ class Printaura_BolderElements_Plugin_Updater {
      * @param $transient
      * @return object $ transient
      */
-    public function printaura_check_update( $transient ) {
+    public function check_update( $transient ) {
         if( empty( $transient->checked ) )
             return $transient;
 
@@ -167,7 +166,7 @@ class Printaura_BolderElements_Plugin_Updater {
      * @param object $arg
      * @return bool|object
      */
-    public function printaura_check_info( $false, $action, $response ) {
+    public function check_info( $false, $action, $response ) {
         $array_pattern = array(
             '/^((\d)+(\.)+(\d)+(\.)*(\d)*([\s\-\s])+([0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])))/m',
             '/^(\t\-)+([a-zA-Z0-9,.:&()\/\-\'\"\ ]+)/m',
@@ -200,7 +199,7 @@ class Printaura_BolderElements_Plugin_Updater {
      * @param  array   $args
      * @return null
      */
-    public function printaura_preInstall( $true, $args ) {
+    public function preInstall( $true, $args ) {
         // Get plugin information
         $this->initPluginData();
         $this->pluginActivated = is_plugin_active( $this->plugin_dir );
@@ -214,7 +213,7 @@ class Printaura_BolderElements_Plugin_Updater {
      * @param  object $result
      * @return object
      */
-    public function printaura_postInstall( $true, $hook_extra, $result ) {
+    public function postInstall( $true, $hook_extra, $result ) {
         global $wp_filesystem;
  
         // Re-activate plugin if needed
@@ -228,7 +227,7 @@ class Printaura_BolderElements_Plugin_Updater {
      * Return the remote version
      * @return string $remote_version
      */
-    public function printaura_getRemote_version() {
+    public function getRemote_version() {
         $request = wp_remote_post( $this->remote_url, array( 'body' => array( 'action' => 'version' ) ) );
         if( !is_wp_error( $request ) || wp_remote_retrieve_response_code( $request ) === 200 ) {
             return $request[ 'body' ];
@@ -240,7 +239,7 @@ class Printaura_BolderElements_Plugin_Updater {
      * Get information about the remote version
      * @return bool|object
      */
-    public function printaura_getRemote_information() {
+    public function getRemote_information() {
         $request = wp_remote_post( $this->remote_url, array( 'body' => array( 'action' => 'info' ) ) );
         if (!is_wp_error( $request ) || wp_remote_retrieve_response_code( $request ) === 200) {
             return unserialize( $request[ 'body' ] );
@@ -253,7 +252,7 @@ class Printaura_BolderElements_Plugin_Updater {
      * Retrieve CodeCanyon download link if registration works
      * @return void
      */
-    function printaura_getEnvatoUpdateInfo() {
+    function getEnvatoUpdateInfo() {
         // select data from database
         $settings = get_site_option( 'be_config_data-' . $this->plugin_id );
         $return = array();
@@ -272,7 +271,7 @@ class Printaura_BolderElements_Plugin_Updater {
      * Return the download of the plugin
      * @return boolean $remote_license
      */
-	protected function printaura_envatoDownloadPluginUrl( $username, $purchase_code, $api_key ) {
+	protected function envatoDownloadPluginUrl( $username, $purchase_code, $api_key ) {
 
 		return 'http://marketplace.envato.com/api/edge/' . rawurlencode( $username ) . '/' . rawurlencode( $api_key ) . '/download-purchase:' . rawurlencode( $purchase_code ) . '.json';
 	}
@@ -286,7 +285,7 @@ class Printaura_BolderElements_Plugin_Updater {
      * @param $updater
      * @return mixed|string|WP_Error
      */
-    public function printaura_updatePackageEnvato( $reply, $package, $updater ) {
+    public function updatePackageEnvato( $reply, $package, $updater ) {
         global $wp_filesystem;
 
         // Verify proper update

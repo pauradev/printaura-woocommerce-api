@@ -1,14 +1,13 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
-class Printaura_WooCommerce_JSON_API_Result {
+class WooCommerce_JSON_API_Result {
   public $params;
-  public function printaura_status() {
+  public function status() {
     return $this->params['status'];
   }
-  public function printaura_setStatus($bool) {
+  public function setStatus($bool) {
     $this->params['status'] = $bool;
   }
-  public function printaura_setParams( $params ) {
+  public function setParams( $params ) {
     global $wpdb;
     if ( isset($params['arguments']['password']) ) {
       // We shouldn't pass back the password.
@@ -33,15 +32,15 @@ class Printaura_WooCommerce_JSON_API_Result {
     );*/
     return $this;
   }
-  public function printaura_getParams() {
+  public function getParams() {
     return $this->params;
   }
-  public function printaura_setPayload( $collection ) {
+  public function setPayload( $collection ) {
     
       $this->params['payload'] = $collection;
     return $this;
   }
-  public function printaura_setToken( $token ){
+  public function setToken( $token ){
     //$this->params['arguments']['token'] = $token;
   }
   
@@ -49,17 +48,17 @@ class Printaura_WooCommerce_JSON_API_Result {
   * This is useful when we are looping and grabbing bits, but don't
   * want to create our own array
   */
-  public function printaura_addPayload( $hash ) {
+  public function addPayload( $hash ) {
     $this->params['payload'][] = $hash;
   }
-  /*public function printaura_addPayload( $text, $merge = array()) {
+  /*public function addPayload( $text, $merge = array()) {
     $payload = array( 'text' => $text);
     foreach ($merge as $k=>$v) {
       $payload[$k] = $v;
     }
     $this->params['payload'][] = $payload;
   }*/
-  public function printaura_asJSON() {
+  public function asJSON() {
     //$this->params['payload_length'] = count($this->params['payload']);
     if (PHP_MINOR_VERSION < 4) {
       //JSONAPIHelpers::warn("PHP 5.4 and above recommended for the API.");
@@ -81,7 +80,7 @@ class Printaura_WooCommerce_JSON_API_Result {
       return $text;
     }
   }
-  public function printaura_addError( $text, $code, $merge = array() ) {
+  public function addError( $text, $code, $merge = array() ) {
     $this->params['status'] = false;
     $error = array( 'text' => $text, 'code' => $code);
     foreach ($merge as $k=>$v) {
@@ -90,14 +89,14 @@ class Printaura_WooCommerce_JSON_API_Result {
     $this->params['errors'][] = $error;
     
   }
-  public function printaura_addWarning( $text, $code , $merge = array()) {
+  public function addWarning( $text, $code , $merge = array()) {
     $warn = array( 'text' => $text, 'code' => $code);
     foreach ($merge as $k=>$v) {
       $warn[$k] = $v;
     }
     $this->params['warnings'][] = $warn;
   }
-  public function printaura_addNotification( $text, $merge = array()) {
+  public function addNotification( $text, $merge = array()) {
     $notice = array( 'text' => $text);
     foreach ($merge as $k=>$v) {
       $notice[$k] = $v;

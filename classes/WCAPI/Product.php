@@ -1,18 +1,17 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 namespace WCAPI;
 /**
- * A Product class Printaura_to insulate the API from the details of the
+ * A Product class to insulate the API from the details of the
  * database representation
 */
 require_once(dirname(__FILE__) . "/Base.php");
 require_once(dirname(__FILE__) . "/Category.php");
 require_once(dirname(__FILE__) . "/OrderItem.php");
 require_once(dirname(__FILE__) . "/ProductAttribute.php");
-class Printaura_Product extends Base{   
+class Product extends Base{   
   public $_product_type;
   public $_product_attributes;
-  public static function printaura_getModelSettings() {
+  public static function getModelSettings() {
     global $wpdb;
     $table = array_merge( Base::getDefaultModelSettings(), array(
         'model_table'                => $wpdb->posts,
@@ -35,10 +34,10 @@ class Printaura_Product extends Base{
                 tt.taxonomy = 'product_cat' AND
                 t.term_id = tt.term_id
               ",
-              'connect' => function printaura_($product,$category) {
+              'connect' => function ($product,$category) {
                 $product->connectToCategory($category);
               },
-              'disconnect' => function printaura_($product,$category) {
+              'disconnect' => function ($product,$category) {
                 $product->disconnectFromCategory($category);
               }
           ),
@@ -55,10 +54,10 @@ class Printaura_Product extends Base{
                 tt.taxonomy = 'product_shipping_class' AND
                 t.term_id = tt.term_id
               ",
-              'connect' => function printaura_($product,$shippingclass) {
+              'connect' => function ($product,$shippingclass) {
                 $product->connectToCategory($shippingclass);
               },
-              'disconnect' => function printaura_($product,$shippingclass) {
+              'disconnect' => function ($product,$shippingclass) {
                 $product->disconnectFromCategory($shippingclass);
               }
           ),        
@@ -75,10 +74,10 @@ class Printaura_Product extends Base{
                 tt.taxonomy = 'product_tag' AND
                 t.term_id = tt.term_id
               ",
-              'connect' => function printaura_($product,$tag) {
+              'connect' => function ($product,$tag) {
                 $product->connectToCategory($tag);
               },
-              'disconnect' => function printaura_($product,$tag) {
+              'disconnect' => function ($product,$tag) {
                 $product->disconnectFromCategory($tag);
               }
           ),
@@ -91,7 +90,7 @@ class Printaura_Product extends Base{
           ),
           'images' => array(
               'class_name' => 'Image', 
-              'sql' => function printaura_($product) {
+              'sql' => function ($product) {
                 global $wpdb;
                 $product_gallery = get_post_meta($product->_actual_model_id,"_product_image_gallery",true);
                 if ( empty($product_gallery) ) {
@@ -102,14 +101,14 @@ class Printaura_Product extends Base{
                 $sql = "SELECT {$s['model_table_id']} FROM {$s['model_table']} WHERE  {$s['model_table_id']} IN ($product_gallery)";
                 return $sql;
               },
-              'connect' => function printaura_($product,$image) {
+              'connect' => function ($product,$image) {
                 $product->connectToImage($image);
               }
           ),
           'featured_image' => array(
               'class_name' => 'Image', 
               'foreign_key' => 'post_parent', 
-              'sql' => function printaura_($model) {
+              'sql' => function ($model) {
                 $s = $model->getModelSettings();
                 $tid = get_post_thumbnail_id( $model->_actual_model_id );
                 if ( empty( $tid ) ) {
@@ -122,7 +121,7 @@ class Printaura_Product extends Base{
                 );
                 return "SELECT {$s['model_table_id']} FROM {$s['model_table']} WHERE " . join(' AND ', $parts);
               },
-              'connect' => function printaura_($product,$image) {
+              'connect' => function ($product,$image) {
                 update_post_meta($product->_actual_model_id, '_thumbnail_id',$image->_actual_model_id);           
               },
           ),
@@ -152,7 +151,7 @@ class Printaura_Product extends Base{
   * idea, because of the way PHP and many languages handle boolean values. It's just
   * so much more clear.
   *
-  * The fundamental idea for this class Printaura_is that there doesn't seem to be a single entry
+  * The fundamental idea for this class is that there doesn't seem to be a single entry
   * point into and out of the database for WooCom which provides a mixture of classes
   * and functions that get, process, display, and save products to the database and that
   * depend on things like $_POST and various Defines. 
@@ -160,7 +159,7 @@ class Printaura_Product extends Base{
   * We want to abstract away the naughty bits of the database representation of the product
   * in question.
   */
-  public static function printaura_getMetaAttributes() {
+  public static function getMetaAttributes() {
     $table = array(
       'sku'               => array('name' => '_sku',              'type' => 'string', 'sizehint' => 10),
       'downloadable'      => array('name' => '_downloadable',     'type' => 'bool', 'values' => array('yes','no'), 'default' => 'no',  'sizehint' => 2),
@@ -254,7 +253,7 @@ class Printaura_Product extends Base{
     $table = apply_filters( 'WCAPI_product_meta_attributes_table', $table );
     return $table;
   }
-  public static function printaura_getModelAttributes() {
+  public static function getModelAttributes() {
     $table = array(
       'name'                  => array('name' => 'post_title', 'type' => 'string', 'sizehint' => 10, 'group_name' => 'main' ),
       'slug'                  => array('name' => 'post_name',  'type' => 'string', 'sizehint' => 10),
@@ -288,17 +287,17 @@ class Printaura_Product extends Base{
     $table = apply_filters( 'WCAPI_product_model_attributes_table', $table );
     return $table;
   }
-  public static function printaura_setupMetaAttributes() {
+  public static function setupMetaAttributes() {
     // We only accept these attributes.
     self::$_meta_attributes_table = self::getMetaAttributes();
   } // end setupMetaAttributes
   
-  public static function printaura_setupModelAttributes() {
+  public static function setupModelAttributes() {
     self::$_model_settings = self::getModelSettings();
     self::$_model_attributes_table = self::getModelAttributes();
   }
   
-  public function printaura_asApiArray($args = array()) {
+  public function asApiArray($args = array()) {
     global $wpdb;
     $attributes_to_send = parent::asApiArray($args);
     if ( !isset($args['include']) || ! is_array($args['include'])) {
@@ -321,7 +320,7 @@ class Printaura_Product extends Base{
     return $attributes_to_send;
   }
 
-  public static function printaura_find_by_sku( $sku ) {
+  public static function find_by_sku( $sku ) {
     global $wpdb;
     $product = new Product();
     $product->setValid( false );
@@ -331,7 +330,7 @@ class Printaura_Product extends Base{
     }
     return $product;
   }
-  public function printaura_getProductAttributes($desc) {
+  public function getProductAttributes($desc) {
     $name = "attributes";
     if ( isset($this->_meta_attributes[$name])) {
       return $this->_meta_attributes[$name]; 
@@ -360,7 +359,7 @@ class Printaura_Product extends Base{
       return $this->_meta_attributes['attributes'];
     }
   }
-  public function printaura_updateProductAttributes($value,$desc) {
+  public function updateProductAttributes($value,$desc) {
     Helpers::debug("Updating ProductAttributes");
     $name = "attributes";
     $value = maybe_unserialize( $value );
@@ -388,15 +387,15 @@ class Printaura_Product extends Base{
     update_post_meta($this->_actual_model_id, '_product_attributes', $attrs);
   }
 
-  public function printaura_getProductType($desc) {
+  public function getProductType($desc) {
     $this->_meta_attributes['product_type'] = $this->getTerm('product_type','product_type','unknown'); 
     return $this->_meta_attributes['product_type'];
 
   }
-  public function printaura_updateProductType($value,$desc) {
+  public function updateProductType($value,$desc) {
     $this->updateTerm('product_type','product_type',$value);
   }
-  public function printaura_connectToCategory($category) {
+  public function connectToCategory($category) {
     $product = $this;
     global $wpdb;
     $terms=get_term_by('term_taxonomy_id',$category->taxonomy_id,'product_tag');
@@ -426,7 +425,7 @@ class Printaura_Product extends Base{
   }
   }
   }
-  public function printaura_disconnectFromCategory($category) {
+  public function disconnectFromCategory($category) {
     $product = $this;
     global $wpdb;
      Helpers::debug("inside disconnectFromCategory where term_taxonomy_id=".$category->taxonomy_id); 
@@ -443,7 +442,7 @@ class Printaura_Product extends Base{
     ));
   }
   }
-  public function printaura_connectToImage($image) {
+  public function connectToImage($image) {
     $product = $this;
     global $wpdb;
     Helpers::debug("Product::image::connect");
@@ -474,7 +473,7 @@ class Printaura_Product extends Base{
   }
   
   
-  function printaura_updateSippingClass($product_id,$shipping_class_id){
+  function updateSippingClass($product_id,$shipping_class_id){
       $this->updateMeta('product_shipping_class','_product_shipping_class',$to);
   }
 }
