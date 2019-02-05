@@ -1,5 +1,6 @@
 <?php
 namespace WCAPI;
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 require_once dirname( __FILE__ ) . '/BaseHelpers.php';
 if (!defined('WCAPIDIR')) {
   define('WCAPIDIR', dirname(__FILE__) );

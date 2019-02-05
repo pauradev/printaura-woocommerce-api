@@ -1,5 +1,6 @@
 <?php 
 namespace WCAPI;
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 require_once dirname( __FILE__ ) . '/BaseHelpers.php';
 require_once ABSPATH . "wp-admin/includes/image.php";
 class Upload {

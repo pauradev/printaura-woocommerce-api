@@ -1,7 +1,5 @@
 <?php
-
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
-
 /**
  * A custom Expedited Order WooCommerce Email class
  *

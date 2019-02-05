@@ -1,4 +1,5 @@
-<?php 
+<?php
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly 
 require_once( plugin_dir_path(__FILE__) . '/../class-rede-helpers.php' );
 require_once( dirname(__FILE__) . '/../WCAPI/includes.php' );
 

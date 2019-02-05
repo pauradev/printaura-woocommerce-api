@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 /**
  * Bolder Elements Dashboard Configuration.
  *
@@ -204,14 +205,15 @@ if ( ! class_exists( 'Bolder_Elements_Config' ) ) :
 		 */
 		public function get_available_plugins() {
 			// connect to Envato API
-			$ch = curl_init();
+			/*$ch = curl_init();
 			curl_setopt($ch, CURLOPT_URL, 'http://marketplace.envato.com/api/v3/new-files-from-user:bolderelements,codecanyon.json');
 			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($ch, CURLOPT_USERAGENT, 'bolder-elements');
 			$ch_data = curl_exec($ch);
 			curl_close($ch);
-
+			*/
+			$ch_data = wp_remote_retrieve_body( wp_remote_get( 'http://marketplace.envato.com/api/v3/new-files-from-user:bolderelements,codecanyon.json') );
 			if( !empty( $ch_data ) ) :
 				$json_data = json_decode($ch_data, true);
 			else :
@@ -231,14 +233,15 @@ if ( ! class_exists( 'Bolder_Elements_Config' ) ) :
 		 */
 		function verify_plugin_registration_info( $purchase_code ) {
 			// connect to Envato API
-			$ch = curl_init();
+			/*$ch = curl_init();
 			curl_setopt($ch, CURLOPT_URL, 'http://marketplace.envato.com/api/v3/bolderelements/ofdzk2su2101c1bq4d5vs1zqwdaj88ms/verify-purchase:' . $purchase_code . '.json');
 			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($ch, CURLOPT_USERAGENT, 'bolder-elements');
 			$ch_data = curl_exec($ch);
 			curl_close($ch);
-
+			*/
+			$ch_data = wp_remote_retrieve_body( wp_remote_get( 'http://marketplace.envato.com/api/v3/bolderelements/ofdzk2su2101c1bq4d5vs1zqwdaj88ms/verify-purchase:' . $purchase_code . '.json') );
 			if( !empty( $ch_data ) ) :
 				$json_data = json_decode($ch_data, true);
 				if( is_array( $json_data ) && isset( $json_data[ 'code' ] ) && $json_data[ 'code' ] == 'not_authenticated' )
@@ -262,14 +265,15 @@ if ( ! class_exists( 'Bolder_Elements_Config' ) ) :
 		 */
 		function get_plugin_download_file( $username, $api_key, $purchase_code ) {
 			// connect to Envato API
-			$ch = curl_init();
+			/*$ch = curl_init();
 			curl_setopt($ch, CURLOPT_URL, 'http://marketplace.envato.com/api/v3/' . $username . '/' . $api_key . '/download-purchase:' . $purchase_code . '.json');
 			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($ch, CURLOPT_USERAGENT, 'bolder-elements');
 			$ch_data = curl_exec($ch);
 			curl_close($ch);
-
+			*/
+			$ch_data = wp_remote_retrieve_body( wp_remote_get( 'http://marketplace.envato.com/api/v3/' . $username . '/' . $api_key . '/download-purchase:') );
 			if( !empty( $ch_data ) ) :
 				$json_data = json_decode($ch_data, true);
 				if( is_array( $json_data ) && isset( $json_data[ 'code' ] ) && $json_data[ 'code' ] == 'not_authenticated' )

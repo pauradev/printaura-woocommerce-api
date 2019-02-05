@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 if ( ! function_exists('_rede_notset') ) {
   function _rede_notset( $mixed ) {
     if (defined('REDENOTSET')) {

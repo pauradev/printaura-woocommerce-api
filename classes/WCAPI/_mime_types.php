@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 $mime_types = array(
 	"323" => "text/h323",
 	"acx" => "application/internet-property-stream",

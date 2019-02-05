@@ -21,4 +21,4 @@ function printaura_woocommerce_json_api_uninstall() {
   }
 
 } // end woocommerce_json_api_activate
-woocommerce_json_api_uninstall();
+printaura_woocommerce_json_api_uninstall();

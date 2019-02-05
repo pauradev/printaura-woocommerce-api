@@ -1,5 +1,6 @@
 <?php
-//Version: 3.6.4
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+//Version: 4.0.0
 add_action('plugins_loaded', 'woocommerce_table_rate_shipping_init_pa', 0);
 function woocommerce_table_rate_shipping_init_pa() {
 	// Current version

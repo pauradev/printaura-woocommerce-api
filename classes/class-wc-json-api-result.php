@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 class WooCommerce_JSON_API_Result {
   public $params;
   public function status() {

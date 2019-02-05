@@ -1,4 +1,5 @@
 <?php 
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 /**
  * Add fields to the user profile that allow the addition 
  * of a "token" that can be used by the API to log that
@@ -243,14 +244,14 @@ function printaura_api_admin_menu() {
                                       __( 'JSON API', 'woocommerce' ) , 
                                       'manage_woocommerce', 
                                       'api_settings_page', 
-                                      'api_settings_page' 
+                                      'printaura_api_settings_page' 
   );*/
   add_menu_page( __( 'Print Aura Woocommerce API', 'woocommerce' ),
           __( 'Print Aura API', 'woocommerce' ), 
           'manage_woocommerce', 
-          'api_settings_page', 'api_settings_page');
+          'api_settings_page', 'printaura_api_settings_page');
 }
-function api_settings_page() {
+function printaura_api_settings_page() {
   $helpers = new JSONAPIHelpers();
   $current_user=wp_get_current_user();
   $key5 = $helpers->getPluginPrefix() . '_api_enabled';

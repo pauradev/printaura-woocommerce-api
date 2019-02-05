@@ -1,5 +1,6 @@
 <?php
 namespace WCAPI;
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 /**
  * A Customer class to insulate the API from the details of the
  * database representation

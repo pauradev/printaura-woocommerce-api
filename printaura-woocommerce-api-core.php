@@ -89,7 +89,7 @@ function printaura_api_admin_menu() {
     add_menu_page( 'Print Aura Woocommerce API',
           'Print Aura API', 
           'manage_woocommerce', 
-          'api_settings_page', 'api_settings_page');
+          'api_settings_page', 'printaura_api_settings_page');
     
 }
 
@@ -133,7 +133,7 @@ function printaura_save_new_zone($zones){
     return $shipping_zones;
 }
 
-function api_settings_page() {
+function printaura_api_settings_page() {
 
   $helpers = new JSONAPIHelpers();
   $current_user=wp_get_current_user();
