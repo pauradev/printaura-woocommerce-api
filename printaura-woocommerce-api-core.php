@@ -176,7 +176,7 @@ function printaura_api_settings_page() {
         'zone_except'=> array ('states' => '','postals' => '')
         );
   $zones = array($zone1,$zone2);
-  $shipping_zones = save_new_zone($zones);
+  $shipping_zones = printaura_save_new_zone($zones);
    }
   }
                    

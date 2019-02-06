@@ -132,6 +132,7 @@ class Zone_List_Table extends WP_List_Table {
                         $i++;
                     }
                 }
+                //Warn: count must be an array or object that implements countable 
                 if( isset( $item['zone_except'] ) && count( $item['zone_except'] != '' ) ) {
                     $excluded_states = (isset($item['zone_except']['states'])) ? sanitize_text_field($item['zone_except']['states']) : '';
                     $excluded_postal = (isset($item['zone_except']['postals'])) ? sanitize_text_field($item['zone_except']['postals']) : '';

@@ -1468,6 +1468,7 @@ function woocommerce_table_rate_shipping_init_pa() {
 		                	if(count($class_priorities_array) > 0) {
 		                		foreach ( $class_priorities_array as $id => $arr ) {
 		                			$i++;
+		                			// Notice undefined: index excluded
 		                			$checked = ($arr['excluded'] == 'on') ? ' checked="checked"' : '';
 			                		echo '<tr class="shipping_class">
 			                			<input type="hidden" name="'. $this->id .'_scpid[' . $i . ']" value="' . $arr['term_id'] . '" />
