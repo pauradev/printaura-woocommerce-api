@@ -8,10 +8,13 @@
   Author URI: http://printaura.com
 */
   // Turn on debugging?
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
-define('WC_JSON_API_DEBUG',false);
+if (!defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+if (!defined( 'WC_JSON_API_DEBUG')) {
+  define('WC_JSON_API_DEBUG',false);
+}  
+
 define( 'REDE_PLUGIN_BASE_PATH', plugin_dir_path(__FILE__) );
-if (! defined('REDENOTSET')) {
+if (!defined('REDENOTSET')) {
   define( 'REDENOTSET','__RED_E_NOTSET__' ); // because sometimes false, 0 etc are
   // exspected but consistently dealing with these situations is tiresome.
 }
@@ -44,7 +47,7 @@ function printaura_cronstarter_activation() {
 
   $active_plugins = (array) get_option( 'active_plugins', array() );
   if(in_array('woocommerce/woocommerce.php', $active_plugins)){
-	if( !wp_next_scheduled( 'wooc_schedule_send_orders' ) ) {  
+	if(!wp_next_scheduled( 'wooc_schedule_send_orders' ) ) {  
 	   wp_schedule_event( time(), 'hourly','wooc_schedule_send_orders' );  
 	}
     }
