@@ -118,7 +118,7 @@ function woocommerce_table_rate_shipping_init_pa() {
 				function localize_table_rates_shipping_classes(){
 			        global $woocommerce;
 			        
-			        if(is_ajax() && isset($_POST['action']) && $_POST['action'] == 'woocommerce_update_order_review'){
+			        if(is_ajax() && isset($_POST['action']) && $_POST['action'] === 'woocommerce_update_order_review'){
 			           add_filter('option_woocommerce_table_rates', array($this, 'translate_shipping_classes_ids'));	
 			        }			        
 			    }
