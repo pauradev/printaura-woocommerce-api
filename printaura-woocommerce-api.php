@@ -69,7 +69,7 @@ function printaura_schedule_resend_orders()
         wc_register_order_type('shop_order', $args);
         $filter_hooks = array(
             'post_type'   => 'shop_webhook',
-                        'post_status' => 'publish',
+            'post_status' => 'publish',
         );
         $query_hooks = new WP_Query($filter_hooks);
         $webhooks = $query_hooks->posts;
@@ -346,7 +346,7 @@ function printaura_create_shipping_zone($data)
 {
     $zone = new WC_Shipping_Zone(null);
     if (! is_null($data['shipping']['name'])) {
-        $zone->set_zone_name($data['shipping']['name']);
+        $zone->set_zone_name(sanitize_text_field($data['shipping']['name']));
         $zone_id = $zone->save();
         return array('zone_id'=>$zone_id);
     }
@@ -428,7 +428,7 @@ function printaura_create_pa_product_tags($data = array())
         if (! current_user_can('manage_product_terms')) {
             throw new WC_API_Exception('woocommerce_api_user_cannot_read_product_tags', __('You do not have permission to read product tags', 'woocommerce'), 401);
         }
-        $data        = isset($data['tags']) ? $data['tags'] : array();
+        $data = isset($data['tags']) ? $data['tags'] : array();
         $product_tags = array();
         if (empty($data)) {
         } else {
@@ -460,7 +460,7 @@ function printaura_get_pa_product_tags($fields = null)
         $product_tags = array();
         $terms = get_terms('product_tag', array( 'hide_empty' => false, 'fields' => 'ids' ));
         foreach ($terms as $term_id) {
-            $product_tags[] = current(get_pa_product_tag($term_id, $fields));
+            $product_tags[] = sanitize_text_field(current(get_pa_product_tag($term_id, $fields)));
         }
         return array( 'product_tags' => apply_filters('woocommerce_api_product_tags_response', $product_tags, $terms, $fields, $this) );
     } catch (WC_API_Exception $e) {
@@ -533,9 +533,9 @@ function printaura_update_order_item_shipment($order_id, $data)
             return $id;
         }
                         
-        $order       = wc_get_order($id);
+        $order = wc_get_order($id);
                        
-        $line_items  = (!empty($data['line_items'])) ? $data['line_items'] : array();
+        $line_items = (!empty($data['line_items'])) ? $data['line_items'] : array();
                        
         if (!empty($line_items)) {
             foreach ($line_items as  $line_item) {
@@ -543,7 +543,7 @@ function printaura_update_order_item_shipment($order_id, $data)
                     throw new WC_API_Exception('woocommerce_invalid_item_id', __('Order item ID is required', 'woocommerce'), 400);
                 }
                 $line_item_id    = $line_item['id'];
-                $tracking_number = $line_item['tracking'];
+                $tracking_number = sanitize_text_field($line_item['tracking']);
                 wc_update_order_item_meta($line_item_id, 'tracking_number', $tracking_number);
             }
         }
@@ -552,8 +552,8 @@ function printaura_update_order_item_shipment($order_id, $data)
         $total_shipped   = get_total_shipped_items($order_id);
         $ship_method     = $order->get_shipping_methods() ;
         foreach ($ship_method as $shp_mtd) {
-            $shipping_method = $shp_mtd['name'];
-            break;
+            $shipping_method = sanitize_text_field($shp_mtd['name']);
+            break; //#KLUDGE this does not actually appear to handle the case of multiple ship methods or its absence. Is this correct? cn 20190403
         }
 
         if ($total_items == $total_shipped) {
@@ -774,7 +774,7 @@ function printaura_get_total_shipped_items($order_id)
     foreach ($line_items as $line_item) {
         $tracking  = "";
         if (isset($line_item['tracking_number']) && strlen($line_item['tracking_number'])>0) {
-            $tracking = $line_item['tracking_number'];
+            $tracking = wc_clean($line_item['tracking_number']);
         }
 
         if ($tracking !='' && strlen($tracking) > 0) {
@@ -787,8 +787,7 @@ function printaura_get_total_shipped_items($order_id)
 
 function printaura_get_pa_product_shipping_class($fields = null)
 {
-
-        // permissions check
+    // permissions check
     if (! current_user_can('manage_product_terms')) {
         return new WP_Error("woocommerce_api_user_cannot_read_product_categories", __('You do not have permission to read product categories', 'woocommerce'), array( 'status' => 401 ));
     }
@@ -800,6 +799,8 @@ function printaura_get_pa_product_shipping_class($fields = null)
     foreach ($terms as $term_id) {
         $product_categories[] = current(get_pa_product_shipping_class_item($term_id, $fields));
     }
+    
+    $product_categories = wc_clean($product_categories);
     //return $product_categories;
     return array( 'product_shipping_class' => apply_filters('woocommerce_api_product_categories_response', $product_categories, $terms, $fields) );
     exit();
@@ -948,7 +949,6 @@ function printaura_pa_attach_tags($product_id, $terms, $type='cat')
                 $product_terms[] = (int)  $term['term_id'] ;
             } else {//term doesnt exists , create it
                 $term = wp_insert_term($ter, 'product_'.$type);
-                                        
 
                 if (!is_wp_error($term)) {
                     $product_terms[] = (int) $term['term_id'];
@@ -1005,8 +1005,8 @@ add_action('woocommerce_api_edit_product', 'pa_after_edit_product', 2, 2);
 function printaura_append_woocommerce_key_to_payload($payload, $resource = "", $resource_id ="", $webhook_id = "")
 {
     global $wpdb;
-    $keys1 	      =  $wpdb->get_col("SELECT  consumer_key FROM {$wpdb->prefix}woocommerce_api_keys");
-    $consumer_key     =  $wpdb->get_col('select meta_value from '.$wpdb->prefix.'usermeta where meta_key="woocommerce_api_consumer_key"');
+    $keys1 = $wpdb->get_col("SELECT  consumer_key FROM {$wpdb->prefix}woocommerce_api_keys");
+    $consumer_key = $wpdb->get_col('select meta_value from '.$wpdb->prefix.'usermeta where meta_key="woocommerce_api_consumer_key"');
     if (is_array($payload)) {
         $payload['key']   = array_merge($consumer_key, $keys1);
     }
@@ -1052,7 +1052,7 @@ function printaura_send_woo_processed($id)
             'fields'      => 'ids',
             'post_type'   => 'shop_webhook',
         );
-    $webhooks   =  new WP_Query($query_args);
+    $webhooks = new WP_Query($query_args);
     if ($webhooks) {
         foreach ($webhooks->posts as $webhook_id) {
             $webhook = new WC_Webhook($webhook_id);

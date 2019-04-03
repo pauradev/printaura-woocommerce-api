@@ -24,7 +24,7 @@ function printaura_api_template_redirect()
     $helpers = new JSONAPIHelpers();
 
     $headers = printaura_api_parse_headers();
-    if (isset($headers['Content-Type']) && sanitize_text_field($headers['Content-Type']) == 'application/json') {
+    if (isset($headers['Content-Type']) && $headers['Content-Type'] === 'application/json') {
         $fp = @fopen('php://input', 'r');
         $body = '';
         if ($fp) {
@@ -92,9 +92,9 @@ function printaura_api_admin_menu()
  
     add_menu_page(
         'Print Aura Woocommerce API',
-          'Print Aura API',
-          'manage_woocommerce',
-          'api_settings_page',
+        'Print Aura API',
+        'manage_woocommerce',
+        'api_settings_page',
         'printaura_api_settings_page'
     );
 }
@@ -110,10 +110,10 @@ function printaura_save_new_zone($zones)
         if ($shipping_zones) {
             foreach ($shipping_zones as $value) {
                 $max_keys[] = $value['zone_order'];
-                $old_zone_title[]   = $value['zone_title'];
-                $old_zone_country[] = $value['zone_country'];
+                $old_zone_title[]   = wp_strip_all_tags($value['zone_title']);
+                $old_zone_country[] = wp_strip_all_tags($value['zone_country']);
             }
-            if (in_array(strtolower($zone_title), $old_zone_title) ||in_array($zone_country, $old_zone_country)) {
+            if (in_array(strtolower($zone_title), $old_zone_title) || in_array($zone_country, $old_zone_country)) {
                 $check_exist = true;
             }
             $zone_order_max = max($max_keys);
@@ -174,7 +174,7 @@ function printaura_api_settings_page()
         }
   
         $table_rate_shipping_enabled = get_option($helpers->getPluginPrefix() . '_table_rate_shipping');
-        if ($table_rate_shipping_enabled == "yes") {
+        if ($table_rate_shipping_enabled === "yes") {
             update_option($helpers->getPluginPrefix().'_table_rate_shipping', 'yes');
             do_action('plugins_loaded');
             $zone1 = array(
