@@ -512,9 +512,9 @@ function printaura_get_pa_store_info()
 {
     // General site data
     $available = array( 'store' => array(
-            'name'        => sanitize_option('blogname',get_option('blogname')),
-            'description' => sanitize_option('blogdescription',get_option('blogdescription')),
-            'URL'         => sanitize_option('siteurl',get_option('siteurl')),
+            'name'        => sanitize_option('blogname', get_option('blogname')),
+            'description' => sanitize_option('blogdescription', get_option('blogdescription')),
+            'URL'         => sanitize_option('siteurl', get_option('siteurl')),
             'wc_version'  => WC()->version,
       'pa_version'  => '3.4.10'));
                 

@@ -158,7 +158,7 @@ function printaura_api_settings_page()
             update_option($helpers->getPluginPrefix() . '_' . $key2, (is_serialized($value) ? $value : maybe_serialize($value)));
         }
         if (isset($_POST[$key]['enabled'])) {
-            $sanitized_token = preg_replace( '/[^a-zA-Z0-9_]/', '', $_POST[$key]['token'] );
+            $sanitized_token = preg_replace('/[^a-zA-Z0-9_]/', '', $_POST[$key]['token']);
             update_option($key3, $sanitized_token);
             update_user_meta($current_user->ID, $key3, $sanitized_token);
         }
