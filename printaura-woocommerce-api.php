@@ -7,20 +7,23 @@
   Version: 4.0
   Author URI: http://printaura.com
 */
-  // Turn on debugging?
+ // Exit if accessed directly
 if (!defined('ABSPATH')) {
     exit;
-} // Exit if accessed directly
+} 
+// Turn on debugging?
+// this should be uncommented in live code not just set false since there's no guarantee of load order. cn 20190408
+/*
 if (!defined('WC_JSON_API_DEBUG')) {
     define('WC_JSON_API_DEBUG', false);
 }
+*/
 
 define('REDE_PLUGIN_BASE_PATH', plugin_dir_path(__FILE__));
 if (!defined('REDENOTSET')) {
     define('REDENOTSET', '__RED_E_NOTSET__'); // because sometimes false, 0 etc are
   // exspected but consistently dealing with these situations is tiresome.
 }
-    
 
 require_once(plugin_dir_path(__FILE__) . 'classes/class-rede-helpers.php');
 require_once(plugin_dir_path(__FILE__) . 'classes/class-pa-updater-config.php');
@@ -232,7 +235,7 @@ function printaura_woocommerce_api_activate()
 {
     global $wpdb;
  
-    $helpers = new JSONAPIHelpers();
+    $helpers = new Printaura_JSONAPIHelpers();
     $current_user 	= wp_get_current_user();
     $user_id	= $current_user->ID;
     wp_insert_term('shipped', 'shop_order_status');
@@ -299,7 +302,7 @@ register_deactivation_hook(__FILE__, 'printaura_woocommerce_api_deactivate');
 
 function printaura_woocommerce_api_initialize_plugin()
 {
-    $helpers = new JSONAPIHelpers();
+    $helpers = new Printaura_JSONAPIHelpers();
 }
 add_action('init', 'printaura_woocommerce_api_initialize_plugin', 5000);
 

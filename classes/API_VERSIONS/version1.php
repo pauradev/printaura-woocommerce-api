@@ -4,7 +4,7 @@ require_once( plugin_dir_path(__FILE__) . '/../class-rede-helpers.php' );
 require_once( dirname(__FILE__) . '/../WCAPI/includes.php' );
 
 use WCAPI as API;
-class WC_JSON_API_Provider_v1 extends JSONAPIHelpers {
+class WC_JSON_API_Provider_v1 extends Printaura_JSONAPIHelpers {
   public $helpers;
   public $result;
   public $the_user;
@@ -454,7 +454,7 @@ class WC_JSON_API_Provider_v1 extends JSONAPIHelpers {
     return self::$implemented_methods;
   }
   public function __construct( &$parent ) {
-    //$this = new JSONAPIHelpers();
+    //$this = new Printaura_JSONAPIHelpers();
     $this->result = null;
     // We will use this to set perms
     self::getImplementedMethods();
@@ -555,7 +555,7 @@ class WC_JSON_API_Provider_v1 extends JSONAPIHelpers {
           });
         }
         
-      JSONAPIHelpers::debug( "IDs from all() are: " . var_export($posts,true) );
+      Printaura_JSONAPIHelpers::debug( "IDs from all() are: " . var_export($posts,true) );
     } else if ( $ids ) {
     
         $posts = array();
@@ -860,7 +860,7 @@ class WC_JSON_API_Provider_v1 extends JSONAPIHelpers {
           });
         }
         
-      JSONAPIHelpers::debug( "IDs from all() are: " . var_export($posts,true) );
+      Printaura_JSONAPIHelpers::debug( "IDs from all() are: " . var_export($posts,true) );
     } else if ( $ids ) {
     
         $posts = array();
@@ -903,7 +903,7 @@ class WC_JSON_API_Provider_v1 extends JSONAPIHelpers {
   }
   public function add_product_image($params){
       
-      JSONAPIHelpers::debug("add_product_image beginning");
+      Printaura_JSONAPIHelpers::debug("add_product_image beginning");
       $parent_id = $this->orEq( $params['arguments'], 'parent_id', false );
       $featured = $this->orEq( $params['arguments'], 'featured', false );
       $images = $this->orEq( $params, 'images', array() );
@@ -940,7 +940,7 @@ class WC_JSON_API_Provider_v1 extends JSONAPIHelpers {
       foreach ($ids as $id) {
          $image =  API\Image::find($id); 
         if ( !  $image ) {
-            JSONAPIHelpers::debug("Image Not Exist in store");
+            Printaura_JSONAPIHelpers::debug("Image Not Exist in store");
           $this->result->addWarning( $id . ': ' . __('Image does not exist','printaura_api'), JSONAPI_PRODUCT_NOT_EXISTS, array( 'id' => $id) );
           return $this->done();
         } else {
@@ -963,7 +963,7 @@ if ( $ids ) {
       foreach ($ids as $id) {
          $image =  API\Image::find($id); 
         if ( !  $image ) {
-            JSONAPIHelpers::debug("Image Not Exist in store");
+            Printaura_JSONAPIHelpers::debug("Image Not Exist in store");
           $this->result->addWarning( $id . ': ' . __('Image does not exist','printaura_api'), JSONAPI_PRODUCT_NOT_EXISTS, array( 'id' => $id) );
           return $this->done();
         } else {
@@ -992,10 +992,10 @@ if ( $ids ) {
         $prod=API\Product::find($id);
         $post_id=$prod->_actual_model_id;
         if ( ! $post_id ) {
-            JSONAPIHelpers::debug("Product Not Exist in store");
+            Printaura_JSONAPIHelpers::debug("Product Not Exist in store");
           $this->result->addWarning( $id . ': ' . __('Product does not exist','printaura_api'), JSONAPI_PRODUCT_NOT_EXISTS, array( 'id' => $post_id) );
         } else {
-            JSONAPIHelpers::debug("Product Exist in store And id=".$post_id);
+            Printaura_JSONAPIHelpers::debug("Product Exist in store And id=".$post_id);
           $args = array(
 	'post_type'        => 'product_variation',
 	'post_parent'      => $post_id,
@@ -1023,10 +1023,10 @@ if ( $ids ) {
       foreach ($skus as $sku) {
         $post_id = $wpdb->get_var( $wpdb->prepare( "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key='_sku' AND meta_value='%s' LIMIT 1",$sku) );
         if ( ! $post_id ) {
-            JSONAPIHelpers::debug("Product Variations Not Exist in store");
+            Printaura_JSONAPIHelpers::debug("Product Variations Not Exist in store");
           $this->result->addWarning( $sku . ': ' . __('Product does not exist','printaura_api'), JSONAPI_PRODUCT_NOT_EXISTS, array( 'sku' => $sku) );
         } else {
-            JSONAPIHelpers::debug("Product Variations Exist in store And id=".$post_id);
+            Printaura_JSONAPIHelpers::debug("Product Variations Exist in store And id=".$post_id);
           $product->delete($wpdb->posts, array(
         'id' => $post_id
       ) );
@@ -1039,12 +1039,12 @@ if ( $ids ) {
         }
       }
     }
-    JSONAPIHelpers::debug("delete_products done.");
+    Printaura_JSONAPIHelpers::debug("delete_products done.");
     return $this->done();
   }
   public function set_products( $params ) {
       global $wpdb;
-    JSONAPIHelpers::debug("set_products beginning");
+    Printaura_JSONAPIHelpers::debug("set_products beginning");
     $products = $this->orEq( $params, 'payload', array() );
     $return_products=array();
     foreach ( $products as &$attrs) {
@@ -1074,13 +1074,13 @@ if ( $ids ) {
           )
         );
         // Let's create the product if it doesn't exist.
-        JSONAPIHelpers::debug("Creating a new product");
+        Printaura_JSONAPIHelpers::debug("Creating a new product");
         
         $product = new API\Product();
         $product = $product->setResult($this->result); 
         $product->create( $attrs );
         if ( ! $product->isValid() ) {
-          JSONAPIHelpers::debug("Product is not valid!");
+          Printaura_JSONAPIHelpers::debug("Product is not valid!");
           return $this->done();
         } else {
          
@@ -1089,7 +1089,7 @@ if ( $ids ) {
               __('Created product','printaura_api'), 
               array('id' => $product->_actual_model_id, 'sku' => $product->sku)
           );
-          JSONAPIHelpers::debug("Product is valid");
+          Printaura_JSONAPIHelpers::debug("Product is valid");
         }
         
       }
@@ -1097,7 +1097,7 @@ if ( $ids ) {
     
     
     $this->result->addPayload($product->asApiArray());
-    JSONAPIHelpers::debug("set_products done.");
+    Printaura_JSONAPIHelpers::debug("set_products done.");
     return $this->done();
   }
   
@@ -1356,7 +1356,7 @@ if ( $ids ) {
         try {
           $post = API\Order::find($post_id);
         } catch (Exception $e) {
-          JSONAPIHelpers::error("An exception occurred attempting to instantiate a Order object: " . $e->getMessage());
+          Printaura_JSONAPIHelpers::error("An exception occurred attempting to instantiate a Order object: " . $e->getMessage());
           $this->result->addError( __("Error occurred instantiating Order object"),-99);
           return $this->done();
         }
@@ -1417,7 +1417,7 @@ if ( $ids ) {
         try {
           $post = API\Order::find($post_id);
         } catch (Exception $e) {
-          JSONAPIHelpers::error("An exception occurred attempting to instantiate a Order object: " . $e->getMessage());
+          Printaura_JSONAPIHelpers::error("An exception occurred attempting to instantiate a Order object: " . $e->getMessage());
           $this->result->addError( __("Error occurred instantiating Order object"),-99);
           return $this->done();
         }
@@ -1444,7 +1444,7 @@ if ( $ids ) {
       return $this->done();
     }
         if ($order_id) {
-            JSONAPIHelpers::debug("Order id: ".$order_id);
+            Printaura_JSONAPIHelpers::debug("Order id: ".$order_id);
             $Order = API\Order::find($order_id);
             $order_arr=$Order->asApiArray();
             $Order->updateTrakingNumber($payload[0]['tracking_number']);
@@ -1506,7 +1506,7 @@ if ( $ids ) {
     foreach ( $payload as $key=>$item ) {
         
         if ( isset( $item ) ) {
-            JSONAPIHelpers::debug("order item id: ".$item['id']);
+            Printaura_JSONAPIHelpers::debug("order item id: ".$item['id']);
             $model = API\OrderItem::find( $item['id'] );
             $model->updateTrackingNumberItem($item['id'],$item['tracking_number']);
             $tracking_number=$item['tracking_number'];
@@ -1772,7 +1772,7 @@ if ( $ids ) {
     return $this->done();
   }
   function set_coupons( $params ) {
-    JSONAPIHelpers::debug("set_coupons beginning");
+    Printaura_JSONAPIHelpers::debug("set_coupons beginning");
     $coupons = $this->orEq( $params, 'payload', array() );
     foreach ( $coupons as &$attrs) {
       $coupon = null;
@@ -1795,11 +1795,11 @@ if ( $ids ) {
           )
         );
         // Let's create the coupon if it doesn't exist.
-        JSONAPIHelpers::debug("Creating a new coupon");
+        Printaura_JSONAPIHelpers::debug("Creating a new coupon");
         $coupon = new API\Coupon();
         $coupon->create( $attrs );
         if ( ! $coupon->isValid() ) {
-          JSONAPIHelpers::debug("Coupon is not valid!");
+          Printaura_JSONAPIHelpers::debug("Coupon is not valid!");
           $this->result->addWarning( 
           __(
               'Failed to create coupon!',
@@ -1816,7 +1816,7 @@ if ( $ids ) {
       }
     }
     $this->result->setPayload( $coupons );
-    JSONAPIHelpers::debug("set_coupons done.");
+    Printaura_JSONAPIHelpers::debug("set_coupons done.");
     return $this->done();
   }
    public function get_images( $params ) {

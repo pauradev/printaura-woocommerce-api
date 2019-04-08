@@ -34,7 +34,7 @@ if ( !defined('PHP_VERSION_ID')) {
     define('PHP_RELEASE_VERSION',$version[2]);
   }
 }
-class WooCommerce_JSON_API extends JSONAPIHelpers {
+class WooCommerce_JSON_API extends Printaura_JSONAPIHelpers {
     // Call this function to setup a new response
   public $helpers;
   public $result;
@@ -92,7 +92,7 @@ class WooCommerce_JSON_API extends JSONAPIHelpers {
     return self::$implemented_methods;
   }
   public function __construct() {
-    //$this = new JSONAPIHelpers();
+    //$this = new Printaura_JSONAPIHelpers();
     $this->result = null;
     $this->provider = null;
     parent::init();
@@ -165,11 +165,11 @@ class WooCommerce_JSON_API extends JSONAPIHelpers {
       }
     }
     $type=$this->return_type;
-    JSONAPIHelpers::debug( "Beggining request" );
-    JSONAPIHelpers::debug( var_export($params,true));
+    Printaura_JSONAPIHelpers::debug( "Beggining request" );
+    Printaura_JSONAPIHelpers::debug( var_export($params,true));
 
     if ( ! $this->isValidAPIUser( $params ) ) {
-       JSONAPIHelpers::debug( "Not a valid user" );
+       Printaura_JSONAPIHelpers::debug( "Not a valid user" );
       $this->result->addError( 
         __('Not a valid API User ', 'printaura_api' ), 
         JSONAPI_INVALID_CREDENTIALS 
@@ -189,23 +189,23 @@ class WooCommerce_JSON_API extends JSONAPIHelpers {
         $this->validateParameters( $params['arguments'], $this->result);
        
         if ( $this->result->status() == false ) {
-          JSONAPIHelpers::warn("Arguments did not pass validation");
+          Printaura_JSONAPIHelpers::warn("Arguments did not pass validation");
           $this->result->addError( 
         __('Not a valid API User Status', 'printaura_api' ), 
         JSONAPI_INVALID_CREDENTIALS 
       );
           return $this->done();
         } else {
-          JSONAPIHelpers::debug("Arguments have passed validation");
+          Printaura_JSONAPIHelpers::debug("Arguments have passed validation");
         }
         return $this->provider->{ $proc }($params);
 
       } catch ( Exception $e ) {
-        JSONAPIHelpers::error($e->getMessage());
+        Printaura_JSONAPIHelpers::error($e->getMessage());
         $this->unexpectedError( $params, $e);
       }
     } else {
-      JSONAPIHelpers::warn("{$proc} is not implemented...");
+      Printaura_JSONAPIHelpers::warn("{$proc} is not implemented...");
       $this->notImplemented( $params,$proc );
     }
   }  else {
@@ -219,7 +219,7 @@ class WooCommerce_JSON_API extends JSONAPIHelpers {
   }
   public function isValidAPIUser( $params ) {
    /*if(!current_user_can('manage_options')){
-        JSONAPIHelpers::debug( "no permission" );
+        Printaura_JSONAPIHelpers::debug( "no permission" );
        return false;
    } */
       if ( $this->the_user ) {
@@ -235,7 +235,7 @@ class WooCommerce_JSON_API extends JSONAPIHelpers {
      return false;
       
     }
- JSONAPIHelpers::debug( "starting processing user " );
+ Printaura_JSONAPIHelpers::debug( "starting processing user " );
 
     API\Base::setBlogId($GLOBALS['blog_id']);
     $key = $this->getPluginPrefix() . '_token';
@@ -245,14 +245,14 @@ class WooCommerce_JSON_API extends JSONAPIHelpers {
         
         return false;
     }
-    JSONAPIHelpers::debug("Authentication by Token");
+    Printaura_JSONAPIHelpers::debug("Authentication by Token");
     $args = array(
       'blog_id' => $GLOBALS['blog_id'],
       'meta_key' => $key,
       
     );
     $users = get_users( $args );
-     JSONAPIHelpers::debug( "User info".var_export($users,true) );
+    Printaura_JSONAPIHelpers::debug( "User info".var_export($users,true) );
     foreach ($users as $user) {
       
       $api_token = maybe_unserialize( get_user_meta( $user->ID, $key, true) );
@@ -314,7 +314,7 @@ class WooCommerce_JSON_API extends JSONAPIHelpers {
     }
   }
   public function done() {
-    JSONAPIHelpers::debug("WooCommerce_JSON_API::done() called..");
+    Printaura_JSONAPIHelpers::debug("WooCommerce_JSON_API::done() called..");
     wp_logout();
     if ( $this->return_type == 'HTTP') {
       header("Content-type: application/json");
