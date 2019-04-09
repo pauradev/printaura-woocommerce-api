@@ -21,7 +21,7 @@ require_once(plugin_dir_path(__FILE__) . 'classes/class-wc-json-api.php');
 function printaura_api_template_redirect()
 {
     global $wpdb;
-    $helpers = new Printaura_JSONAPIHelpers();
+    $helpers = new JSONAPIHelpers();
 
     $headers = printaura_api_parse_headers();
     if (isset($headers['Content-Type']) && $headers['Content-Type'] === 'application/json') {
@@ -49,17 +49,17 @@ function printaura_api_template_redirect()
     }
   
 
-    Printaura_JSONAPIHelpers::debug(var_export($headers, true));
+    JSONAPIHelpers::debug(var_export($headers, true));
     if (isset($_REQUEST['action']) && 'printaura_api' == sanitize_text_field($_REQUEST['action'])) {
         $enabled = get_option($helpers->getPluginPrefix() . '_enabled');
         $require_https = get_option($helpers->getPluginPrefix() . '_require_https');
         if ($enabled != 'no') {
             if ($require_https == 'yes' && $helpers->isHTTPS() == false) {
-                Printaura_JSONAPIHelpers::debug("Cannot continue, HTTPS is required.");
+                JSONAPIHelpers::debug("Cannot continue, HTTPS is required.");
                 return;
             }
             if (defined('WC_JSON_API_DEBUG')) {
-                Printaura_JSONAPIHelpers::truncateDebug();
+                JSONAPIHelpers::truncateDebug();
             }
             $api = new WooCommerce_JSON_API();
             $api->setOut('HTTP');
@@ -76,7 +76,7 @@ function printaura_api_template_redirect()
             }
             $api->route($params);
         } else {
-            Printaura_JSONAPIHelpers::debug("JSON API is not set to enabled.");
+            JSONAPIHelpers::debug("JSON API is not set to enabled.");
         }
     }
 }
@@ -142,7 +142,7 @@ function printaura_save_new_zone($zones)
 
 function printaura_api_settings_page()
 {
-    $helpers = new Printaura_JSONAPIHelpers();
+    $helpers = new JSONAPIHelpers();
     $current_user=wp_get_current_user();
 
     $key5 = $helpers->getPluginPrefix() . '_enabled';
