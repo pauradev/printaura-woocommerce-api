@@ -7,13 +7,18 @@
   Version: 4.0
   Author URI: http://printaura.com
 */
-  // Turn on debugging?
+// Exit if accessed directly
 if (!defined('ABSPATH')) {
     exit;
-} // Exit if accessed directly
+} 
+
+// Turn on debugging?
+// Don't do this in live, it causes errors if defined again later. cn 20190409
+/*
 if (!defined('WC_JSON_API_DEBUG')) {
     define('WC_JSON_API_DEBUG', false);
 }
+*/
 
 define('REDE_PLUGIN_BASE_PATH', plugin_dir_path(__FILE__));
 if (!defined('REDENOTSET')) {
