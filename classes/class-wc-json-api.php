@@ -73,9 +73,9 @@ class WooCommerce_JSON_API extends JSONAPIHelpers {
       'get_api_methods',
       'get_coupons',
       'get_images',
-      
+
       // Write capable methods
-      
+
       'set_products',
       'delete_products',
       'delete_images',
@@ -86,7 +86,7 @@ class WooCommerce_JSON_API extends JSONAPIHelpers {
       'set_site_settings',
       'set_coupons',
       'update_orderitem_tracking',
-      'add_product_image',  
+      'add_product_image',
 
     );
     return self::$implemented_methods;
@@ -97,17 +97,17 @@ class WooCommerce_JSON_API extends JSONAPIHelpers {
     $this->provider = null;
     parent::init();
   }
-  
+
   public function route( $params ) {
     global $wpdb;
     $method = $this->orEq( $params, 'method',false);
     $proc = $this->orEq($params, 'proc',false);
-    if ( 
+    if (
           $method &&
           $proc  &&
-           strpos($proc,'get_')!==0&& 
+           strpos($proc,'get_')!==0&&
            strpos($proc,'set_')!==0&&
-           strpos($proc,'delete_')!==0 
+           strpos($proc,'delete_')!==0
        ) {
       switch( strtolower($method) ) {
         case 'get':
@@ -121,7 +121,7 @@ class WooCommerce_JSON_API extends JSONAPIHelpers {
           break;
       }
     }
-    
+
     /*
      * The idea behind the provider is that there will be
      * several versions of the API in the future, and the
@@ -145,14 +145,14 @@ class WooCommerce_JSON_API extends JSONAPIHelpers {
     $files = array();
 
 
-    $params['uploads'] = $files; 
+    $params['uploads'] = $files;
 
     $this->createNewResult( $params );
 
     // Now we need to allow for people to add dynamic
     // filters to the models.
     if ( isset( $params['model_filters'] ) ) {
-      
+
       foreach ( $params['model_filters'] as $filter_text=>$filter ) {
         foreach ($filter as $key=>&$value) {
           $value['name'] = substr($wpdb->prepare("%s",$value['name']),1,strlen($value['name']));
@@ -170,29 +170,29 @@ class WooCommerce_JSON_API extends JSONAPIHelpers {
 
     if ( ! $this->isValidAPIUser( $params ) ) {
        JSONAPIHelpers::debug( "Not a valid user" );
-      $this->result->addError( 
-        __('Not a valid API User ', 'printaura_api' ), 
-        JSONAPI_INVALID_CREDENTIALS 
+      $this->result->addError(
+        __('Not a valid API User ', 'printaura_api' ),
+        JSONAPI_INVALID_CREDENTIALS
       );
       return $this->done();
 
     }
     if(isset($params['proc'])){
-        
+
     if ( $this->provider->isImplemented( $proc ) ) {
 
       try {
 
         // The arguments are passed by reference here
-        
-         
+
+
         $this->validateParameters( $params['arguments'], $this->result);
-       
+
         if ( $this->result->status() == false ) {
           JSONAPIHelpers::warn("Arguments did not pass validation");
-          $this->result->addError( 
-        __('Not a valid API User Status', 'printaura_api' ), 
-        JSONAPI_INVALID_CREDENTIALS 
+          $this->result->addError(
+        __('Not a valid API User Status', 'printaura_api' ),
+        JSONAPI_INVALID_CREDENTIALS
       );
           return $this->done();
         } else {
@@ -210,10 +210,10 @@ class WooCommerce_JSON_API extends JSONAPIHelpers {
     }
   }  else {
 
-      $this->result->addError( 
+      $this->result->addError(
           __('Expected argument was not present', 'printaura_api') . ' `proc`',
-           JSONAPI_EXPECTED_ARGUMENT 
-      );  
+           JSONAPI_EXPECTED_ARGUMENT
+      );
       return $this->done();
   }
   }
@@ -231,30 +231,30 @@ class WooCommerce_JSON_API extends JSONAPIHelpers {
     }
     $by_token = true;
     if ( ! isset( $params['arguments']['token'] ) ) {
-      
+
      return false;
-      
+
     }
  JSONAPIHelpers::debug( "starting processing user " );
 
     API\Base::setBlogId($GLOBALS['blog_id']);
     $key = $this->getPluginPrefix() . '_token';
     $key1 = $this->getPluginPrefix() . '_enabled';
-     
+
     if (! $by_token ) {
-        
+
         return false;
     }
     JSONAPIHelpers::debug("Authentication by Token");
     $args = array(
       'blog_id' => $GLOBALS['blog_id'],
       'meta_key' => $key,
-      
+
     );
     $users = get_users( $args );
      JSONAPIHelpers::debug( "User info".var_export($users,true) );
     foreach ($users as $user) {
-      
+
       $api_token = maybe_unserialize( get_user_meta( $user->ID, $key, true) );
       $api_enabled = maybe_unserialize( get_user_meta( $user->ID, $key1, true) );
 
@@ -262,12 +262,12 @@ class WooCommerce_JSON_API extends JSONAPIHelpers {
        if ( $api_enabled == 'no' ) {
 
           $this->result->addError( __( 'You have been banned.','printaura_api' ), JSONAPI_PERMSINSUFF );
-          
+
           return false;
         }
-                
+
         $this->logUserIn($user);
-        $this->result->setToken($api_token); 
+        $this->result->setToken($api_token);
         return true;
 
       }
@@ -298,8 +298,8 @@ class WooCommerce_JSON_API extends JSONAPIHelpers {
 
       $t = "{$t['file']}:{$t['line']}:{$t['class']}";
     }
-    $this->result->addError( 
-      sprintf( __('An unexpected error has occured %s ', 'printaura_api' ) ,$error->getMessage() ), 
+    $this->result->addError(
+      sprintf( __('An unexpected error has occured %s ', 'printaura_api' ) ,$error->getMessage() ),
       JSONAPI_UNEXPECTED_ERROR,
       array('trace' => $trace)
     );
@@ -319,20 +319,20 @@ class WooCommerce_JSON_API extends JSONAPIHelpers {
     if ( $this->return_type == 'HTTP') {
       header("Content-type: application/json");
       echo( $this->result->asJSON() );
-      die;   
+      die;
     } else if ( $this->return_type == "ARRAY") {
       return $this->result->getParams();
     } else if ( $this->return_type == "JSON") {
       return $this->result->asJSON();
     } else if ( $this->return_type == "OBJECT") {
       return $this->result;
-    } 
+    }
   }
   public function notImplemented( $params,$method ) {
     $this->createNewResult( $params );
-    $this->result->addError( 
-      __("That API method ({$method}) has not been implemented", 'printaura_api' ), 
-      JSONAPI_NOT_IMPLEMENTED 
+    $this->result->addError(
+      __("That API method ({$method}) has not been implemented", 'printaura_api' ),
+      JSONAPI_NOT_IMPLEMENTED
     );
     return $this->done();
   }

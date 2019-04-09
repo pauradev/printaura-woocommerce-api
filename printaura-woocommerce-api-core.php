@@ -47,7 +47,7 @@ function printaura_api_template_redirect()
     if (is_user_logged_in()) {
         return;
     }
-  
+
 
     JSONAPIHelpers::debug(var_export($headers, true));
     if (isset($_REQUEST['action']) && 'printaura_api' == sanitize_text_field($_REQUEST['action'])) {
@@ -89,7 +89,7 @@ function printaura_admin_css()
 function printaura_api_admin_menu()
 {
     global $menu;
- 
+
     add_menu_page(
         'Print Aura Woocommerce API',
         'Print Aura API',
@@ -151,7 +151,7 @@ function printaura_api_settings_page()
     $params = $_POST;
     $nonce = $helpers->orEq($params, '_wpnonce', false);
     $key = $helpers->getPluginPrefix() . '_sitewide_settings';
-  
+
     if ($nonce  && wp_verify_nonce($nonce, $helpers->getPluginPrefix() . '_sitewide_settings') && isset($params[$key])) {
         foreach ($params[$key] as $key2=>$value) {
             //maybe_serialize serializes serialized values so handling just in case cn 20190401
@@ -168,11 +168,11 @@ function printaura_api_settings_page()
         if (isset($_POST[$key]['ips_allowed'])) {
             update_option($key4, sanitize_text_field($_POST[$key]['ips_allowed']));
         }
-  
+
         if (is_plugin_active('woocommerce-table-rate-shipping/woocommerce-table-rate-shipping.php')) {
             deactivate_plugins('woocommerce-table-rate-shipping/woocommerce-table-rate-shipping.php');
         }
-  
+
         $table_rate_shipping_enabled = get_option($helpers->getPluginPrefix() . '_table_rate_shipping');
         if ($table_rate_shipping_enabled === "yes") {
             update_option($helpers->getPluginPrefix().'_table_rate_shipping', 'yes');
@@ -191,7 +191,7 @@ function printaura_api_settings_page()
             $shipping_zones = printaura_save_new_zone($zones);
         }
     }
-                   
+
     $attrs = array(
       'json_api_sitewide_settings' => array(
           'title' => __('Print Aura Woocommerce API Settings', 'printaura_api'),
@@ -236,9 +236,9 @@ function printaura_api_settings_page()
                       ),
           ),
     );
-  
+
     $attrs = apply_filters('printaura_api_sitewide_settings_fields', $attrs);
-  
+
     echo $helpers->renderTemplate('admin-settings-page.php', array( 'attrs' => $attrs));
 }
 
@@ -254,7 +254,7 @@ function printaura_api_parse_headers()
     }
     return $headers;
 }
- 
+
 function printaura_unhook_those_pesky_emails($email_class)
 {
     remove_action('woocommerce_order_status_completed_notification', array(&$email_class, 'customer_completed_order'));

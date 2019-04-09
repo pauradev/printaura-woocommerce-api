@@ -10,7 +10,7 @@
 // Exit if accessed directly
 if (!defined('ABSPATH')) {
     exit;
-} 
+}
 
 // Turn on debugging?
 // Don't do this in live, it causes errors if defined again later. cn 20190409
@@ -25,7 +25,7 @@ if (!defined('REDENOTSET')) {
     define('REDENOTSET', '__RED_E_NOTSET__'); // because sometimes false, 0 etc are
   // exspected but consistently dealing with these situations is tiresome.
 }
-    
+
 
 require_once(plugin_dir_path(__FILE__) . 'classes/class-rede-helpers.php');
 require_once(plugin_dir_path(__FILE__) . 'classes/class-pa-updater-config.php');
@@ -236,10 +236,10 @@ function printaura_check_printaura_version()
 function printaura_woocommerce_api_activate()
 {
     global $wpdb;
- 
+
     $helpers = new JSONAPIHelpers();
-    $current_user 	= wp_get_current_user();
-    $user_id	= $current_user->ID;
+    $current_user     = wp_get_current_user();
+    $user_id    = $current_user->ID;
     wp_insert_term('shipped', 'shop_order_status');
     wp_insert_term('partially shipped', 'shop_order_status');
     wp_insert_term('T-shirts', 'product_shipping_class');
@@ -325,7 +325,7 @@ function printaura_add_wc_api_route($endpoints)
     $endpoints['/store/infos']=array(array( 'get_pa_store_info', WC_API_Server::READABLE ));
     $endpoints['/orders/(?P<order_id>\d+)/shipment']=array(array( 'update_order_item_shipment',  WC_API_Server::EDITABLE | WC_API_Server::ACCEPT_DATA ));
     $endpoints['/products/(?P<product_id>\d+)/images']=array(array( 'update_product_images', WC_API_SERVER::CREATABLE |  WC_API_Server::EDITABLE | WC_API_Server::ACCEPT_DATA ));
-    
+
     return $endpoints;
 }
 add_filter('woocommerce_api_endpoints', 'add_wc_api_route', 100, 1);
@@ -512,7 +512,7 @@ function printaura_get_pa_product_tag($id, $fields = null)
         return new WP_Error($e->getErrorCode(), $e->getMessage(), array( 'status' => $e->getCode() ));
     }
 }
-        
+
 function printaura_get_pa_store_info()
 {
     // General site data
@@ -522,7 +522,7 @@ function printaura_get_pa_store_info()
             'URL'         => sanitize_option('siteurl', get_option('siteurl')),
             'wc_version'  => WC()->version,
       'pa_version'  => '3.4.10'));
-                
+
     return $available;
 }
 
@@ -533,15 +533,15 @@ function printaura_update_order_item_shipment($order_id, $data)
 
     try {
         $id = validate_request_pa($order_id, 'shop_order', 'edit');
-            
+
         if (is_wp_error($id)) {
             return $id;
         }
-                        
+
         $order = wc_get_order($id);
-                       
+
         $line_items = (!empty($data['line_items'])) ? $data['line_items'] : array();
-                       
+
         if (!empty($line_items)) {
             foreach ($line_items as  $line_item) {
                 if (! array_key_exists('id', $line_item)) {
@@ -552,7 +552,7 @@ function printaura_update_order_item_shipment($order_id, $data)
                 wc_update_order_item_meta($line_item_id, 'tracking_number', $tracking_number);
             }
         }
-                        
+
         $total_items     = count($order->get_items());
         $total_shipped   = get_total_shipped_items($order_id);
         $ship_method     = $order->get_shipping_methods() ;
@@ -804,7 +804,7 @@ function printaura_get_pa_product_shipping_class($fields = null)
     foreach ($terms as $term_id) {
         $product_categories[] = current(get_pa_product_shipping_class_item($term_id, $fields));
     }
-    
+
     $product_categories = wc_clean($product_categories);
     //return $product_categories;
     return array( 'product_shipping_class' => apply_filters('woocommerce_api_product_categories_response', $product_categories, $terms, $fields) );
@@ -842,7 +842,7 @@ function printaura_get_pa_product_shipping_class_item($id, $fields = null)
 
     return array( 'product_shipping_class' => apply_filters('woocommerce_api_product_category_response', $product_category, $id, $fields, $term) );
 }
-         
+
 function printaura_validate_request_pa($id, $type, $context)
 {
     if ('shop_order' === $type || 'shop_coupon' === $type || 'shop_webhook' === $type) {
@@ -895,7 +895,7 @@ function printaura_validate_request_pa($id, $type, $context)
 
     return $id;
 }
-        
+
 function printaura_check_permission_pa($post, $context)
 {
     if (! is_a($post, 'WP_Post')) {
@@ -918,17 +918,17 @@ function printaura_check_permission_pa($post, $context)
         return false;
     }
 }
-        
+
 function printaura_is_pa_readable($post)
 {
     return check_permission_pa($post, 'read');
 }
-        
+
 function printaura_is_pa_editable($post)
 {
     return check_permission_pa($post, 'edit');
 }
-        
+
 function printaura_is_pa_deletable($post)
 {
     return check_permission_pa($post, 'delete');
@@ -938,7 +938,7 @@ function printaura_add_pa_order_statuses($order_statuses)
 {
     $order_statuses['wc-shipped'] = _x('Shipped', 'Order status', 'woocommerce');
     $order_statuses['wc-parially-shipped'] = _x('Partially Shipped', 'Order status', 'woocommerce');
-    
+
     return $order_statuses;
 }
 add_filter('wc_order_statuses', 'printaura_add_pa_order_statuses');
@@ -949,7 +949,7 @@ function printaura_pa_attach_tags($product_id, $terms, $type='cat')
         $product_terms= array();
         foreach ($terms as $ter) {
             $term = term_exists($ter, 'product_'.$type);
-                   
+
             if ($term !== 0 && $term !== null) {//term exists
                 $product_terms[] = (int)  $term['term_id'] ;
             } else {//term doesnt exists , create it
@@ -960,7 +960,7 @@ function printaura_pa_attach_tags($product_id, $terms, $type='cat')
                 }
             }
         }
-        
+
         if (!empty($product_terms)) {
             wp_set_object_terms($product_id, $product_terms, 'product_'.$type);
         }
@@ -985,7 +985,7 @@ function printaura_pa_after_edit_product($id, $data)
             $all_attributes = array_merge($all_attributes, explode(' | ', $attributes['options']));
         }
     }
-         
+
     foreach ($all_attributes as $key=>$value) {
         $all_attributes[] = sanitize_title(strtolower($value));
     }
@@ -994,7 +994,7 @@ function printaura_pa_after_edit_product($id, $data)
         foreach ($variation['attributes'] as $attr=>$attribute_value) {
             if (in_array($attr, array('attribute_color','attribute_size','attribute_pa_color','attribute_pa_size','attribute_pa_color-g','attribute_pa_size-g'))) {
                 //$attribute_value = implode(" ",explode('-',$attribute_value));
-                       
+
                 if (!in_array($attribute_value, $all_attributes)) {
                     wp_delete_post($variation['variation_id'], true) ;
                     break;
@@ -1002,7 +1002,7 @@ function printaura_pa_after_edit_product($id, $data)
             }
         }
     }
-     
+
     pa_attach_tags($id, $data['tags'], 'tag');
 }
 add_action('woocommerce_api_edit_product', 'pa_after_edit_product', 2, 2);
@@ -1046,7 +1046,7 @@ function printaura_fix_order_hook($topic_hooks)
 {
     $topic_hooks['order.created'][]  = 'woocommerce_order_status_processed';
     $topic_hooks['order.updated'][]  = 'woocommerce_order_status_processed';
-  
+
     return $topic_hooks;
 }
 add_filter('woocommerce_webhook_topic_hooks', 'printaura_fix_order_hook');
@@ -1097,17 +1097,17 @@ add_action('init', 'printaura_register_pa_custom_order_status');
 function printaura_add_pa_custom_order_statuses($order_statuses)
 {
     $new_order_statuses = array();
- 
+
     // add new order status after processing
     foreach ($order_statuses as $key => $status) {
         $new_order_statuses[ $key ] = $status;
- 
+
         if ('wc-processing' === $key) {
             $new_order_statuses['wc-shipped'] = 'Shipped';
             $new_order_statuses['wc-partially-shipped'] = 'Patially Shipped';
         }
     }
- 
+
     return $new_order_statuses;
 }
 add_filter('wc_order_statuses', 'printaura_add_pa_custom_order_statuses');
