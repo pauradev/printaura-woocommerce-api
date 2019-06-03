@@ -529,7 +529,7 @@ class WC_JSON_API_Provider_v1 extends JSONAPIHelpers {
     
     $by_ids = true;
     if ( ! $this->inArray($order_by,$allowed_order_bys) ) {
-      $this->result->addError( __('order_by must be one of these:','printaura_api') . join( $allowed_order_bys, ','), JSONAPI_BAD_ARGUMENT );
+      $this->result->addError( __('order_by must be one of these:','printaura_api') . join( $allowed_order_bys, ','), PRINTAURA_JSONAPI_BAD_ARGUMENT );
       return $this->done();
       return;
     }
@@ -562,7 +562,7 @@ class WC_JSON_API_Provider_v1 extends JSONAPIHelpers {
       foreach ($ids as $id) {
         $post_id = $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$wpdb->posts} WHERE ID=%d",$id) );
         if ( ! $post_id ) {
-          $this->result->addWarning( $id . ': ' . __('Product does not exist','printaura_api'), JSONAPI_PRODUCT_NOT_EXISTS, array( 'id' => $id) );
+          $this->result->addWarning( $id . ': ' . __('Product does not exist','printaura_api'), PRINTAURA_JSONAPI_PRODUCT_NOT_EXISTS, array( 'id' => $id) );
         } else {
           $posts[] = $post_id;
         }
@@ -574,7 +574,7 @@ class WC_JSON_API_Provider_v1 extends JSONAPIHelpers {
       foreach ($skus as $sku) {
         $post_id = $wpdb->get_var( $wpdb->prepare( "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key='_sku' AND meta_value='%s' LIMIT 1",$sku) );
         if ( ! $post_id ) {
-          $this->result->addWarning( $sku . ': ' . __('Product does not exist','printaura_api'), JSONAPI_PRODUCT_NOT_EXISTS, array( 'sku' => $sku) );
+          $this->result->addWarning( $sku . ': ' . __('Product does not exist','printaura_api'), PRINTAURA_JSONAPI_PRODUCT_NOT_EXISTS, array( 'sku' => $sku) );
         } else {
           $posts[] = $post_id;
         }
@@ -586,7 +586,7 @@ class WC_JSON_API_Provider_v1 extends JSONAPIHelpers {
       $post = API\Product::find($post_id);
 
       if ( !$post ) {
-        $this->result->addWarning( $post_id. ': ' . __('Product does not exist','printaura_api'), JSONAPI_PRODUCT_NOT_EXISTS, array( 'id' => $post_id) );
+        $this->result->addWarning( $post_id. ': ' . __('Product does not exist','printaura_api'), PRINTAURA_JSONAPI_PRODUCT_NOT_EXISTS, array( 'id' => $post_id) );
       } else {
 
         $products[] = $post->asApiArray($params['arguments']);
@@ -614,7 +614,7 @@ class WC_JSON_API_Provider_v1 extends JSONAPIHelpers {
     
     $by_ids = true;
     if ( ! $this->inArray($order_by,$allowed_order_bys) ) {
-      $this->result->addError( __('order_by must be one of these:','printaura_api') . join( $allowed_order_bys, ','), JSONAPI_BAD_ARGUMENT );
+      $this->result->addError( __('order_by must be one of these:','printaura_api') . join( $allowed_order_bys, ','), PRINTAURA_JSONAPI_BAD_ARGUMENT );
       return $this->done();
       return;
     }
@@ -667,7 +667,7 @@ class WC_JSON_API_Provider_v1 extends JSONAPIHelpers {
       foreach ($skus as $sku) {
         $pid = $wpdb->get_var( $wpdb->prepare( "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key='_sku' AND meta_value='%s' LIMIT 1",$sku) );
         if ( ! $pid ) {
-          $this->result->addWarning( $sku . ': ' . __('Product does not exist','printaura_api'), JSONAPI_PRODUCT_NOT_EXISTS, array( 'sku' => $sku) );
+          $this->result->addWarning( $sku . ': ' . __('Product does not exist','printaura_api'), PRINTAURA_JSONAPI_PRODUCT_NOT_EXISTS, array( 'sku' => $sku) );
         } else {
           $ids[] = $pid;
         }
@@ -688,7 +688,7 @@ class WC_JSON_API_Provider_v1 extends JSONAPIHelpers {
       $post = API\Product::find($post_id);
 
       if ( !$post ) {
-        $this->result->addWarning( $post_id. ': ' . __('Product does not exist','printaura_api'), JSONAPI_PRODUCT_NOT_EXISTS, array( 'id' => $post_id) );
+        $this->result->addWarning( $post_id. ': ' . __('Product does not exist','printaura_api'), PRINTAURA_JSONAPI_PRODUCT_NOT_EXISTS, array( 'id' => $post_id) );
       } else {
 
         $products[] = $post->asApiArray();
@@ -763,14 +763,14 @@ class WC_JSON_API_Provider_v1 extends JSONAPIHelpers {
       $term = $wpdb->prepare("%s",$term);
     }
     if ( count($terms) < 1) {
-      $this->result->addError( __('you must specify at least one term','printaura_api'), JSONAPI_BAD_ARGUMENT );
+      $this->result->addError( __('you must specify at least one term','printaura_api'), PRINTAURA_JSONAPI_BAD_ARGUMENT );
       return $this->done();
     }
     $posts_per_page = $this->orEq( $params['arguments'], 'per_page', 15 ); 
     $paged          = $this->orEq( $params['arguments'], 'page', 0 );
     $order_by       = $this->orEq( $params['arguments'], 'order_by', 'id');
     if ( ! $this->inArray($order_by,$allowed_order_bys) ) {
-      $this->result->addError( __('order_by must be one of these:','printaura_api') . join( $allowed_order_bys, ','), JSONAPI_BAD_ARGUMENT );
+      $this->result->addError( __('order_by must be one of these:','printaura_api') . join( $allowed_order_bys, ','), PRINTAURA_JSONAPI_BAD_ARGUMENT );
       return $this->done();
       return;
     }
@@ -834,7 +834,7 @@ class WC_JSON_API_Provider_v1 extends JSONAPIHelpers {
     
     $by_ids = true;
     if ( ! $this->inArray($order_by,$allowed_order_bys) ) {
-      $this->result->addError( __('order_by must be one of these:','printaura_api') . join( $allowed_order_bys, ','), JSONAPI_BAD_ARGUMENT );
+      $this->result->addError( __('order_by must be one of these:','printaura_api') . join( $allowed_order_bys, ','), PRINTAURA_JSONAPI_BAD_ARGUMENT );
       return $this->done();
       return;
     }
@@ -867,7 +867,7 @@ class WC_JSON_API_Provider_v1 extends JSONAPIHelpers {
       foreach ($ids as $id) {
         $post_id = $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$wpdb->posts} WHERE ID=".$id) );
         if ( ! $post_id ) {
-          $this->result->addWarning( $id . ': ' . __('Product does not exist','printaura_api'), JSONAPI_PRODUCT_NOT_EXISTS, array( 'id' => $id) );
+          $this->result->addWarning( $id . ': ' . __('Product does not exist','printaura_api'), PRINTAURA_JSONAPI_PRODUCT_NOT_EXISTS, array( 'id' => $id) );
         } else {
           $posts[] = $post_id;
         }
@@ -879,7 +879,7 @@ class WC_JSON_API_Provider_v1 extends JSONAPIHelpers {
       foreach ($skus as $sku) {
         $post_id = $wpdb->get_var( $wpdb->prepare( "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key='_sku' AND meta_value='%s' LIMIT 1",$sku) );
         if ( ! $post_id ) {
-          $this->result->addWarning( $sku . ': ' . __('Product does not exist','printaura_api'), JSONAPI_PRODUCT_NOT_EXISTS, array( 'sku' => $sku) );
+          $this->result->addWarning( $sku . ': ' . __('Product does not exist','printaura_api'), PRINTAURA_JSONAPI_PRODUCT_NOT_EXISTS, array( 'sku' => $sku) );
         } else {
           $posts[] = $post_id;
         }
@@ -891,7 +891,7 @@ class WC_JSON_API_Provider_v1 extends JSONAPIHelpers {
       $post = API\Product::find($post_id);
 
       if ( !$post ) {
-        $this->result->addWarning( $post_id. ': ' . __('Product does not exist','printaura_api'), JSONAPI_PRODUCT_NOT_EXISTS, array( 'id' => $post_id) );
+        $this->result->addWarning( $post_id. ': ' . __('Product does not exist','printaura_api'), PRINTAURA_JSONAPI_PRODUCT_NOT_EXISTS, array( 'id' => $post_id) );
       } else {
 
         $products[] = $post->asApiArray($params['arguments']);
@@ -941,7 +941,7 @@ class WC_JSON_API_Provider_v1 extends JSONAPIHelpers {
          $image =  API\Image::find($id); 
         if ( !  $image ) {
             JSONAPIHelpers::debug("Image Not Exist in store");
-          $this->result->addWarning( $id . ': ' . __('Image does not exist','printaura_api'), JSONAPI_PRODUCT_NOT_EXISTS, array( 'id' => $id) );
+          $this->result->addWarning( $id . ': ' . __('Image does not exist','printaura_api'), PRINTAURA_JSONAPI_PRODUCT_NOT_EXISTS, array( 'id' => $id) );
           return $this->done();
         } else {
           $image->delete($wpdb->posts, array(
@@ -964,7 +964,7 @@ if ( $ids ) {
          $image =  API\Image::find($id); 
         if ( !  $image ) {
             JSONAPIHelpers::debug("Image Not Exist in store");
-          $this->result->addWarning( $id . ': ' . __('Image does not exist','printaura_api'), JSONAPI_PRODUCT_NOT_EXISTS, array( 'id' => $id) );
+          $this->result->addWarning( $id . ': ' . __('Image does not exist','printaura_api'), PRINTAURA_JSONAPI_PRODUCT_NOT_EXISTS, array( 'id' => $id) );
           return $this->done();
         } else {
           $image->delete($wpdb->posts, array(
@@ -993,7 +993,7 @@ if ( $ids ) {
         $post_id=$prod->_actual_model_id;
         if ( ! $post_id ) {
             JSONAPIHelpers::debug("Product Not Exist in store");
-          $this->result->addWarning( $id . ': ' . __('Product does not exist','printaura_api'), JSONAPI_PRODUCT_NOT_EXISTS, array( 'id' => $post_id) );
+          $this->result->addWarning( $id . ': ' . __('Product does not exist','printaura_api'), PRINTAURA_JSONAPI_PRODUCT_NOT_EXISTS, array( 'id' => $post_id) );
         } else {
             JSONAPIHelpers::debug("Product Exist in store And id=".$post_id);
           $args = array(
@@ -1024,7 +1024,7 @@ if ( $ids ) {
         $post_id = $wpdb->get_var( $wpdb->prepare( "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key='_sku' AND meta_value='%s' LIMIT 1",$sku) );
         if ( ! $post_id ) {
             JSONAPIHelpers::debug("Product Variations Not Exist in store");
-          $this->result->addWarning( $sku . ': ' . __('Product does not exist','printaura_api'), JSONAPI_PRODUCT_NOT_EXISTS, array( 'sku' => $sku) );
+          $this->result->addWarning( $sku . ': ' . __('Product does not exist','printaura_api'), PRINTAURA_JSONAPI_PRODUCT_NOT_EXISTS, array( 'sku' => $sku) );
         } else {
             JSONAPIHelpers::debug("Product Variations Exist in store And id=".$post_id);
           $product->delete($wpdb->posts, array(
@@ -1067,7 +1067,7 @@ if ( $ids ) {
               'Product does not exist.',
               'printaura_api'
             ),
-          JSONAPI_PRODUCT_NOT_EXISTS, 
+          PRINTAURA_JSONAPI_PRODUCT_NOT_EXISTS, 
           array( 
             'id' => isset($attrs['id']) ? $attrs['id'] : 'none',
             'sku' => isset($attrs['sku']) ? $attrs['sku'] : 'none',
@@ -1142,7 +1142,7 @@ if ( $ids ) {
         } else {
           $this->result->addError(
             __("Could not find that category"),
-            JSONAPI_MODEL_NOT_EXISTS,
+            PRINTAURA_JSONAPI_MODEL_NOT_EXISTS,
             array('id' => $category['id'])
           );
           return $this->done();
@@ -1263,13 +1263,13 @@ if ( $ids ) {
     $args['order_by']             = $this->orEq( $params['arguments'], 'order_by', 'name');
 
     if ( ! $this->inArray($args['order_by'],$allowed_order_bys) ) {
-      $this->result->addError( __('order_by must be one of these:','printaura_api') . join( $allowed_order_bys, ','), JSONAPI_BAD_ARGUMENT, $args );
+      $this->result->addError( __('order_by must be one of these:','printaura_api') . join( $allowed_order_bys, ','), PRINTAURA_JSONAPI_BAD_ARGUMENT, $args );
       return $this->done();
       return;
     }
 
     if ( ! $this->inArray($args['order'],$allowed_orders) ) {
-      $this->result->addError( __('order must be one of these:','printaura_api') . join( $allowed_orders, ','), JSONAPI_BAD_ARGUMENT );
+      $this->result->addError( __('order must be one of these:','printaura_api') . join( $allowed_orders, ','), PRINTAURA_JSONAPI_BAD_ARGUMENT );
       return $this->done();
       return;
     }
@@ -1362,7 +1362,7 @@ if ( $ids ) {
         }
         
         if ( !$post ) {
-          $this->result->addWarning( $post_id. ': ' . __('Order does not exist','printaura_api'), JSONAPI_ORDER_NOT_EXISTS, array( 'id' => $post_id) );
+          $this->result->addWarning( $post_id. ': ' . __('Order does not exist','printaura_api'), PRINTAURA_JSONAPI_ORDER_NOT_EXISTS, array( 'id' => $post_id) );
         } else {
                      //$pr=API\Product::find($product->_actual_model_id);
           $status=$post->getStatus();
@@ -1401,7 +1401,7 @@ if ( $ids ) {
     } else if ( $ids ) {
       fetch:
       if ( empty($ids) ) {
-          $this->result->addWarning( __("There were no Orders in the trash found."),JSONAPI_NO_RESULTS_POSSIBLE);
+          $this->result->addWarning( __("There were no Orders in the trash found."),PRINTAURA_JSONAPI_NO_RESULTS_POSSIBLE);
           return $this->done();
       }
       //$posts = $ids;
@@ -1423,7 +1423,7 @@ if ( $ids ) {
         }
         
         if ( !$post ) {
-          $this->result->addWarning( $post_id. ': ' . __('Order does not exist','printaura_api'), JSONAPI_ORDER_NOT_EXISTS, array( 'id' => $post_id) );
+          $this->result->addWarning( $post_id. ': ' . __('Order does not exist','printaura_api'), PRINTAURA_JSONAPI_ORDER_NOT_EXISTS, array( 'id' => $post_id) );
         } else {
           $orders[] = $post->asApiArray();
         }
@@ -1440,7 +1440,7 @@ if ( $ids ) {
        $order_id = $this->orEq( $params['arguments'],'order_id',false);
         wp_mail('aladin@printaura.com','tracking',/*var_export($payload,true)*/'dfd');   
     if ( ! $payload || ! is_array($payload)) {
-      $this->result->addError( __('Missing payload','printaura_api'), JSONAPI_BAD_ARGUMENT );
+      $this->result->addError( __('Missing payload','printaura_api'), PRINTAURA_JSONAPI_BAD_ARGUMENT );
       return $this->done();
     }
         if ($order_id) {
@@ -1492,7 +1492,7 @@ if ( $ids ) {
        $arguments = $this->orEq( $params,'arguments', false);
        //wp_mail('aladin@printaura.com','tracking',var_export($payload,true));    
     if ( ! $payload || ! is_array($payload)) {
-      $this->result->addError( __('Missing payload','printaura_api'), JSONAPI_BAD_ARGUMENT );
+      $this->result->addError( __('Missing payload','printaura_api'), PRINTAURA_JSONAPI_BAD_ARGUMENT );
       return $this->done();
     }
     $items = array();
@@ -1556,7 +1556,7 @@ if ( $ids ) {
   public function set_orders( $params ) {
     $payload = $this->orEq( $params,'payload', false);
     if ( ! $payload || ! is_array($payload)) {
-      $this->result->addError( __('Missing payload','printaura_api'), JSONAPI_BAD_ARGUMENT );
+      $this->result->addError( __('Missing payload','printaura_api'), PRINTAURA_JSONAPI_BAD_ARGUMENT );
       return $this->done();
     }
     $orders = array();
@@ -1580,7 +1580,7 @@ if ( $ids ) {
         } else {
           $this->addError(
             __('Cannot create Order','printaura_api'),
-            JSONAPI_CANNOT_INSERT_RECORD
+            PRINTAURA_JSONAPI_CANNOT_INSERT_RECORD
           );
           $this->result->setPayload($orders);
           return $this->done();
@@ -1611,7 +1611,7 @@ if ( $ids ) {
     $filter = $this->orEq( $params['arguments'],'filter', '');
     $payload = $this->orEq( $params,'payload', false);
     if ( ! $payload || ! is_array($payload)) {
-      $this->result->addError( __('Missing payload','printaura_api'), JSONAPI_BAD_ARGUMENT );
+      $this->result->addError( __('Missing payload','printaura_api'), PRINTAURA_JSONAPI_BAD_ARGUMENT );
       return $this->done();
     }
     $filter = $wpdb->prepare("%s",$filter);
@@ -1664,7 +1664,7 @@ if ( $ids ) {
     $filter = $this->orEq( $params['arguments'],'filter', '');
     $payload = $this->orEq( $params,'payload', false);
     if ( ! $payload || ! is_array($payload)) {
-      $this->result->addError( __('Missing payload','printaura_api'), JSONAPI_BAD_ARGUMENT );
+      $this->result->addError( __('Missing payload','printaura_api'), PRINTAURA_JSONAPI_BAD_ARGUMENT );
       return $this->done();
     }
     $filter = $wpdb->prepare("%s",$filter);
@@ -1717,7 +1717,7 @@ if ( $ids ) {
     
     $by_ids = true;
     if ( ! $this->inArray($order_by,$allowed_order_bys) ) {
-      $this->result->addError( __('order_by must be one of these:','printaura_api') . join( $allowed_order_bys, ','), JSONAPI_BAD_ARGUMENT );
+      $this->result->addError( __('order_by must be one of these:','printaura_api') . join( $allowed_order_bys, ','), PRINTAURA_JSONAPI_BAD_ARGUMENT );
       return $this->done();
       return;
     }
@@ -1741,7 +1741,7 @@ if ( $ids ) {
       foreach ($skus as $sku) {
         $coupon = API\Coupon::find_by_sku($sku);
         if ( ! $coupon ) {
-          $this->result->addWarning( $sku . ': ' . __('Coupon does not exist','printaura_api'), JSONAPI_PRODUCT_NOT_EXISTS, array( 'sku' => $sku) );
+          $this->result->addWarning( $sku . ': ' . __('Coupon does not exist','printaura_api'), PRINTAURA_JSONAPI_PRODUCT_NOT_EXISTS, array( 'sku' => $sku) );
         } else {
           $coupons[] = $coupon;
         }
@@ -1759,7 +1759,7 @@ if ( $ids ) {
 
       
       if ( !$post ) {
-        $this->result->addWarning( $post_id. ': ' . __('Coupon does not exist','printaura_api'), JSONAPI_PRODUCT_NOT_EXISTS, array( 'id' => $post_id) );
+        $this->result->addWarning( $post_id. ': ' . __('Coupon does not exist','printaura_api'), PRINTAURA_JSONAPI_PRODUCT_NOT_EXISTS, array( 'id' => $post_id) );
       } else {
 
         $coupons[] = $post->asApiArray();
@@ -1789,7 +1789,7 @@ if ( $ids ) {
               'Coupon does not exist.',
               'printaura_api'
             ),
-          JSONAPI_PRODUCT_NOT_EXISTS, 
+          PRINTAURA_JSONAPI_PRODUCT_NOT_EXISTS, 
           array( 
             'id' => isset($attrs['id']) ? $attrs['id'] : 'none',
           )
@@ -1805,7 +1805,7 @@ if ( $ids ) {
               'Failed to create coupon!',
               'printaura_api'
             ),
-          JSONAPI_CANNOT_INSERT_RECORD, 
+          PRINTAURA_JSONAPI_CANNOT_INSERT_RECORD, 
           array( 
             'code' => isset($attrs['code']) ? $attrs['code'] : 'none',
           )
@@ -1830,7 +1830,7 @@ if ( $ids ) {
     $parent_ids     = $this->orEq( $params['arguments'], 'parent_ids', false);
     $by_ids = true;
     if ( ! $this->inArray($order_by,$allowed_order_bys) ) {
-      $this->result->addError( __('order_by must be one of these:','printaura_api') . join( $allowed_order_bys, ','), JSONAPI_BAD_ARGUMENT );
+      $this->result->addError( __('order_by must be one of these:','printaura_api') . join( $allowed_order_bys, ','), PRINTAURA_JSONAPI_BAD_ARGUMENT );
       return $this->done();
       return;
     }
@@ -1863,7 +1863,7 @@ if ( $ids ) {
 
       
       if ( !$post ) {
-        $this->result->addWarning( $post_id. ': ' . __('Image does not exist','printaura_api'), JSONAPI_PRODUCT_NOT_EXISTS, array( 'id' => $post_id) );
+        $this->result->addWarning( $post_id. ': ' . __('Image does not exist','printaura_api'), PRINTAURA_JSONAPI_PRODUCT_NOT_EXISTS, array( 'id' => $post_id) );
       } else {
         $images[] = $post->asApiArray();
       }

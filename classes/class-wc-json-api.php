@@ -4,20 +4,20 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  * Core JSON API
 */
 // Error Codes are negative, Warning codes are positive
-define('JSONAPI_EXPECTED_ARGUMENT',             -1);
-define('JSONAPI_NOT_IMPLEMENTED',               -2);
-define('JSONAPI_UNEXPECTED_ERROR',              -3);
-define('JSONAPI_INVALID_CREDENTIALS',           -4);
-define('JSONAPI_BAD_ARGUMENT',                  -5);
-define('JSONAPI_CANNOT_INSERT_RECORD',          -6);
-define('JSONAPI_PERMSNOTSET',                   -7);
-define('JSONAPI_PERMSINSUFF',                   -8);
-define('JSONAPI_INTERNAL_ERROR',                -9);
+define('PRINTAURA_JSONAPI_EXPECTED_ARGUMENT',             -1);
+define('PRINTAURA_JSONAPI_NOT_IMPLEMENTED',               -2);
+define('PRINTAURA_JSONAPI_UNEXPECTED_ERROR',              -3);
+define('PRINTAURA_JSONAPI_INVALID_CREDENTIALS',           -4);
+define('PRINTAURA_JSONAPI_CANNOT_INSERT_RECORD',          -6);
+define('PRINTAURA_JSONAPI_BAD_ARGUMENT',                  -5);
+define('PRINTAURA_JSONAPI_PERMSNOTSET',                   -7);
+define('PRINTAURA_JSONAPI_PERMSINSUFF',                   -8);
+define('PRINTAURA_JSONAPI_INTERNAL_ERROR',                -9);
 
-define('JSONAPI_PRODUCT_NOT_EXISTS', 1);
-define('JSONAPI_ORDER_NOT_EXISTS', 2);
-define('JSONAPI_NO_RESULTS_POSSIBLE', 3);
-define('JSONAPI_MODEL_NOT_EXISTS', 1);
+define('PRINTAURA_JSONAPI_PRODUCT_NOT_EXISTS', 1);
+define('PRINTAURA_JSONAPI_ORDER_NOT_EXISTS', 2);
+define('PRINTAURA_JSONAPI_NO_RESULTS_POSSIBLE', 3);
+define('PRINTAURA_JSONAPI_MODEL_NOT_EXISTS', 1);
 
 require_once( plugin_dir_path(__FILE__) . '/class-rede-helpers.php' );
 require_once( plugin_dir_path(__FILE__) . '/class-wc-json-api-result.php' );
@@ -29,9 +29,9 @@ use WCAPI as API;
 if ( !defined('PHP_VERSION_ID')) {
   $version = explode('.',PHP_VERSION);
   if ( PHP_VERSION_ID < 50207 ) {
-    define('PHP_MAJOR_VERSION',$version[0]);
-    define('PHP_MINOR_VERSION',$version[1]);
-    define('PHP_RELEASE_VERSION',$version[2]);
+    define('PRINTAURA_PHP_MAJOR_VERSION',$version[0]);
+    define('PRINTAURA_PHP_MINOR_VERSION',$version[1]);
+    define('PRINTAURA_PHP_RELEASE_VERSION',$version[2]);
   }
 }
 class WooCommerce_JSON_API extends JSONAPIHelpers {
@@ -172,7 +172,7 @@ class WooCommerce_JSON_API extends JSONAPIHelpers {
        JSONAPIHelpers::debug( "Not a valid user" );
       $this->result->addError(
         __('Not a valid API User ', 'printaura_api' ),
-        JSONAPI_INVALID_CREDENTIALS
+        PRINTAURA_JSONAPI_INVALID_CREDENTIALS
       );
       return $this->done();
 
@@ -192,7 +192,7 @@ class WooCommerce_JSON_API extends JSONAPIHelpers {
           JSONAPIHelpers::warn("Arguments did not pass validation");
           $this->result->addError(
         __('Not a valid API User Status', 'printaura_api' ),
-        JSONAPI_INVALID_CREDENTIALS
+        PRINTAURA_JSONAPI_INVALID_CREDENTIALS
       );
           return $this->done();
         } else {
@@ -212,7 +212,7 @@ class WooCommerce_JSON_API extends JSONAPIHelpers {
 
       $this->result->addError(
           __('Expected argument was not present', 'printaura_api') . ' `proc`',
-           JSONAPI_EXPECTED_ARGUMENT
+           PRINTAURA_JSONAPI_EXPECTED_ARGUMENT
       );
       return $this->done();
   }
@@ -226,7 +226,7 @@ class WooCommerce_JSON_API extends JSONAPIHelpers {
       return true;
     }
     if ( ! isset($params['arguments']) ) {
-      $this->result->addError( __( 'Missing `arguments` Data','printaura_api' ),JSONAPI_EXPECTED_ARGUMENT );
+      $this->result->addError( __( 'Missing `arguments` Data','printaura_api' ),PRINTAURA_JSONAPI_EXPECTED_ARGUMENT );
       return false;
     }
     $by_token = true;
@@ -261,7 +261,7 @@ class WooCommerce_JSON_API extends JSONAPIHelpers {
       if (isset( $api_token) &&  $params['arguments']['token'] == $api_token) {
        if ( $api_enabled == 'no' ) {
 
-          $this->result->addError( __( 'You have been banned.','printaura_api' ), JSONAPI_PERMSINSUFF );
+          $this->result->addError( __( 'You have been banned.','printaura_api' ), PRINTAURA_JSONAPI_PERMSINSUFF );
 
           return false;
         }
@@ -300,7 +300,7 @@ class WooCommerce_JSON_API extends JSONAPIHelpers {
     }
     $this->result->addError(
       sprintf( __('An unexpected error has occured %s ', 'printaura_api' ) ,$error->getMessage() ),
-      JSONAPI_UNEXPECTED_ERROR,
+      PRINTAURA_JSONAPI_UNEXPECTED_ERROR,
       array('trace' => $trace)
     );
     return $this->done();

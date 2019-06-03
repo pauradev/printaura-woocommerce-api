@@ -106,10 +106,10 @@ class JSONAPIHelpers {
     }
   }
   public function missingArgument( $name ) {
-    $this->result->addError( sprintf(__( 'Missing `%s` in `arguments`','woocommerce_json_api' ), $name),JSONAPI_EXPECTED_ARGUMENT );
+    $this->result->addError( sprintf(__( 'Missing `%s` in `arguments`','woocommerce_json_api' ), $name),PRINTAURA_JSONAPI_EXPECTED_ARGUMENT );
   }
   public function badArgument( $name, $values='' ) {
-    $this->result->addError( sprintf(__( 'The value of `%s` is not valid, only %s accepted.','woocommerce_json_api' ), $name, $values),JSONAPI_BAD_ARGUMENT );
+    $this->result->addError( sprintf(__( 'The value of `%s` is not valid, only %s accepted.','woocommerce_json_api' ), $name, $values),PRINTAUAR_JSONAPI_BAD_ARGUMENT );
   }
   // README
   // This function finds where a template is located in the system

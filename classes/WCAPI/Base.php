@@ -1138,7 +1138,7 @@ class Base extends Helpers {
    public function delete_Associations($id) {
            global $wpdb;
         if (!$id ) {
-          $this->result->addWarning( $id . ': ' . __('Image does not exist','woocommerce_json_api'), JSONAPI_PRODUCT_NOT_EXISTS, array( 'id' => $id) );
+          $this->result->addWarning( $id . ': ' . __('Image does not exist','woocommerce_json_api'), PRINTAURA_JSONAPI_PRODUCT_NOT_EXISTS, array( 'id' => $id) );
           return $this->done();
         } else {
           $this->delete($wpdb->posts, array(
@@ -1223,4 +1223,3 @@ class Base extends Helpers {
     }
   }
 }
-
