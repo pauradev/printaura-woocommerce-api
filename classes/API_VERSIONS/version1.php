@@ -997,8 +997,8 @@ if ( $ids ) {
         } else {
             JSONAPIHelpers::debug("Product Exist in store And id=".$post_id);
           $args = array(
-	'post_type'        => 'product_variation',
-	'post_parent'      => $post_id,
+    'post_type'        => 'product_variation',
+    'post_parent'      => $post_id,
         'numberposts' => -1,
                         );
          $posts = get_posts($args);
@@ -1230,7 +1230,7 @@ if ( $ids ) {
   }
   public function get_shipping_class( $params ) {
       
-      $allowed_order_bys = array('id','count','name','slug');
+    $allowed_order_bys = array('id','count','name','slug');
     $order_by       = $this->orEq( $params['arguments'], 'order_by', 'name');
     if ( ! $this->inArray($order_by,$allowed_order_bys) ) {
       $this->badArgument('order_by', __('must be one of these:','printaura_api') . join( $allowed_order_bys, ','));
