@@ -1,7 +1,7 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
-if ( ! defined('EVERYTHING') ) {
-  define('EVERYTHING',true);
+if ( ! defined('PRINTAURA_EVERYTHING') ) {
+  define('PRINTAURA_EVERYTHING',true);
 }
 class Mapper {
   public $connection = null;
@@ -11,13 +11,13 @@ class Mapper {
   public $self;
   public function __construct( $active_connection ) {
     $this->connection = $active_connection;
-    $this->reset(EVERYTHING);
+    $this->reset(PRINTAURA_EVERYTHING);
   }
 
   public function reset($kind_of = null) {
     $this->errors = array();
     $this->details = array();
-    if ( $kind_of == EVERYTHING ) {
+    if ( $kind_of == PRINTAURA_EVERYTHING ) {
       $this->table_prefix = '';
       $this->setSelf($this);
     }

@@ -1,16 +1,16 @@
 <?php
 namespace WCAPI;
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
-if ( ! function_exists('_rede_notset') ) {
-  function _rede_notset( $mixed ) {
-    if (defined('REDENOTSET')) {
-      if ($mixed == REDENOTSET) {
+if ( ! function_exists('_printaura_rede_notset') ) {
+  function _printaura_rede_notset( $mixed ) {
+    if (defined('PRINTAURA_REDENOTSET')) {
+      if ($mixed == PRINTAURA_REDENOTSET) {
         return true;
       } else {
         return false;
       }
     } else {
-      throw new Exception( __('REDENOTSET is not defined!','rede_plugins') );
+      throw new Exception( __('PRINTAURA_REDENOTSET is not defined!','rede_plugins') );
     }
   }
 }
@@ -31,10 +31,10 @@ class Helpers {
   // Later on, these will be configurable and can be
   // turned off completely from the controls in the UI.
   public static function warn($text) {
-    if ( ! defined('WC_JSON_API_DEBUG') ) {
+    if ( ! defined('PRINTAURA_WC_JSON_API_DEBUG') ) {
       return;
     }
-    $file = REDE_PLUGIN_BASE_PATH . "warnings.log";
+    $file = PRINTAURA_REDE_PLUGIN_BASE_PATH . "warnings.log";
     $fp = @fopen($file,'a');
     if ($fp) {
       fwrite($fp,$text . "\n");
@@ -90,7 +90,7 @@ class Helpers {
     return join('/',$new_u);
   }
   public static function error($text) {
-    $fp = @fopen(REDE_PLUGIN_BASE_PATH . "errors.log",'a');
+    $fp = @fopen(PRINTAURA_REDE_PLUGIN_BASE_PATH . "errors.log",'a');
     if ($fp) {
       fwrite($fp,$text . "\n");
       self::debug("[Error] " . $text);
@@ -100,10 +100,10 @@ class Helpers {
   }
   public static function debug($text) {
     //echo $text;
-    if ( ! defined('WC_JSON_API_DEBUG') ) {
+    if ( ! defined('PRINTAURA_WC_JSON_API_DEBUG') ) {
       return;
     }
-    $fp = @fopen(REDE_PLUGIN_BASE_PATH . "debug.log",'a');
+    $fp = @fopen(PRINTAURA_REDE_PLUGIN_BASE_PATH . "debug.log",'a');
     if ($fp) {
           fwrite($fp,$text . "\n");
       fclose($fp);
@@ -117,10 +117,10 @@ class Helpers {
     
     // All we are doing here is populating some helper variables
     // for use later
-    $this->path             = REDE_PLUGIN_BASE_PATH; // Why do this? Maybe a plugin wants to override this later...
-    $this->css              = REDE_PLUGIN_BASE_PATH . 'templates/css/';
-    $this->js               = REDE_PLUGIN_BASE_PATH . 'assets/js/'; 
-    $this->templates        = REDE_PLUGIN_BASE_PATH . 'templates/';
+    $this->path             = PRINTAURA_REDE_PLUGIN_BASE_PATH; // Why do this? Maybe a plugin wants to override this later...
+    $this->css              = PRINTAURA_REDE_PLUGIN_BASE_PATH . 'templates/css/';
+    $this->js               = PRINTAURA_REDE_PLUGIN_BASE_PATH . 'assets/js/'; 
+    $this->templates        = PRINTAURA_REDE_PLUGIN_BASE_PATH . 'templates/';
     
     $this->wp_template      = get_template();
     // Just calling get_theme_root doesn't seem to work...

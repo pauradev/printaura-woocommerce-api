@@ -15,17 +15,16 @@ if (!defined('ABSPATH')) {
 // Turn on debugging?
 // Don't do this in live, it causes errors if defined again later. cn 20190409
 /*
-if (!defined('WC_JSON_API_DEBUG')) {
-    define('WC_JSON_API_DEBUG', false);
+if (!defined('PRINTAURA_WC_JSON_API_DEBUG')) {
+    define('PRINTAURA_WC_JSON_API_DEBUG', false);
 }
 */
 
-define('REDE_PLUGIN_BASE_PATH', plugin_dir_path(__FILE__));
-if (!defined('REDENOTSET')) {
-    define('REDENOTSET', '__RED_E_NOTSET__'); // because sometimes false, 0 etc are
+define('PRINTAURA_REDE_PLUGIN_BASE_PATH', plugin_dir_path(__FILE__));
+if (!defined('PRINTAURA_REDENOTSET')) {
+    define('PRINTAURA_REDENOTSET', '__RED_E_NOTSET__'); // because sometimes false, 0 etc are
   // exspected but consistently dealing with these situations is tiresome.
 }
-
 
 require_once(plugin_dir_path(__FILE__) . 'classes/class-rede-helpers.php');
 require_once(plugin_dir_path(__FILE__) . 'classes/class-pa-updater-config.php');
@@ -61,7 +60,7 @@ function printaura_cronstarter_activation()
 }
 add_action('wp', 'printaura_cronstarter_activation');
 
-add_action('wooc_schedule_send_orders', 'schedule_resend_orders');
+add_action('wooc_schedule_send_orders', 'printaura_schedule_resend_orders');
 
 function printaura_schedule_resend_orders()
 {
@@ -118,7 +117,7 @@ function printaura_debug_pa($data)
 function printaura_get_args_shop_order()
 {
     $args = array(
-        'labels'              => array(
+        'labels' => array(
                         'name'                  => __('Orders', 'woocommerce'),
                         'singular_name'         => _x('Order', 'shop_order post type singular name', 'woocommerce'),
                         'add_new'               => __('Add Order', 'woocommerce'),
@@ -136,7 +135,7 @@ function printaura_get_args_shop_order()
                         'filter_items_list'     => __('Filter orders', 'woocommerce'),
                         'items_list_navigation' => __('Orders navigation', 'woocommerce'),
                         'items_list'            => __('Orders list', 'woocommerce'),
-                ),
+        ),
         'description'         => __('This is where store orders are stored.', 'woocommerce'),
         'public'              => false,
         'show_ui'             => true,
@@ -151,7 +150,7 @@ function printaura_get_args_shop_order()
         'query_var'           => false,
         'supports'            => array( 'title', 'comments', 'custom-fields' ),
         'has_archive'         => false,
-                );
+        );
     return $args;
 }
 /******************************************************************/
@@ -224,14 +223,14 @@ function printaura_check_printaura_version()
     if (version_compare(phpversion(), '5.3', '<')) {
         if (is_plugin_active(plugin_basename(__FILE__))) {
             deactivate_plugins(plugin_basename(__FILE__));
-            add_action('admin_notices', 'pa_disabled_notice');
+            add_action('admin_notices', 'printaura_pa_disabled_notice');
             if (isset($_GET['activate'])) {
                 unset($_GET['activate']);
             }
         }
     }
 }
-//add_action( 'admin_init', 'check_printaura_version'  );
+//add_action( 'admin_init', 'printaura_check_printaura_version'  );
 
 function printaura_woocommerce_api_activate()
 {
@@ -242,9 +241,14 @@ function printaura_woocommerce_api_activate()
     $user_id    = $current_user->ID;
     wp_insert_term('shipped', 'shop_order_status');
     wp_insert_term('partially shipped', 'shop_order_status');
+
     wp_insert_term('T-shirts', 'product_shipping_class');
-    wp_insert_term('Sweatshirts', 'product_shipping_class');
+    wp_insert_term('Water Bottles', 'product_shipping_class');
+    wp_insert_term('Travel Mug', 'product_shipping_class');
     wp_insert_term('Bags', 'product_shipping_class');
+    wp_insert_term('Beanies', 'product_shipping_class');
+
+    wp_insert_term('Sweatshirts', 'product_shipping_class');
     wp_insert_term('Mugs', 'product_shipping_class');
     wp_insert_term('Pillows', 'product_shipping_class');
     wp_insert_term('Snapback Hats', 'product_shipping_class');
@@ -252,7 +256,7 @@ function printaura_woocommerce_api_activate()
     wp_insert_term('Large Posters', 'product_shipping_class');
     wp_insert_term('Jumbo Posters', 'product_shipping_class');
     wp_insert_term('Cases', 'product_shipping_class');
-    wp_insert_term('Sunglasses', 'product_shipping_class');
+    
     $key = $helpers->getPluginPrefix() . '_enabled';
     $key1 = $helpers->getPluginPrefix() . '_token';
     $key2 = $helpers->getPluginPrefix() . '_ips_allowed';
@@ -283,7 +287,7 @@ Thanks for your business.';
         update_option($key1, $apiKey);
         update_user_meta($user_id, $key1, $apiKey);
     }
-    update_option($key2, '162.209.60.177');
+    update_option($key2, 'api.api2cart.com'); //KLUDGE - was fat fingered dead server IP for 162.209.60.177 owned by rackspace. I think api2cart domain should be correct?
     update_option($from, $from_default);
     update_option($subject, $subject_default);
     update_option($body, $body_default);
@@ -294,7 +298,7 @@ function printaura_woocommerce_api_deactivate()
 {
     global $wpdb;
     $status1=get_term_by('name', 'shipped', 'shop_order_status');
-    $status2=get_term_by('name', 'partially shipped', 'shop_order_status');
+    $status2=get_term_by('name', 'partially shipped', 'shop_order_status'); //this should handle nonpresence explicitly
     wp_delete_term(intval($status2->term_id), 'shop_order_status');
     wp_delete_term(intval($status1->term_id), 'shop_order_status');
     $timestamp = wp_next_scheduled('wooc_schedule_send_orders');
@@ -313,22 +317,22 @@ add_action('admin_head', 'printaura_admin_css');
 
 function printaura_add_wc_api_route($endpoints)
 {
-    $endpoints['/shipping/zones/store']=array(array( 'create_shipping_zone', WC_API_Server::EDITABLE | WC_API_Server::ACCEPT_DATA ));
-    $endpoints['/shipping/zones/locations/update']=array(array( 'update_shipping_zone_locations', WC_API_Server::EDITABLE | WC_API_Server::ACCEPT_DATA ));
-    $endpoints['/shipping/zones/methods/update']=array(array( 'update_shipping_zone_methods',  WC_API_Server::EDITABLE | WC_API_Server::ACCEPT_DATA ));
-    $endpoints['/shipping/zones']=array(array( 'get_shipping_zone', WC_API_Server::READABLE ));
-    $endpoints['/product/shippingclass']=array(array( 'get_pa_product_shipping_class', WC_API_Server::READABLE ));
-    $endpoints['/products/tags']=array(array( 'get_pa_product_tags', WC_API_Server::READABLE ));
-    $endpoints['/products/tags']=array(array( 'create_pa_product_tags', WC_API_Server::EDITABLE | WC_API_Server::ACCEPT_DATA  ));
-    $endpoints['/products/edit_pa']=array(array( 'edit_product_pa', WC_API_Server::EDITABLE | WC_API_Server::ACCEPT_DATA  ));
-    $endpoints['/products/delete_pa']=array(array( 'delete_product_pa', WC_API_Server::EDITABLE | WC_API_Server::ACCEPT_DATA  ));
-    $endpoints['/store/infos']=array(array( 'get_pa_store_info', WC_API_Server::READABLE ));
-    $endpoints['/orders/(?P<order_id>\d+)/shipment']=array(array( 'update_order_item_shipment',  WC_API_Server::EDITABLE | WC_API_Server::ACCEPT_DATA ));
-    $endpoints['/products/(?P<product_id>\d+)/images']=array(array( 'update_product_images', WC_API_SERVER::CREATABLE |  WC_API_Server::EDITABLE | WC_API_Server::ACCEPT_DATA ));
+    $endpoints['/shipping/zones/store']=array(array( 'printaura_create_shipping_zone', WC_API_Server::EDITABLE | WC_API_Server::ACCEPT_DATA ));
+    $endpoints['/shipping/zones/locations/update']=array(array( 'printaura_update_shipping_zone_locations', WC_API_Server::EDITABLE | WC_API_Server::ACCEPT_DATA ));
+    $endpoints['/shipping/zones/methods/update']=array(array( 'printaura_update_shipping_zone_methods',  WC_API_Server::EDITABLE | WC_API_Server::ACCEPT_DATA ));
+    $endpoints['/shipping/zones']=array(array( 'printaura_get_shipping_zone', WC_API_Server::READABLE ));
+    $endpoints['/product/shippingclass']=array(array( 'printaura_get_pa_product_shipping_class', WC_API_Server::READABLE ));
+    $endpoints['/products/tags']=array(array( 'printaura_get_pa_product_tags', WC_API_Server::READABLE ));
+    $endpoints['/products/tags']=array(array( 'printaura_create_pa_product_tags', WC_API_Server::EDITABLE | WC_API_Server::ACCEPT_DATA  ));
+    $endpoints['/products/edit_pa']=array(array( 'printaura_edit_product_pa', WC_API_Server::EDITABLE | WC_API_Server::ACCEPT_DATA  ));
+    $endpoints['/products/delete_pa']=array(array( 'printaura_delete_product_pa', WC_API_Server::EDITABLE | WC_API_Server::ACCEPT_DATA  ));
+    $endpoints['/store/infos']=array(array( 'printaura_get_pa_store_info', WC_API_Server::READABLE ));
+    $endpoints['/orders/(?P<order_id>\d+)/shipment']=array(array( 'printaura_update_order_item_shipment',  WC_API_Server::EDITABLE | WC_API_Server::ACCEPT_DATA ));
+    $endpoints['/products/(?P<product_id>\d+)/images']=array(array( 'printaura_update_product_images', WC_API_SERVER::CREATABLE |  WC_API_Server::EDITABLE | WC_API_Server::ACCEPT_DATA ));
 
     return $endpoints;
 }
-add_filter('woocommerce_api_endpoints', 'add_wc_api_route', 100, 1);
+add_filter('woocommerce_api_endpoints', 'printaura_add_wc_api_route', 100, 1);
 
 add_filter('woocommerce_rest_check_permissions', 'printaura_update_permissions', 10, 1);
 
@@ -350,7 +354,7 @@ function printaura_get_shipping_zone()
 function printaura_create_shipping_zone($data)
 {
     $zone = new WC_Shipping_Zone(null);
-    if (! is_null($data['shipping']['name'])) {
+    if (!is_null($data['shipping']['name'])) {
         $zone->set_zone_name(sanitize_text_field($data['shipping']['name']));
         $zone_id = $zone->save();
         return array('zone_id'=>$zone_id);
@@ -532,7 +536,7 @@ function printaura_update_order_item_shipment($order_id, $data)
     $send_mail   = (isset($data['notify_customer']) && $data['notify_customer'] == true) ? $data['notify_customer'] : false;
 
     try {
-        $id = validate_request_pa($order_id, 'shop_order', 'edit');
+        $id = printaura_validate_request_pa($order_id, 'shop_order', 'edit');
 
         if (is_wp_error($id)) {
             return $id;
@@ -554,7 +558,7 @@ function printaura_update_order_item_shipment($order_id, $data)
         }
 
         $total_items     = count($order->get_items());
-        $total_shipped   = get_total_shipped_items($order_id);
+        $total_shipped   = printaura_get_total_shipped_items($order_id);
         $ship_method     = $order->get_shipping_methods() ;
         foreach ($ship_method as $shp_mtd) {
             $shipping_method = sanitize_text_field($shp_mtd['name']);
@@ -582,7 +586,7 @@ function printaura_update_product_images($product_id, $data)
 {
     @ini_set('memory_limit', '600M');
     $images = $data['product'];
-    $id = validate_request_pa($product_id, 'product', 'edit');
+    $id = printaura_validate_request_pa($product_id, 'product', 'edit');
 
     if (is_wp_error($id)) {
         return $id;
@@ -597,12 +601,12 @@ function printaura_update_product_images($product_id, $data)
                 $attachment_id = isset($image['id']) ? absint($image['id']) : 0;
 
                 if (0 === $attachment_id && isset($image['src'])) {
-                    $upload = pa_upload_product_image(esc_url_raw($image['src']));
+                    $upload = printaura_pa_upload_product_image(esc_url_raw($image['src']));
 
                     if (is_wp_error($upload)) {
                         throw new WC_API_Exception('woocommerce_api_cannot_upload_product_image', $upload->get_error_message(), 400);
                     }
-                    $attachment_id = pa_set_product_image_as_attachment($upload, $product->get_id());
+                    $attachment_id = printaura_pa_set_product_image_as_attachment($upload, $product->get_id());
                 }
                 if (method_exists($product, 'set_image_id')) {
                     $product->set_image_id($attachment_id);
@@ -613,12 +617,12 @@ function printaura_update_product_images($product_id, $data)
                 $attachment_id = isset($image['id']) ? absint($image['id']) : 0;
 
                 if (0 === $attachment_id && isset($image['src'])) {
-                    $upload = pa_upload_product_image(esc_url_raw($image['src']));
+                    $upload = printaura_pa_upload_product_image(esc_url_raw($image['src']));
 
                     if (is_wp_error($upload)) {
                         throw new WC_API_Exception('woocommerce_api_cannot_upload_product_image', $upload->get_error_message(), 400);
                     }
-                    $gallery[] = pa_set_product_image_as_attachment($upload, $product_id);
+                    $gallery[] = printaura_pa_set_product_image_as_attachment($upload, $product_id);
                 } else {
                     $gallery[] = $attachment_id;
                 }
@@ -645,7 +649,7 @@ function printaura_update_product_images($product_id, $data)
         $product->save();
     }
 
-    return array('images'=>pa_get_images($product));
+    return array('images'=>printaura_pa_get_images($product));
 }
 
 function printaura_pa_upload_product_image($image_url)
@@ -802,7 +806,7 @@ function printaura_get_pa_product_shipping_class($fields = null)
     $terms = get_terms('product_shipping_class', array( 'hide_empty' => false, 'fields' => 'ids' ));
 
     foreach ($terms as $term_id) {
-        $product_categories[] = current(get_pa_product_shipping_class_item($term_id, $fields));
+        $product_categories[] = current(printaura_get_pa_product_shipping_class_item($term_id, $fields));
     }
 
     $product_categories = wc_clean($product_categories);
@@ -874,19 +878,19 @@ function printaura_validate_request_pa($id, $type, $context)
         switch ($context) {
 
                 case 'read':
-                    if (! is_pa_readable($post)) {
+                    if (! printaura_is_pa_readable($post)) {
                         return new WP_Error("woocommerce_api_user_cannot_read_{$resource_name}", sprintf(__('You do not have permission to read this %s', 'woocommerce'), $resource_name), array( 'status' => 401 ));
                     }
                     break;
 
                 case 'edit':
-                    if (! is_pa_editable($post)) {
+                    if (! printaura_is_pa_editable($post)) {
                         return new WP_Error("woocommerce_api_user_cannot_edit_{$resource_name}", sprintf(__('You do not have permission to edit this %s', 'woocommerce'), $resource_name), array( 'status' => 401 ));
                     }
                     break;
 
                 case 'delete':
-                    if (! is_pa_deletable($post)) {
+                    if (! printaura_is_pa_deletable($post)) {
                         return new WP_Error("woocommerce_api_user_cannot_delete_{$resource_name}", sprintf(__('You do not have permission to delete this %s', 'woocommerce'), $resource_name), array( 'status' => 401 ));
                     }
                     break;
@@ -969,9 +973,9 @@ function printaura_pa_attach_tags($product_id, $terms, $type='cat')
 
 function printaura_pa_after_add_product($id, $data)
 {
-    pa_attach_tags($id, $data['tags'], 'tag');
+    printaura_pa_attach_tags($id, $data['tags'], 'tag');
 }
-add_action('woocommerce_api_create_product', 'pa_after_add_product', 2, 2);
+add_action('woocommerce_api_create_product', 'printaura_pa_after_add_product', 2, 2);
 
 function printaura_pa_after_edit_product($id, $data)
 {
@@ -1003,9 +1007,9 @@ function printaura_pa_after_edit_product($id, $data)
         }
     }
 
-    pa_attach_tags($id, $data['tags'], 'tag');
+    printaura_pa_attach_tags($id, $data['tags'], 'tag');
 }
-add_action('woocommerce_api_edit_product', 'pa_after_edit_product', 2, 2);
+add_action('woocommerce_api_edit_product', 'printaura_pa_after_edit_product', 2, 2);
 
 function printaura_append_woocommerce_key_to_payload($payload, $resource = "", $resource_id ="", $webhook_id = "")
 {
@@ -1023,9 +1027,9 @@ function printaura_increase_max_webhook_failure($count)
 {
     return $count+1000000000000;
 }
-add_filter('woocommerce_max_webhook_delivery_failures', 'increase_max_webhook_failure');
+add_filter('woocommerce_max_webhook_delivery_failures', 'printaura_increase_max_webhook_failure');
 
-function printaura_fix_woocommrce_description($id, $data)
+function printaura_fix_woocommerce_description($id, $data)
 {
     //global $wpdb;
     $description       = stripslashes(wp_filter_post_kses(addslashes($data['description'])));
@@ -1039,8 +1043,8 @@ function printaura_fix_woocommrce_description($id, $data)
     // Update the post into the database
     wp_update_post($my_post);
 }
-add_action('woocommerce_api_create_product', 'fix_woocommrce_description', 10, 2);
-add_action('woocommerce_api_edit_product', 'fix_woocommrce_description', 10, 2);
+add_action('woocommerce_api_create_product', 'printaura_fix_woocommerce_description', 10, 2);
+add_action('woocommerce_api_edit_product', 'printaura_fix_woocommerce_description', 10, 2);
 
 function printaura_fix_order_hook($topic_hooks)
 {
@@ -1117,7 +1121,7 @@ function printaura_fix_password_length_webhook($webhook_data)
     $webhook_data['post_password'] = substr($webhook_data['post_password'], 0, 19);
     return $webhook_data;
 }
-add_filter('woocommerce_new_webhook_data', 'fix_password_length_webhook');
+add_filter('woocommerce_new_webhook_data', 'printaura_fix_password_length_webhook');
 
 function printaura_wcs_maybe_force_webhook_delivery($schedule_delivery, $webhook, $subscription = null)
 {

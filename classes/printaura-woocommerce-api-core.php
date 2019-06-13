@@ -180,7 +180,7 @@ function printaura_api_template_redirect()
                 JSONAPIHelpers::debug("Cannot continue, HTTPS is required.");
                 return;
             }
-            if (defined('WC_JSON_API_DEBUG')) {
+            if (defined('PRINTAURA_WC_JSON_API_DEBUG')) {
                 JSONAPIHelpers::truncateDebug();
             }
             $api = new WooCommerce_JSON_API();

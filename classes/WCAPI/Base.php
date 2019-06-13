@@ -5,14 +5,14 @@ if (! defined('ABSPATH')) {
     exit;
 } // Exit if accessed directly
 require_once dirname(__FILE__) . '/BaseHelpers.php';
-if (!defined('WCAPIDIR')) {
-    define('WCAPIDIR', dirname(__FILE__));
+if (!defined('PRINTAURA_WCAPIDIR')) {
+    define('PRINTAURA_WCAPIDIR', dirname(__FILE__));
 }
-if (!defined('EVERYTHING_IM_SURE')) {
-    define('EVERYTHING_IM_SURE', true);
+if (!defined('PRINTAURA_EVERYTHING_IM_SURE')) {
+    define('PRINTAURA_EVERYTHING_IM_SURE', true);
 }
-if (!defined('THIS_IM_SURE')) {
-    define('THIS_IM_SURE', true);
+if (!defined('PRINTAURA_THIS_IM_SURE')) {
+    define('PRINTAURA_THIS_IM_SURE', true);
 }
 class Base extends Helpers
 {
@@ -251,7 +251,7 @@ class Base extends Helpers
     {
         Helpers::debug("Base::saveMetaAttributes " . get_called_class() . "({$this->_actual_model_id}) called");
         global $wpdb;
-        include WCAPIDIR."/_model_static_attributes.php";
+        include PRINTAURA_WCAPIDIR."/_model_static_attributes.php";
         $meta_table              = $this->orEq($self->settings, 'meta_table', $wpdb->postmeta);
         $meta_table_foreign_key  = $this->orEq($self->settings, 'meta_table_foreign_key', 'post_id');
         $save_meta_function = $self->settings['save_meta_function'];
@@ -317,7 +317,7 @@ class Base extends Helpers
     {
         Helpers::debug("Base::createMetaAttributes Posts " . get_called_class() . "({$this->_actual_model_id}) called");
         global $wpdb;
-        include WCAPIDIR."/_model_static_attributes.php";
+        include PRINTAURA_WCAPIDIR."/_model_static_attributes.php";
         $meta_table              = $this->orEq($self->settings, 'meta_table', $wpdb->postmeta);
         $meta_table_foreign_key  = $this->orEq($self->settings, 'meta_table_foreign_key', 'post_id');
         $save_meta_function = $self->settings['save_meta_function'];
@@ -835,7 +835,7 @@ class Base extends Helpers
     {
         global $wpdb;
    
-        include WCAPIDIR."/_model_static_attributes.php";
+        include PRINTAURA_WCAPIDIR."/_model_static_attributes.php";
 
         $model = new static();
         $model->setValid(false);
@@ -869,7 +869,7 @@ class Base extends Helpers
     
     //Helpers::debug( $this->getIdentString() . "::fromDatabaseResult " . var_export($record,true));
         global $wpdb;
-        include WCAPIDIR."/_model_static_attributes.php";
+        include PRINTAURA_WCAPIDIR."/_model_static_attributes.php";
         $model = $this;
         $model_table_id          = $model->orEq($self->settings, 'model_table_id', 'ID');
 
@@ -980,7 +980,7 @@ class Base extends Helpers
     public function create($attrs = null)
     {
         Helpers::debug("Base::create() for " . $this->getIdentString());
-        include WCAPIDIR."/_model_static_attributes.php";
+        include PRINTAURA_WCAPIDIR."/_model_static_attributes.php";
         $meta_table = $this->actual_meta_attributes_table;
         $model_table = $this->actual_model_attributes_table;
         $s = $this->actual_model_settings;
@@ -1069,7 +1069,7 @@ class Base extends Helpers
     {
         Helpers::debug(get_called_class() . "({$this->_actual_model_id}) is beginning an update.");
         global $wpdb;
-        include WCAPIDIR."/_model_static_attributes.php";
+        include PRINTAURA_WCAPIDIR."/_model_static_attributes.php";
         $model_table             = $this->orEq($self->settings, 'model_table', $wpdb->posts);
         $model_table_id          = $this->orEq($self->settings, 'model_table_id', 'ID');
         Helpers::debug("model_table is $model_table and model_table_id is $model_table_id");
@@ -1093,7 +1093,7 @@ class Base extends Helpers
     public function UpdateTaxonomy($table, $key_values, $where=null)
     {
         global $wpdb;
-        include WCAPIDIR."/_model_static_attributes.php";
+        include PRINTAURA_WCAPIDIR."/_model_static_attributes.php";
         $keys = array();
         $values = array();
         $table = "`$table`";
@@ -1130,7 +1130,7 @@ class Base extends Helpers
     public function insert($table, $key_values, $where=null)
     {
         global $wpdb;
-        include WCAPIDIR."/_model_static_attributes.php";
+        include PRINTAURA_WCAPIDIR."/_model_static_attributes.php";
         $keys = array();
         $values = array();
         $table = "`$table`";
@@ -1155,7 +1155,7 @@ class Base extends Helpers
     public function delete($table, $where = null, $limit = 1)
     {
         global $wpdb;
-        include WCAPIDIR."/_model_static_attributes.php";
+        include PRINTAURA_WCAPIDIR."/_model_static_attributes.php";
         $table = "`$table`";
         Helpers::debug(get_called_class() . "::delete $table");
         $sql = "DELETE FROM $table";

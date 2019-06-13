@@ -51,7 +51,7 @@ class Upload {
 	}
 	public function saveMediaAttachment() {
 		Helpers::debug("Upload::saveMediaAttachment called");
-		include WCAPIDIR . "/_mime_types.php";
+		include PRINTAURA_WCAPIDIR . "/_mime_types.php";
 		$this->time = current_time('mysql');
 		$this->save();
 		$name_parts = pathinfo($this->name);

@@ -96,8 +96,8 @@ class Image extends Base {
 
 
     Helpers::debug("Image::create() was called");
-    include WCAPIDIR . "/_globals.php";
-    include WCAPIDIR."/_model_static_attributes.php";
+    include PRINTAURA_WCAPIDIR . "/_globals.php";
+    include PRINTAURA_WCAPIDIR."/_model_static_attributes.php";
     $name = $attrs['name'];
 
     if ( isset( $_FILES['images']) ) {

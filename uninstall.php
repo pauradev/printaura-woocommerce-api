@@ -2,7 +2,7 @@
 if (! defined('ABSPATH')) {
     exit;
 } // Exit if accessed directly
-define('REDE_PLUGIN_BASE_PATH', plugin_dir_path(__FILE__));
+define('PRINTAURA_REDE_PLUGIN_BASE_PATH', plugin_dir_path(__FILE__));
 require_once(plugin_dir_path(__FILE__) . 'classes/class-rede-helpers.php');
 require_once(plugin_dir_path(__FILE__) . 'printaura-woocommerce-api-core.php');
 function printaura_woocommerce_json_api_uninstall()

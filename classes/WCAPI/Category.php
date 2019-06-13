@@ -80,7 +80,7 @@ class Category extends Base {
   }
 
   public function setCategory( $category_object ) {
-    include WCAPIDIR."/_model_static_attributes.php";
+    include PRINTAURA_WCAPIDIR."/_model_static_attributes.php";
     foreach ($self->attributes_table as $name=>$attrs) {
       if (is_object($category_object)) {
         $this->{$name} = $category_object->{$attrs['name']};
@@ -93,7 +93,7 @@ class Category extends Base {
 
   public static function find_by_name( $name ) {
     global $wpdb;
-    include WCAPIDIR."/_model_static_attributes.php";
+    include PRINTAURA_WCAPIDIR."/_model_static_attributes.php";
     $sql = "
       SELECT 
         categories.*, 
@@ -128,7 +128,7 @@ class Category extends Base {
 
   public static function all($fields = 'id', $conditions = null, $override_model_conditions = false) {
     global $wpdb;
-    include WCAPIDIR."/_model_static_attributes.php";
+    include PRINTAURA_WCAPIDIR."/_model_static_attributes.php";
     $sql = "
       SELECT 
         categories.*, 
