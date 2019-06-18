@@ -236,7 +236,7 @@ function printaura_woocommerce_api_activate()
 {
     global $wpdb;
 
-    $helpers = new JSONAPIHelpers();
+    $helpers = new Printaura_JSONAPIHelpers();
     $current_user     = wp_get_current_user();
     $user_id    = $current_user->ID;
     wp_insert_term('shipped', 'shop_order_status');
@@ -308,7 +308,7 @@ register_deactivation_hook(__FILE__, 'printaura_woocommerce_api_deactivate');
 
 function printaura_woocommerce_api_initialize_plugin()
 {
-    $helpers = new JSONAPIHelpers();
+    $helpers = new Printaura_JSONAPIHelpers();
 }
 add_action('init', 'printaura_woocommerce_api_initialize_plugin', 5000);
 

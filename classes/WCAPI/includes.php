@@ -17,7 +17,6 @@ require_once( dirname( __FILE__ ) . '/Image.php' );
 require_once( dirname( __FILE__ ) . '/ShippingClass.php' );
 function __fixPHPNSGlobalStupidity() {
   global $wpdb,$post,$user_ID,$post_ID;
-  \WCAPI\Base::setAdapter( $wpdb );
+  \Printaura_WCAPI\Base::setAdapter( $wpdb );
 }
 __fixPHPNSGlobalStupidity();
-

@@ -62,7 +62,7 @@ class WooCommerce_JSON_API_Result {
   public function asJSON() {
     //$this->params['payload_length'] = count($this->params['payload']);
     if (PHP_MINOR_VERSION < 4) {
-      //JSONAPIHelpers::warn("PHP 5.4 and above recommended for the API.");
+      //Printaura_JSONAPIHelpers::warn("PHP 5.4 and above recommended for the API.");
       $text = json_encode($this->params);
             $text = json_encode($this->params);
     } else {

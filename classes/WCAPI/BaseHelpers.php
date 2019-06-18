@@ -1,5 +1,5 @@
 <?php
-namespace WCAPI;
+namespace Printaura_WCAPI;
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 if ( ! function_exists('_printaura_rede_notset') ) {
   function _printaura_rede_notset( $mixed ) {
@@ -285,7 +285,7 @@ class Helpers {
         if ($value == $val)
           return $value;
       }
-      JSONAPIHelpers::warn("orEq was passed a valid_values_list, but inputs did not match, so returning default");
+      Printaura_JSONAPIHelpers::warn("orEq was passed a valid_values_list, but inputs did not match, so returning default");
       return $default;
     } else {
       return $value;
@@ -317,7 +317,7 @@ class Helpers {
       $tmp_key = ucwords($tmp_key);
       $tmp_key = str_replace(" ",'', $tmp_key);
       $class_name = "{$tmp_key}Validator";
-      JSONAPIHelpers::debug("class name to load is {$class_name}");
+      Printaura_JSONAPIHelpers::debug("class name to load is {$class_name}");
       $path = $this->findClassFile($fname, false);
       if ( $path ) {
         require_once $path;

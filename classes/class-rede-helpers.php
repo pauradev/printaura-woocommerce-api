@@ -20,7 +20,7 @@ if (! function_exists('_printaura_rede_notset')) {
 * This class needs to be instantiated as helpers, and provides all the helper
 * functionality needed by the PHP side of the API
 */
-class JSONAPIHelpers
+class Printaura_JSONAPIHelpers
 {
     public $plugin_name = 'printaura-woocommerce-api';
     private $path;
@@ -143,12 +143,12 @@ class JSONAPIHelpers
         if (file_exists($test_path)) {
             return $test_path;
         } else {
-            JSONAPIHelpers::debug("$test_path didn't exist");
+            Printaura_JSONAPIHelpers::debug("$test_path didn't exist");
             $test_path = $this->path . 'classes/' . $filename;
             if (file_exists($test_path)) {
                 return $test_path;
             } else {
-                JSONAPIHelpers::debug("$test_path didn't exist");
+                Printaura_JSONAPIHelpers::debug("$test_path didn't exist");
                 if ($throw_error) {
                     throw new Exception(__('Core Class File was not found: ') . ' ' . $filename);
                 } else {
@@ -261,7 +261,7 @@ class JSONAPIHelpers
                     return $value;
                 }
             }
-            JSONAPIHelpers::warn("orEq was passed a valid_values_list, but inputs did not match, so returning default");
+            Printaura_JSONAPIHelpers::warn("orEq was passed a valid_values_list, but inputs did not match, so returning default");
             return $default;
         } else {
             return $value;
@@ -294,8 +294,8 @@ class JSONAPIHelpers
             $tmp_key = ucwords($tmp_key);
             $tmp_key = str_replace(" ", '', $tmp_key);
             $class_name = "JSONAPI_{$tmp_key}_Argument_Validator";
-            JSONAPIHelpers::debug("validator class name to load is {$class_name}");
-            JSONAPIHelpers::debug("path to validator should be {$fname}");
+            Printaura_JSONAPIHelpers::debug("validator class name to load is {$class_name}");
+            Printaura_JSONAPIHelpers::debug("path to validator should be {$fname}");
             $path = $this->findClassFile($fname, false);
             if ($path) {
                 require_once $path;
@@ -303,10 +303,10 @@ class JSONAPIHelpers
                     $validator = new $class_name();
                     $validator->validate($this, $value, $target);
                 } else {
-                    JSONAPIHelpers::debug("validator class {$class_name} does not exist?");
+                    Printaura_JSONAPIHelpers::debug("validator class {$class_name} does not exist?");
                 }
             } else {
-                JSONAPIHelpers::debug("validator {$fname} does not exist");
+                Printaura_JSONAPIHelpers::debug("validator {$fname} does not exist");
             }
         }
         $params = apply_filters('rede_post_validate_parameters', $params, $target);

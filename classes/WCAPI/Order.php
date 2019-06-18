@@ -1,5 +1,5 @@
 <?php
-namespace WCAPI;
+namespace Printaura_WCAPI;
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 /**
  * An Order class to insulate the API from the details of the
