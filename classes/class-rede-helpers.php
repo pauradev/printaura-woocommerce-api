@@ -2,8 +2,9 @@
 if (! defined('ABSPATH')) {
     exit;
 } // Exit if accessed directly
-if (! function_exists('_printaura_rede_notset')) {
-    function _printaura_rede_notset($mixed)
+if (! function_exists('printaura_rede_notset')) {
+    // don't use _ for function prefixes outside classes. They are reserved.
+    function printaura_rede_notset($mixed)
     {
         if (defined('PRINTAURA_REDENOTSET')) {
             if ($mixed == PRINTAURA_REDENOTSET) {

@@ -1,8 +1,9 @@
 <?php
 namespace Printaura_WCAPI;
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
-if ( ! function_exists('_printaura_rede_notset') ) {
-  function _printaura_rede_notset( $mixed ) {
+if ( ! function_exists('printaura_rede_notset') ) {
+  function printaura_rede_notset( $mixed ) {
+    // don't use _ for function prefixes outside classes. They are reserved.
     if (defined('PRINTAURA_REDENOTSET')) {
       if ($mixed == PRINTAURA_REDENOTSET) {
         return true;
@@ -741,7 +742,7 @@ if (! class_exists('CmdColors') ) {
       return array_keys($this->background_colors);
     }
 
-    public function _( $str, $color, $bg = null) {
+    public function printaura_( $str, $color, $bg = null) {
       static $last = 'black';
       if ( $bg ) {
         echo($this->getColoredString($str, $color, $bg));
