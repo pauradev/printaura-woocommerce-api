@@ -41,22 +41,22 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 			if(isset($_GET['upgrade']) && $_GET['upgrade'] == 'zones') :
 				$GLOBALS['hide_save_button'] = true;
 				remove_action('woocommerce_update_options_shipping_zones','be_save_new_zone');
-				BE_Table_Rate_Shipping::install_plugin_button();
+				Printaura_BE_Table_Rate_Shipping::install_plugin_button();
 			elseif(isset($_GET['action']) && ($_GET['action'] == 'edit' || $_GET['action'] == 'new' || $_GET['action'] == 'delete')) :
 				if($_GET['action'] == 'delete' ) {
 					be_save_new_zone();
 					$GLOBALS['hide_save_button'] = true;
-					Zone_List_Table::tt_render_list_page();
+					Printaura_Zone_List_Table::tt_render_list_page();
 				}elseif ( isset( $_POST['save'] )) {
-					Zone_List_Table::tt_render_edit_page($_POST['zone_id']);
-				} else Zone_List_Table::tt_render_edit_page();
+					Printaura_Zone_List_Table::tt_render_edit_page($_POST['zone_id']);
+				} else Printaura_Zone_List_Table::tt_render_edit_page();
 			elseif(isset($_POST['action'])) :
 				be_save_new_zone();
 				$GLOBALS['hide_save_button'] = true;
-				Zone_List_Table::tt_render_list_page();
+				Printaura_Zone_List_Table::tt_render_list_page();
 			else :
 				$GLOBALS['hide_save_button'] = true;
-				Zone_List_Table::tt_render_list_page();
+				Printaura_Zone_List_Table::tt_render_list_page();
 			endif;
 		}
 		add_action('woocommerce_settings_tabs_shipping_zones','be_table_rate_shipping_zones');
@@ -66,7 +66,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 	        $shipping_zones = array_filter( (array) get_option( 'be_woocommerce_shipping_zones' ) );
 			if(isset($_POST['action'])) {
-				if( 'delete' === Zone_List_Table::current_action() ) {
+				if( 'delete' === Printaura_Zone_List_Table::current_action() ) {
 					if(is_array($_POST['zone']) && count($_POST['zone']) > 0) {
 						foreach ($_POST['zone'] as $value) {
 			                if( isset( $shipping_zones[$value] ) && is_array( $shipping_zones[$value] ) )  {
@@ -95,7 +95,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 						foreach ($currentRates as $key => $value) {
 							$currentRates[$key]['zone_order'] = $new_order[$value['zone']]['zone_order'];
 						}
-						$newRates = BE_Table_Rate_Shipping::sort_table_rates( $currentRates );
+						$newRates = Printaura_BE_Table_Rate_Shipping::sort_table_rates( $currentRates );
 						update_option('woocommerce_table_rates', $newRates);
 					}
 					$SUCCESS = true;
@@ -178,7 +178,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 		add_action('woocommerce_update_options_shipping_zones','be_save_new_zone');
 
 		function be_get_zones() {
-			$zoneList = new Zone_List_Table();
+			$zoneList = new Printaura_Zone_List_Table();
 			$zones = $zoneList->shipping_zones;
 			return $zones;
 		}

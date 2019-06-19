@@ -61,7 +61,7 @@ function printaura_api_template_redirect()
             if (defined('PRINTAURA_WC_JSON_API_DEBUG')) {
                 Printaura_JSONAPIHelpers::truncateDebug();
             }
-            $api = new WooCommerce_JSON_API();
+            $api = new Printaura_WooCommerce_JSON_API();
             $api->setOut('HTTP');
             $api->setUser(null);
             $params = array();

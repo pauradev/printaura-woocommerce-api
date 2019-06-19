@@ -36,7 +36,7 @@ if (!defined('PHP_VERSION_ID')) {
         define('PRINTAURA_PHP_RELEASE_VERSION', $version[2]);
     }
 }
-class WooCommerce_JSON_API extends Printaura_JSONAPIHelpers
+class Printaura_WooCommerce_JSON_API extends Printaura_JSONAPIHelpers
 {
     // Call this function to setup a new response
     public $helpers;
@@ -144,7 +144,7 @@ class WooCommerce_JSON_API extends Printaura_JSONAPIHelpers
         }
         if (file_exists(dirname(__FILE__) .'/API_VERSIONS/version'.$version.'.php')) {
             require_once(dirname(__FILE__) .'/API_VERSIONS/version'.$version.'.php');
-            $class = "WC_JSON_API_Provider_v{$version}";
+            $class = "Printaura_WC_JSON_API_Provider_v{$version}";
             $class = str_replace('.', '_', $class);
             $this->provider = new $class($this);
         }
@@ -305,13 +305,13 @@ class WooCommerce_JSON_API extends Printaura_JSONAPIHelpers
     public function createNewResult($params)
     {
         if (! $this->result) {
-            $this->result = new WooCommerce_JSON_API_Result();
+            $this->result = new Printaura_WooCommerce_JSON_API_Result();
             $this->result->setParams($params);
         }
     }
     public function done()
     {
-        Printaura_JSONAPIHelpers::debug("WooCommerce_JSON_API::done() called..");
+        Printaura_JSONAPIHelpers::debug("Printaura_WooCommerce_JSON_API::done() called..");
         wp_logout();
         if ($this->return_type == 'HTTP') {
             header("Content-type: application/json");

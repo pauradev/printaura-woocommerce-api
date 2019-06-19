@@ -1,8 +1,8 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 //Version: 4.0.0
-add_action('plugins_loaded', 'woocommerce_table_rate_shipping_init_pa', 0);
-function woocommerce_table_rate_shipping_init_pa() {
+add_action('plugins_loaded', 'Printaura_woocommerce_table_rate_shipping_init_pa', 0);
+function Printaura_woocommerce_table_rate_shipping_init_pa() {
 	// Current version
 	if ( ! defined( 'BE_WooTableShipping_VERSION' ) ) define( 'BE_WooTableShipping_VERSION', '3.6.4' );
 	/**
@@ -13,14 +13,14 @@ function woocommerce_table_rate_shipping_init_pa() {
                    if($table_rate_shipping_enabled == 'no' || !$table_rate_shipping_enabled) return;
 		if (!class_exists('WC_Shipping_Method')) return;
 
-		if ( !class_exists( 'BE_Table_Rate_Shipping' ) ) {
+		if ( !class_exists( 'Printaura_BE_Table_Rate_Shipping' ) ) {
 
 			// setup internationalization support
 			load_plugin_textdomain('be-table-ship', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 
 			require('inc/woocommerce-shipping-zones.php');
 			
-			class BE_Table_Rate_Shipping extends WC_Shipping_Method {
+			class Printaura_BE_Table_Rate_Shipping extends WC_Shipping_Method {
 
 				public static $version = '3.6.4';
 
@@ -2137,14 +2137,14 @@ function woocommerce_table_rate_shipping_init_pa() {
 					}
 
 					if( !get_option('be_table_rate_version') )
-						add_option('be_table_rate_version',BE_Table_Rate_Shipping::$version);
+						add_option('be_table_rate_version',Printaura_BE_Table_Rate_Shipping::$version);
 					else
-						update_option('be_table_rate_version',BE_Table_Rate_Shipping::$version);
+						update_option('be_table_rate_version',Printaura_BE_Table_Rate_Shipping::$version);
 ?>
 		            <div class="updated" style="font-weight:bold;">
 		                <p><?php _e('Your zones have been updated. Please test your forms to ensure that everything is in working order.','be_table_rate'); ?></p>
 		            </div>
-	                <p><a href="<?php echo admin_url( 'admin.php?page=wc-settings&tab=shipping&section=be_table_rate_shipping' ); ?>" class="button-primary">Continue to Table Rate Settings</a> <a href="<?php echo admin_url( 'admin.php?page=wc-settings&tab=shipping_zones' ); ?>">View Shipping Zones</a></p>
+	                <p><a href="<?php echo admin_url( 'admin.php?page=wc-settings&tab=shipping&section=Printaura_BE_Table_Rate_Shipping' ); ?>" class="button-primary">Continue to Table Rate Settings</a> <a href="<?php echo admin_url( 'admin.php?page=wc-settings&tab=shipping_zones' ); ?>">View Shipping Zones</a></p>
 <?php
 				}
 
@@ -2211,7 +2211,7 @@ function woocommerce_table_rate_shipping_init_pa() {
 			 * @return array
 			 */
 			function add_table_rate_method( $methods ) {
-				$methods[] = 'BE_Table_Rate_Shipping';
+				$methods[] = 'Printaura_BE_Table_Rate_Shipping';
 				return $methods;
 			}
 			add_filter( 'woocommerce_shipping_methods', 'add_table_rate_method' );
@@ -2219,9 +2219,9 @@ function woocommerce_table_rate_shipping_init_pa() {
 			/**
 			 * ensure zone table is created and being used
 			 */
-			//register_activation_hook( __FILE__, array( 'BE_Table_Rate_Shipping', 'activate' ) );
-			//add_action( 'admin_init', array( 'BE_Table_Rate_Shipping', 'update' ) );
-			add_action( 'admin_notices', array( 'BE_Table_Rate_Shipping', 'be_zone_update_notice' ) );
+			//register_activation_hook( __FILE__, array( 'Printaura_BE_Table_Rate_Shipping', 'activate' ) );
+			//add_action( 'admin_init', array( 'Printaura_BE_Table_Rate_Shipping', 'update' ) );
+			add_action( 'admin_notices', array( 'Printaura_BE_Table_Rate_Shipping', 'be_zone_update_notice' ) );
  
 		}
 	}
@@ -2233,18 +2233,18 @@ function woocommerce_table_rate_shipping_init_pa() {
  * @access public
  * @return void
  */
-function be_table_shipping_wc_action_links_pa( $links ) {
+function Printaura_be_table_shipping_wc_action_links_pa( $links ) {
 	return array_merge(
 		array(
-			'settings' => '<a href="' . get_admin_url() . 'admin.php?page=wc-settings&tab=shipping&section=BE_Table_Rate_Shipping">' . __( 'Settings', 'be-table-ship' ) . '</a>',
+			'settings' => '<a href="' . get_admin_url() . 'admin.php?page=wc-settings&tab=shipping&section=Printaura_BE_Table_Rate_Shipping">' . __( 'Settings', 'be-table-ship' ) . '</a>',
 			'register' => '<a href="' . get_admin_url() . 'admin.php?page=be-manage-plugins">' . __( 'Registration', 'be-table-ship' ) . '</a>',
 		),
 		$links
 	);
 }
-add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'be_table_shipping_wc_action_links_pa ');
+add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'Printaura_be_table_shipping_wc_action_links_pa ');
 
-function be_table_shipping_wc_network_action_links_pa( $links ) {
+function Printaura_be_table_shipping_wc_network_action_links_pa( $links ) {
 	return array_merge(
 		array(
 			'register' => '<a href="' . get_admin_url() . 'admin.php?page=be-manage-plugins">' . __( 'Registration', 'be-table-ship' ) . '</a>',
@@ -2252,7 +2252,7 @@ function be_table_shipping_wc_network_action_links_pa( $links ) {
 		$links
 	);
 }
-add_filter( 'network_admin_plugin_action_links_' . plugin_basename( __FILE__ ), 'be_table_shipping_wc_network_action_links_pa' );
+add_filter( 'network_admin_plugin_action_links_' . plugin_basename( __FILE__ ), 'Printaura_be_table_shipping_wc_network_action_links_pa' );
 
 
 /**
@@ -2261,7 +2261,7 @@ add_filter( 'network_admin_plugin_action_links_' . plugin_basename( __FILE__ ), 
  * @access public
  * @return array
  */
-function be_table_shipping_wc_plugin_meta_pa( $links, $file ) {
+function Printaura_be_table_shipping_wc_plugin_meta_pa( $links, $file ) {
 
 	if ( $file == plugin_basename( __FILE__ ) ) {
 
@@ -2280,7 +2280,7 @@ function be_table_shipping_wc_plugin_meta_pa( $links, $file ) {
 	}
 	return (array) $links;
 }
-add_filter( 'plugin_row_meta', 'be_table_shipping_wc_plugin_meta_pa', 10, 2 );
+add_filter( 'plugin_row_meta', 'Printaura_be_table_shipping_wc_plugin_meta_pa', 10, 2 );
 
 
 /**
@@ -2289,12 +2289,12 @@ add_filter( 'plugin_row_meta', 'be_table_shipping_wc_plugin_meta_pa', 10, 2 );
  * @access public
  * @return void
  */
-add_action( 'init', 'Updater_WooTableRateShipping_pa' );
-function Updater_WooTableRateShipping_pa() {
+add_action( 'init', 'Printaura_Updater_WooTableRateShipping_pa' );
+function Printaura_Updater_WooTableRateShipping_pa() {
 	include_once( 'upgrader/class-be-config.php' );
 
-	if( class_exists( 'BolderElements_Plugin_Updater' ) )
-	    new BolderElements_Plugin_Updater( __FILE__, BE_WooTableShipping_VERSION, '3796656', 'woocommerce-table-rate-shipping', 'WooCommerce Table Rate Shipping' );
+	if( class_exists( 'Printaura_BolderElements_Plugin_Updater' ) )
+	    new Printaura_BolderElements_Plugin_Updater( __FILE__, BE_WooTableShipping_VERSION, '3796656', 'woocommerce-table-rate-shipping', 'WooCommerce Table Rate Shipping' );
 }
 
 ?>

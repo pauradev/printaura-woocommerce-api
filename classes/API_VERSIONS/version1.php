@@ -4,7 +4,7 @@ require_once( plugin_dir_path(__FILE__) . '/../class-rede-helpers.php' );
 require_once( dirname(__FILE__) . '/../WCAPI/includes.php' );
 
 use Printaura_WCAPI as API;
-class WC_JSON_API_Provider_v1 extends Printaura_JSONAPIHelpers {
+class Printaura_WC_JSON_API_Provider_v1 extends Printaura_JSONAPIHelpers {
   public $helpers;
   public $result;
   public $the_user;

@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  * Based On Framework Provided By omarabid
  * https://github.com/omarabid/Self-Hosted-WordPress-Plugin-repository
  */
-class BolderElements_Plugin_Updater {
+class Printaura_BolderElements_Plugin_Updater {
     /**
      * Author name
      *

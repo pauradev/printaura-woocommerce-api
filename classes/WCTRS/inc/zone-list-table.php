@@ -9,7 +9,7 @@ if(!class_exists('WP_List_Table')){
                 $woocommerce = WC();
 
 /************************** CREATE A PACKAGE CLASS ******************************/
-class Zone_List_Table extends WP_List_Table {
+class Printaura_Zone_List_Table extends WP_List_Table {
 
     public $shipping_zones;
     
@@ -33,7 +33,7 @@ class Zone_List_Table extends WP_List_Table {
     function extra_tablenav( $which ) {
         if ( $which == "top" ){
             //The code that goes before the table is here
-            echo"<span style='line-height:32px;'>To manage the shipping rates for these zones, visit the <a href=\"" . get_bloginfo( 'wpurl' ) . "/wp-admin/admin.php?page=wc-settings&tab=shipping&section=BE_Table_Rate_Shipping\">Table Rate Shipping</a> settings page.</span>";
+            echo"<span style='line-height:32px;'>To manage the shipping rates for these zones, visit the <a href=\"" . get_bloginfo( 'wpurl' ) . "/wp-admin/admin.php?page=wc-settings&tab=shipping&section=Printaura_BE_Table_Rate_Shipping\">Table Rate Shipping</a> settings page.</span>";
         }
         if ( $which == "bottom" ){
             //The code that goes after the table is there
@@ -283,7 +283,7 @@ class Zone_List_Table extends WP_List_Table {
     static function tt_render_list_page(){
         global $SUCCESS;
         //Create an instance of our package class...
-        $zoneListTable = new Zone_List_Table();
+        $zoneListTable = new Printaura_Zone_List_Table();
         //Fetch, prepare, sort, and filter our data...
         $zoneListTable->prepare_items();
         
@@ -348,7 +348,7 @@ class Zone_List_Table extends WP_List_Table {
 
     static function tt_render_edit_page($zone_submit_id=''){
         global $woocommerce, $wpdb;
-        $zoneListTable = new Zone_List_Table();
+        $zoneListTable = new Printaura_Zone_List_Table();
         $shipping_zones = $zoneListTable->shipping_zones;
 
         $method = $_GET['action'];
@@ -593,7 +593,7 @@ function enable_zone_link() {
     $zone_id = (isset( $_GET['zone_id'] ) && is_numeric($_GET['zone_id'])) ? (int) $_GET['zone_id'] : 0;
     if (!$zone_id) die;
 
-    $zoneListTable = new Zone_List_Table();
+    $zoneListTable = new Printaura_Zone_List_Table();
     $shipping_zones = $zoneListTable->shipping_zones;
     $zoneID = (int) $_GET['zone_id'];
 

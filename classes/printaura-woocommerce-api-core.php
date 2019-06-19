@@ -61,7 +61,7 @@ function printaura_api_get_api_settings_array($user_id, $default_token='', $defa
       'description'   => __('Whether or not this user can access this method', 'printaura_api')
     );
     $attrs['json_api_settings']['fields'][] = $field;
-    foreach (WooCommerce_JSON_API::getImplementedMethods() as $method) {
+    foreach (Printaura_WooCommerce_JSON_API::getImplementedMethods() as $method) {
         if (strpos($method, 'set_') !== false) {
             $default_value = 'yes';
         } else {
@@ -183,7 +183,7 @@ function printaura_api_template_redirect()
             if (defined('PRINTAURA_WC_JSON_API_DEBUG')) {
                 Printaura_JSONAPIHelpers::truncateDebug();
             }
-            $api = new WooCommerce_JSON_API();
+            $api = new Printaura_WooCommerce_JSON_API();
             $api->setOut('HTTP');
             $api->setUser(null);
             $params = array();

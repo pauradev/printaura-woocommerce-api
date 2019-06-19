@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  * @since 0.1
  * @extends \WC_Email
  */
-class WC_Shipped_Order_Email extends WC_Email {
+class Printaura_WC_Shipped_Order_Email extends WC_Email {
 
 
 	/**
@@ -17,7 +17,7 @@ class WC_Shipped_Order_Email extends WC_Email {
 	public function __construct() {
 
 		// set ID, this simply needs to be a unique name
-		$this->id = 'wc_shipped_order';
+		$this->id = 'printaura_wc_shipped_order';
 
 		// this is the title in WooCommerce Email settings
 		$this->title = 'Shipping Emails';
@@ -232,4 +232,3 @@ Thanks for your business.'
 
 
 } // end \WC_Expedited_Order_Email class
-

@@ -161,8 +161,8 @@ function printaura_add_shipped_order_woocommerce_email($email_classes)
     // include our custom email class
     require_once(plugin_dir_path(__FILE__) .'classes/class-wc-shipped-order-email.php');
 
-    // add the email class Printaura_to the list of email classes that WooCommerce loads
-    $email_classes['WC_Shipped_Order_Email'] = new WC_Shipped_Order_Email();
+    // add the email class WC_Shipped_Order_Email to the list of email classes that WooCommerce loads
+    $email_classes['Printaura_WC_Shipped_Order_Email'] = new Printaura_WC_Shipped_Order_Email();
 
     return $email_classes;
 }
@@ -174,7 +174,7 @@ function printaura_send_ship($order_id, $tracking_number="", $tracking_method=""
     if (in_array('woocommerce/woocommerce.php', $active_plugins)) {
         $email = new WC_Emails();
         $emails = $email->get_emails();
-        $sh_email= $emails['WC_Shipped_Order_Email'];
+        $sh_email= $emails['Printaura_WC_Shipped_Order_Email'];
         $sh_email->trigger($order_id, $tracking_number, $tracking_method);
     }
 }

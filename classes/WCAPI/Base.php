@@ -707,7 +707,7 @@ class Base extends Helpers
             Helpers::debug(get_called_class() . "::__set if isset has_many $name " . var_export($value, true));
             $this->{$name} = $value;
         } else {
-            throw new \Exception(sprintf(__('That attribute %s does not exist to be set to %s. for %s', 'woocommerce_json_api'), "`$name`", (string)var_export($value, true), get_called_class()));
+            throw new \Exception(sprintf(__('That attribute %s does not exist to be set to %s. for %s', 'Printaura_WooCommerce_JSON_API'), "`$name`", (string)var_export($value, true), get_called_class()));
         }
     }
 
@@ -1189,7 +1189,7 @@ class Base extends Helpers
     {
         global $wpdb;
         if (!$id) {
-            $this->result->addWarning($id . ': ' . __('Image does not exist', 'woocommerce_json_api'), PRINTAURA_JSONAPI_PRODUCT_NOT_EXISTS, array( 'id' => $id));
+            $this->result->addWarning($id . ': ' . __('Image does not exist', 'Printaura_WooCommerce_JSON_API'), PRINTAURA_JSONAPI_PRODUCT_NOT_EXISTS, array( 'id' => $id));
             return $this->done();
         } else {
             $this->delete($wpdb->posts, array(
