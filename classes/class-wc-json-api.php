@@ -24,7 +24,6 @@ define('PRINTAURA_JSONAPI_MODEL_NOT_EXISTS', 1);
 require_once(plugin_dir_path(__FILE__) . '/class-rede-helpers.php');
 require_once(plugin_dir_path(__FILE__) . '/class-wc-json-api-result.php');
 require_once(dirname(__FILE__) . '/WCAPI/includes.php');
-require_once(dirname(__FILE__) . '/WCTRS/woocommerce-table-rate-shipping.php');
 
 use WCAPI as API;
 

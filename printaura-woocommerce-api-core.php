@@ -168,47 +168,12 @@ function printaura_api_settings_page()
         if (isset($_POST[$key]['ips_allowed'])) {
             update_option($key4, sanitize_text_field($_POST[$key]['ips_allowed']));
         }
-
-        if (is_plugin_active('woocommerce-table-rate-shipping/woocommerce-table-rate-shipping.php')) {
-            deactivate_plugins('woocommerce-table-rate-shipping/woocommerce-table-rate-shipping.php');
-        }
-
-        $table_rate_shipping_enabled = get_option($helpers->getPluginPrefix() . '_table_rate_shipping');
-        if ($table_rate_shipping_enabled === "yes") {
-            update_option($helpers->getPluginPrefix().'_table_rate_shipping', 'yes');
-            do_action('plugins_loaded');
-            $zone1 = array(
-            'zone_title'=>'Florida',
-            'zone_country'=>'US:FL',
-            'zone_except'=> array('states' => '','postals' => '')
-            );
-            $zone2 = array(
-            'zone_title'=>'Quebec',
-            'zone_country'=>'CA:QC',
-            'zone_except'=> array('states' => '','postals' => '')
-            );
-            $zones = array($zone1,$zone2);
-            $shipping_zones = printaura_save_new_zone($zones);
-        }
     }
 
     $attrs = array(
       'json_api_sitewide_settings' => array(
           'title' => __('Print Aura Woocommerce API Settings', 'printaura_api'),
           'fields' => array(
-                            array(
-                                'name'          => $helpers->getPluginPrefix() . '_sitewide_settings[table_rate_shipping]',
-                                'id'            => 'json_api_table_rate_shipping',
-                                'visible'       => true,
-                                'value'         => get_option($helpers->getPluginPrefix() . '_table_rate_shipping'),
-                                'options'       => array(
-                                   array( 'value' => 'no', 'content' => __('No', 'printaura_api')),
-                                   array( 'value' => 'yes', 'content' => __('Yes', 'printaura_api')),
-                                ),
-                                'type'          => 'select',
-                                'label'         => __('WooCommerce Table Rate Shipping Enabled?', 'printaura_api'),
-                                'description'   => __('woocommerce calculate shipping costs and add one or more rates based on a table of rules', 'printaura_api'),
-                                ),
                             array(
                                 'name'          => $helpers->getPluginPrefix() . '_sitewide_settings[enabled]',
                                 'id'            => 'json_api_enabled_id',
