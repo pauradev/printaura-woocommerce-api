@@ -1434,7 +1434,6 @@ if ( $ids ) {
       
        $payload = $this->orEq( $params,'payload', false);
        $order_id = $this->orEq( $params['arguments'],'order_id',false);
-        wp_mail('aladin@printaura.com','tracking',/*var_export($payload,true)*/'dfd');   
     if ( ! $payload || ! is_array($payload)) {
       $this->result->addError( __('Missing payload','printaura_api'), PRINTAURA_JSONAPI_BAD_ARGUMENT );
       return $this->done();
@@ -1486,7 +1485,6 @@ if ( $ids ) {
         global $wpdb;
        $payload = $this->orEq( $params,'payload', false);
        $arguments = $this->orEq( $params,'arguments', false);
-       //wp_mail('aladin@printaura.com','tracking',var_export($payload,true));    
     if ( ! $payload || ! is_array($payload)) {
       $this->result->addError( __('Missing payload','printaura_api'), PRINTAURA_JSONAPI_BAD_ARGUMENT );
       return $this->done();
