@@ -202,7 +202,7 @@ function printaura_initialisation()
             'plugin_name' => 'Print Aura API',
             'plugin_slug' => 'printaura-woocommerce-api',
             'plugin_path' => plugin_basename(__FILE__),
-            'plugin_url'  => WP_PLUGIN_URL . '/printaura-woocommerce-api',
+            'plugin_url'  => plugins_url('',__FILE__),
             'version'     => '3.4.10',
             'remote_url'  => 'https://printaura.com/printaura-woocommerce-updater/',
             'time'        => 4230
