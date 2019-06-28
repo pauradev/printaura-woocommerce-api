@@ -33,3 +33,6 @@ background-color: #C79F4B;
 #mainform .TextareaForm{
  width:60%; height: 320px;   
 }
+
+#wpfooter {
+    position: relative;
