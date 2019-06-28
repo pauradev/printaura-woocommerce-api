@@ -69,7 +69,7 @@ function printaura_schedule_resend_orders()
         require_once(plugin_dir_path(__FILE__) .'../woocommerce/woocommerce.php');
         WC()->api->includes();
         WC()->api->register_resources(new WC_API_Server('/'));
-        $args = get_args_shop_order();
+        $args = printaura_get_args_shop_order();
         wc_register_order_type('shop_order', $args);
         $filter_hooks = array(
             'post_type'   => 'shop_webhook',

@@ -52,4 +52,6 @@ The manual installation method involves downloading our eCommerce plugin and upl
 == Changelog ==
 
 = 4.0.0 - 2019-06-27 =
-* Feature - First relese to WordPress repository.
+* Feature - First release to WordPress repository.
+= 4.0.1 - 2019-06-28 =
+* Fix - function reference error
