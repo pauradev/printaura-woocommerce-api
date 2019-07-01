@@ -3,7 +3,7 @@ Contributors: Howard Canaway, Ryan Kikta
 Tags: PrintAura, WooCommerce, eCommerce
 Requires at least: 4.4
 Tested up to: 5.0.2
-Stable tag: 4.0
+Stable tag: 4.0.1
 License: GPLv2 or later
 
 PrintAura-WooCommerce retrives products you created on PrintAura.com and automatically orders them from PrintAura when one of those products sells.
