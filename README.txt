@@ -39,7 +39,6 @@ Print Aura Guarantee - We guarantee our products to be free from defects due to 
 U.S. & Global Shipping - We ship just about anywhere in the world!
 No Membership Fees - It's completely free to join and use Print Aura's Services.  Sign-up for a free account with Print Aura now and start selling immediately!
 
-Insert Youtube screen shot here and embed link in screen shot:
 https://www.youtube.com/watch?v=v9psujUJr7g 
 
 Frequently Asked Questions
