@@ -100,10 +100,10 @@ class Printaura_JSONAPIHelpers
         $this->js               = PRINTAURA_REDE_PLUGIN_BASE_PATH . 'assets/js/';
         $this->templates        = PRINTAURA_REDE_PLUGIN_BASE_PATH . 'templates/';
     
-        $this->wp_template      = get_template();
+        $this->wp_template      = get_template(); //apparently sometimes this is null
         // Just calling get_theme_root doesn't seem to work...
         $this->wp_theme_root    = get_theme_root($this->wp_template);
-        if (false === strpos($this->wp_theme_root, $this->wp_template)) {
+        if (!empty($this->wp_template) && strpos($this->wp_theme_root, $this->wp_template) === false) {
             $test_path = $this->wp_theme_root . '/' . $this->wp_template;
             if (file_exists($test_path)) {
                 $this->wp_theme_root = $test_path . "/";
