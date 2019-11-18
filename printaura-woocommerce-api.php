@@ -4,7 +4,7 @@
   Plugin URI: https://printaura.com
   Description: PrintAura  WooCommerce Integration API
   Author: Print Aura
-  Version: 4.0.1
+  Version: 4.0.2
   Author URI: http://printaura.com
 */
 // Exit if accessed directly

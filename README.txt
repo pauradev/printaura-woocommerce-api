@@ -1,9 +1,9 @@
 ﻿=== Printaura-Woocommerce ===
-Contributors: Howard Canaway, Ryan Kikta, chris Nelson
+Contributors: Howard Canaway, Ryan Kikta, Chris Nelson
 Tags: PrintAura, WooCommerce, eCommerce
 Requires at least: 4.4
-Tested up to: 5.0.2
-Stable tag: 4.0.1
+Tested up to: 5.3.0
+Stable tag: 4.0.2
 License: GPLv2 or later
 
 PrintAura-WooCommerce retrives products you created on PrintAura.com and automatically orders them from PrintAura when one of those products sells.
@@ -82,3 +82,5 @@ The manual installation method involves downloading our eCommerce plugin and upl
 * Feature - First release to WordPress repository.
 = 4.0.1 - 2019-06-28 =
 * Fix - function reference error
+= 4.0.2 - 2019-11-18 =
+* Update WP version information
